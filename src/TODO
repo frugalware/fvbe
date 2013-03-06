@@ -1,0 +1,28 @@
+before 1.9:
+
+implement network setup
+implement network install (mirror and connection)
+implement method to control default groups selected
+implement local source install
+implement raid setup
+replace gradual reallocs with one massive allocation then shrinking it
+add raid to grub2 detection
+look into what can be done about sfdisk failing due to busy devices
+look into revising how we use blkid
+look into how systemd handles locale, vc layout, x11 layout, time, and hostname
+replace timezone and other simple UIs with list UI
+fix umounting
+
+future improvements:
+
+replace my method of retrieving disk unique identifier with libblkid's API, should be in v2.23.
+if libfdisk can replace our writing needs, then use that instead of running fdisk/gdisk.
+see if unicode handling of GPT partition names can be fixed
+add detailed error handling for when a pacman transaction fails
+test 4096 byte sector disk drive handling code in block.c
+implement lvm setup
+implement encrypted root setup
+implement extlinux bootloader support
+implement gui frontend
+try to make the installer able to launch the configuration tools individually to replace frugalwareutils
+disable tty blanking

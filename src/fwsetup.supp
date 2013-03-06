@@ -1,0 +1,22 @@
+{
+  slang initialize suppression 1
+  Memcheck:Leak
+  fun:malloc
+  fun:SLmalloc
+  fun:read_terminfo_section
+  fun:_pSLtt_tigetent
+  fun:SLtt_initialize
+  fun:SLtt_get_terminfo
+  fun:newtInit
+}
+
+{
+  slang initialize suppression 2
+  Memcheck:Leak
+  fun:malloc
+  fun:SLmalloc
+  fun:_pSLtt_tigetent
+  fun:SLtt_initialize
+  fun:SLtt_get_terminfo
+  fun:newtInit
+}

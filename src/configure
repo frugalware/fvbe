@@ -1,0 +1,92 @@
+#!/bin/sh
+
+error()
+{
+  echo "$1"
+  exit 1
+}
+
+pkg_config_exists()
+{
+  pkg-config --exists "$1"
+}
+
+while test "$#" -gt 0; do
+  case "$1" in
+    --release)
+      test -z "$2" && error "No argument supplied: release"
+      test "$2" != "stable" -a "$2" != "current" && error "Invalid value for release: $2"
+      RELEASE="$2"
+      shift
+      ;;
+    --ui)
+      test -z "$2" && error "No argument supplied: ui"
+      test "$2" != "newt" && error "Invalud value for ui: $2"
+      UI="$2"
+      shift
+      ;;
+    *)
+      error "Invalid argument: $1"
+      ;;
+  esac
+  shift
+done
+
+test -z "$RELEASE" && error "No release is defined."
+test -z "$UI" && error "No ui is defined."
+
+test -z "$CFLAGS" && CFLAGS="-O2"
+
+CFLAGS="$CFLAGS -std=gnu99"
+
+if test "$RELEASE" = "stable"; then
+  CFLAGS="$CFLAGS -DNDEBUG -DRELEASE_STABLE"
+  LDFLAGS="$LDFLAGS -s"
+elif test "$RELEASE" = "current"; then
+  CFLAGS="$CFLAGS -ggdb3 -Wall -Wextra -Wno-unused-parameter -DRELEASE_CURRENT"
+fi
+
+! pkg_config_exists "pacman" && error "pacman was not found."
+! pkg_config_exists "blkid" && error "blkid was not found."
+
+test "$UI" = "newt" && ! pkg_config_exists "libnewt" && error "libnewt was not found."
+
+CFLAGS="$CFLAGS $(pkg-config --cflags pacman blkid)"
+LDFLAGS="$LDFLAGS $(pkg-config --libs pacman blkid)"
+SOURCES="main.c utility.c block.c locale.c layout.c greeter.c partition.c format.c install.c postconfig.c finale.c"
+
+if test "$UI" = "newt"; then
+  CFLAGS="$CFLAGS -DUI_NEWT $(pkg-config --cflags libnewt)"
+  LDFLAGS="$LDFLAGS $(pkg-config --libs libnewt)"
+  SOURCES="$SOURCES ui_newt.c"
+fi
+
+cat > Makefile << EOF
+CFLAGS          := $CFLAGS
+LDFLAGS         := $LDFLAGS
+TARGETS         := ${SOURCES//.c/.o}
+PROGRAM         := fwsetup
+ROOT            := \$(DESTDIR)/usr
+BINDIR          := \$(ROOT)/bin
+$(test "$RELEASE" = "current" && echo "VALGRINDDIR     := \$(ROOT)/lib/valgrind")
+$(test "$RELEASE" = "current" && echo "VALGRINDWRAPPER := \$(PROGRAM)-valgrind")
+$(test "$RELEASE" = "current" && echo "VALGRINDFILE    := \$(PROGRAM).supp")
+
+%.o: %.c local.h text.h
+	\$(CC) \$(CFLAGS) -c \$< -o \$@
+
+\$(PROGRAM): \$(TARGETS)
+	\$(CC) \$(LDFLAGS) \$^ -o \$@
+
+.PHONY: install clean
+
+install: \$(PROGRAM)
+	mkdir -p \$(BINDIR)
+$(test "$RELEASE" = "current" && echo "	mkdir -p \$(VALGRINDDIR)")
+	install -m 0755 \$(PROGRAM) \$(BINDIR)/\$(PROGRAM)
+$(test "$RELEASE" = "current" && echo "	install -m 0755 \$(VALGRINDWRAPPER) \$(BINDIR)/\$(VALGRINDWRAPPER)")
+$(test "$RELEASE" = "current" && echo "	install -m 0644 \$(VALGRINDFILE) \$(VALGRINDDIR)/\$(VALGRINDFILE)")
+
+clean:
+	\$(RM) \$(PROGRAM) \$(TARGETS)
+EOF
