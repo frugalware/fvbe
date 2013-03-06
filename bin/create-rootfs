@@ -85,6 +85,11 @@ EOF
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
 
+# Prune unimportant paths.
+if [ "$FVBE_ROOTFS_CLEAN" = "yes" ]; then
+  rm -rf $FVBE_ROOT/boot/*
+fi
+
 # Unmount all paths mounted earlier.
 cp /proc/mounts mounts
 while read line; do
