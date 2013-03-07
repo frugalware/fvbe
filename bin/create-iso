@@ -8,7 +8,7 @@ set -e
 rm -rf $FVBE_ROOT
 
 # Create the skeleton directory.
-mkdir -p $FVBE_ROOT/{boot/grub,LiveOS}
+mkdir -p $FVBE_ROOT/{boot/grub/fonts,LiveOS}
 
 # Setup kernel and initrd.
 cp vmlinuz $FVBE_ROOT/boot/vmlinuz
@@ -17,19 +17,26 @@ cp initrd $FVBE_ROOT/boot/initrd
 # Setup squashfs image.
 cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 
+# Collect some grub files that are not automatically handled.
+cp /usr/share/grub/unicode.pf2 $FVBE_ROOT/boot/grub/fonts/unicode.pf2
+
 # Setup grub2 config.
 cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
 set mode=$FVBE_ISO_IO_MODE
 
 if [ \$mode = video ]; then
-  insmod video_all
-  insmod gfxterm
+  loadfont unicode
+  insmod all_video  
+  terminal_input console
+  terminal_output gfxterm
 elif [ \$mode = serial ]; then
   $FVBE_ISO_IO_SERIAL_GRUB
   terminal_input serial
   terminal_output serial
   terminfo -u vt100-color
 fi
+
+read
 EOF
 
 # Create the ISO.
