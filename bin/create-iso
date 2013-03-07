@@ -4,6 +4,32 @@ set -e
 
 . ./fvbe.conf
 
+do_locales()
+{
+  echo "submenu 'Locales' {"
+  for i in $(cat locales); do
+  echo "  menuentry '$i' {"
+  echo "    LOCALE=$i"
+  echo "    export LOCALE"
+  echo "    configfile /boot/grub/menu.cfg"
+  echo "  }"
+  done
+  echo "}"
+}
+
+do_layouts()
+{
+  echo "submenu 'Keyboard Layouts' {"
+  for i in $(cat layouts); do
+  echo "  menuentry '$i' {"
+  echo "    LAYOUT=$i"
+  echo "    export LAYOUT"
+  echo "    configfile /boot/grub/menu.cfg"
+  echo "  }"
+  done
+  echo "}"
+}
+
 # First, clean up.
 rm -rf $FVBE_ROOT
 
@@ -19,6 +45,14 @@ cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 
 # Collect some grub files that are not automatically handled.
 cp /usr/share/grub/unicode.pf2 $FVBE_ROOT/boot/grub/fonts/unicode.pf2
+cat > $FVBE_ROOT/boot/grub/menu.cfg << EOF
+menuentry 'Frugalware Linux (QEMU Mode)' {
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet 800x600 locale.LANG=\$LOCALE vconsole.keymap=\$LAYOUT
+  initrd /boot/initrd
+}
+$(do_locales)
+$(do_layouts)
+EOF
 
 # Setup grub2 config.
 cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
@@ -36,7 +70,7 @@ elif [ \$mode = serial ]; then
   terminfo -u vt100-color
 fi
 
-read
+configfile /boot/grub/menu.cfg
 EOF
 
 # Create the ISO.
