@@ -4,6 +4,9 @@ set -e
 
 . ./fvbe.conf
 
+# First, clean up.
+rm -rf $FVBE_ROOT
+
 # Create the skeleton directory.
 mkdir -p $FVBE_ROOT/{boot/grub,LiveOS}
 
@@ -16,29 +19,18 @@ cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 
 # Setup grub2 config.
 cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
-search --no-floppy --set=root --label FVBE
-terminal_input console
-terminal_output console
+set mode=$FVBE_ISO_IO_MODE
 
-insmod efi_gop
-insmod efi_uga
-
-set locale=fr_FR.utf8
-
-menuentry 'Frugalware (Normal)' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE video=800x600 locale.LANG=\$locale
-  initrd /boot/initrd
-}
-
-submenu 'Frugalware Locale' {
-  menuentry 'en_US.utf8' {
-    set locale=en_US.utf8
-  }
-}
+if [ \$mode = video ]; then
+  insmod video_all
+  insmod gfxterm
+elif [ \$mode = serial ]; then
+  insmod serial
+fi
 EOF
 
 # Create the ISO.
 grub-mkrescue -o fwlive.iso $FVBE_ROOT -- -boot_image any partition_offset=16 -volid FVBE
 
 # Delete the root directory.
-#rm -rf $FVBE_ROOT
+rm -rf $FVBE_ROOT
