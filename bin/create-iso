@@ -25,7 +25,10 @@ if [ \$mode = video ]; then
   insmod video_all
   insmod gfxterm
 elif [ \$mode = serial ]; then
-  insmod serial
+  $FVBE_ISO_IO_SERIAL_GRUB
+  terminal_input serial
+  terminal_output serial
+  terminfo -u vt100-color
 fi
 EOF
 
