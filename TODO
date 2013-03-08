@@ -1,0 +1,11 @@
+consider what to do about fwlive networking
+add better cleanup to fwlive generation commands
+generate pacman-g2.conf somehow
+consider adding locale packages namely manpages and aspell
+setup a regular user
+change default systemd boot target on non-gui builds
+consider modifying /etc/issue{,.net}
+figure out how best to integrate fwsetup
+update the frugalware release
+run the sysupgrade hook of frugalware package?
+setup DM for whichever GUI mode we are using
