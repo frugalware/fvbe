@@ -9,8 +9,8 @@ do_locales()
   echo "submenu 'Locales' {"
   for i in $(cat locales); do
   echo "  menuentry '$i' {"
-  echo "    LOCALE=$i"
-  echo "    export LOCALE"
+  echo "    set locale=$i"
+  echo "    export locale"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"
   done
@@ -22,8 +22,8 @@ do_layouts()
   echo "submenu 'Keyboard Layouts' {"
   for i in $(cat layouts); do
   echo "  menuentry '$i' {"
-  echo "    LAYOUT=$i"
-  echo "    export LAYOUT"
+  echo "    set layout=$i"
+  echo "    export layout"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"
   done
@@ -47,7 +47,7 @@ cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 cp /usr/share/grub/unicode.pf2 $FVBE_ROOT/boot/grub/fonts/unicode.pf2
 cat > $FVBE_ROOT/boot/grub/menu.cfg << EOF
 menuentry 'Frugalware Linux (QEMU Mode)' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet 800x600 locale.LANG=\$LOCALE vconsole.keymap=\$LAYOUT
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet 800x600 locale.LANG=\$locale vconsole.keymap=\$layout
   initrd /boot/initrd
 }
 $(do_locales)
@@ -57,6 +57,8 @@ EOF
 # Setup grub2 config.
 cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
 set mode=$FVBE_ISO_IO_MODE
+set locale=$FVBE_LOCALE
+set layout=$FVBE_LAYOUT
 
 if [ \$mode = video ]; then
   loadfont unicode

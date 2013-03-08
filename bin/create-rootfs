@@ -51,16 +51,22 @@ pacman-g2 --root $FVBE_ROOT --noprogressbar --noconfirm --config pacman-g2.conf 
 
 # LiveCD customizations beyond here.
 
-# System locale.conf setup.
-cat > $FVBE_ROOT/etc/locale.conf << EOF
-LANG=$FVBE_ROOTFS_LOCALE
-EOF
+cat > $FVBE_ROOOT/usr/sbin/fvbe-setup << EOF
+#!/bin/sh
 
-# System vconsole.conf setup.
-cat > $FVBE_ROOT/etc/vconsole.conf << EOF
-KEYMAP=$FVBE_ROOTFS_KEYMAP
-FONT=$FVBE_ROOTFS_FONT
+set -e
+
+echo "FONT=$FVBE_FONT" > /etc/vconsole.conf
+
+for i in $(cat /proc/cmdline); do
+  if [ "$i" = "locale.LANG=*" ]; then
+    localectl set-locale LANG="${i/locale.LANG=/}"
+  elif [ "$i" = "vconsole.keymap=*" ]; then
+    localectl set-keymap "${i/vconsole.keymap=/}"
+  fi
+done
 EOF
+chmod +x $FVBE_ROOT/usr/sbin/fvbe-setup
 
 # System fstab setup.
 cat > $FVBE_ROOT/etc/fstab << EOF
