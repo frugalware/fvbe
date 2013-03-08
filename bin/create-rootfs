@@ -51,6 +51,10 @@ pacman-g2 --root $FVBE_ROOT --noprogressbar --noconfirm --config pacman-g2.conf 
 
 # LiveCD customizations beyond here.
 
+# Install fwsetup.
+install -m 0755 src/fwsetup $FVBE_ROOT/usr/sbin/fwsetup
+install -m 0755 src/fwsetup-valgrind $FVBE_ROOT/usr/sbin/fwsetup-valgrind
+
 # Set the default systemd boot target.
 if [ -x "$FVBE_ROOT/usr/bin/X" ]; then
   ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/default.target

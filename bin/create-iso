@@ -78,7 +78,7 @@ configfile /boot/grub/menu.cfg
 EOF
 
 # Create the ISO.
-grub-mkrescue -o fwlive.iso $FVBE_ROOT -- -boot_image any partition_offset=16 -volid FVBE
+grub-mkrescue -o fvbe-$FVBE_ARCH.iso $FVBE_ROOT -- -boot_image any partition_offset=16 -volid FVBE
 
 # Delete the root directory.
 rm -rf $FVBE_ROOT
