@@ -97,7 +97,10 @@ none /proc/bus/usb usbfs devgid=23,devmode=664 0 0
 EOF
 
 # Setup root user.
-chroot $FVBE_ROOT sh -c "echo 'root:fwlive' | chpasswd"
+chroot $FVBE_ROOT sh -c "echo 'root:fvbe' | chpasswd"
+
+# Setup guest user.
+chroot $FVBE_ROOT sh -c "yes '' | adduser guest 'Guest User' fvbe /home/guest"
 
 # System hostname setup.
 cat > $FVBE_ROOT/etc/hostname << EOF
