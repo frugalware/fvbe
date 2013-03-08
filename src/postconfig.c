@@ -81,53 +81,6 @@ bail:
   return (char *) uuid;
 }
 
-static inline char **get_real_devices(void)
-{
-  const char *root = 0;
-  regex_t disk = {0};
-  regex_t raid = {0};
-  char **devices = 0;
-
-  if(rootdevice == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return 0;
-  }
-
-  root = rootdevice;
-
-  if(regcomp(&disk,"^/dev/[hsv]d[a-z]",REG_EXTENDED|REG_NOSUB) != 0)
-  {
-    error("invalid regular expression");
-    goto bail;
-  }
-
-  if(regcomp(&raid,"^/dev/md[0-9]+$",REG_EXTENDED|REG_NOSUB) != 0)
-  {
-    error("invalid regular expression");
-    goto bail;
-  }
-
-  if(regexec(&disk,root,0,0,0) == 0)
-  {
-    devices = malloc0(sizeof(char *) * 2);
-    devices[0] = strndup(root,8);
-    devices[1] = 0;
-  }
-  else if(regexec(&raid,root,0,0,0) == 0)
-  {
-  }
-
-bail:
-
-  regfree(&disk);
-  
-  regfree(&raid);
-  
-  return devices;
-}
-
 static bool write_locale_conf(void)
 {
   const char *var = "LANG";
@@ -575,39 +528,32 @@ static bool mode_action(const char *mode)
 
 static bool grub_action(void)
 {
-  char **devices = 0;
-  char **p = 0;
+  char devices[PATH_MAX] = {0};
+  char *s = 0;
+  char *p = 0;
   char command[_POSIX_ARG_MAX] = {0};
-  bool result = true;
   
-  if((devices = get_real_devices()) == 0)
-    return false;
+  fetch_real_devices(rootdevice,devices,sizeof(devices));
 
-  for( p = devices ; *p != 0 ; ++p )
+  if(strlen(devices) == 0)
   {
-    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%s'",*p);
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  for( p = devices ; (s = strtok(p,":")) != 0 ; p = 0 )
+  {
+    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%s'",s);
     
     if(!execute(command,INSTALL_ROOT,0))
-    {
-      result = false;
-      goto bail;
-    }
+      return false;
   }
 
   if(!execute("grub-mkconfig -o /boot/grub/grub.cfg",INSTALL_ROOT,0))
-  {
-    result = false;
-    goto bail;
-  }
+    return false;
 
-bail:
-
-  for( p = devices ; *p != 0 ; ++p )
-    free(*p);
-  
-  free(devices);
-
-  return result;
+  return true;
 }
 
 static bool postconfig_run(void)
