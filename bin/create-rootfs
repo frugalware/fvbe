@@ -51,22 +51,39 @@ pacman-g2 --root $FVBE_ROOT --noprogressbar --noconfirm --config pacman-g2.conf 
 
 # LiveCD customizations beyond here.
 
-cat > $FVBE_ROOOT/usr/sbin/fvbe-setup << EOF
+# Script for setting up the end-user customizations during boot-up.
+cat > $FVBE_ROOT/usr/sbin/fvbe-setup << EOF
 #!/bin/sh
 
 set -e
 
 echo "FONT=$FVBE_FONT" > /etc/vconsole.conf
 
-for i in $(cat /proc/cmdline); do
-  if [ "$i" = "locale.LANG=*" ]; then
-    localectl set-locale LANG="${i/locale.LANG=/}"
-  elif [ "$i" = "vconsole.keymap=*" ]; then
-    localectl set-keymap "${i/vconsole.keymap=/}"
+for i in \$(cat /proc/cmdline); do
+  if [[ "\$i" =~ "locale.LANG=" ]]; then
+    localectl set-locale LANG="\${i/locale.LANG=/}"
+  elif [[ "\$i" =~ "vconsole.keymap=" ]]; then
+    localectl set-keymap "\${i/vconsole.keymap=/}"
   fi
 done
 EOF
 chmod +x $FVBE_ROOT/usr/sbin/fvbe-setup
+
+# Service for launching fvbe-setup.
+cat > $FVBE_ROOT/lib/systemd/system/fvbe.service << EOF
+[Unit]
+Description=FVBE Setup
+After=sysinit.target
+Before=default.target
+
+[Service]
+ExecStart=/usr/sbin/fvbe-setup
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+chroot $FVBE_ROOT sh -c "systemctl enable fvbe.service"
 
 # System fstab setup.
 cat > $FVBE_ROOT/etc/fstab << EOF
