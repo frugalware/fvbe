@@ -51,6 +51,13 @@ pacman-g2 --root $FVBE_ROOT --noprogressbar --noconfirm --config pacman-g2.conf 
 
 # LiveCD customizations beyond here.
 
+# Set the default systemd boot target.
+if [ -x "$FVBE_ROOT/usr/bin/X" ]; then
+  ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/default.target
+else
+  ln -sf /lib/systemd/system/multi-user.target $FVBE_ROOT/etc/systemd/system/default.target
+fi
+
 # Script for setting up the end-user customizations during boot-up.
 cat > $FVBE_ROOT/usr/sbin/fvbe-setup << EOF
 #!/bin/sh
