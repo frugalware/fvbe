@@ -113,6 +113,7 @@ static bool format_setup(void)
   {
     struct device *device = *p;
     struct disk *disk = disk_open(device);
+    const char *type = device_get_type(device);
     struct format *target = 0;
     char buf[PATH_MAX] = {0};
 
@@ -143,6 +144,20 @@ static bool format_setup(void)
 
         probe_filesystem(target);
       }
+    }
+    else if(strcmp(type,"raid") == 0)
+    {
+      target = malloc0(sizeof(struct format));
+      
+      add_target(target,&n,&size);
+      
+      target->devicepath = strdup(device_get_path(device));
+      
+      size_to_string(buf,sizeof(buf),device_get_size(device),false);
+      
+      target->size = strdup(buf);
+      
+      probe_filesystem(target);
     }
 
     disk_close(disk);
