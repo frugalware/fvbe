@@ -528,12 +528,15 @@ static bool mode_action(const char *mode)
 
 static bool grub_action(void)
 {
+  char path[PATH_MAX] = {0};
   char devices[PATH_MAX] = {0};
   char *s = 0;
   char *p = 0;
   char command[_POSIX_ARG_MAX] = {0};
   
-  fetch_real_devices(rootdevice,devices,sizeof(devices));
+  strfcpy(path,sizeof(path),"/sys/block/%s",basename(rootdevice));
+  
+  fetch_real_devices(path,devices,sizeof(devices));
 
   if(strlen(devices) == 0)
   {
@@ -544,7 +547,7 @@ static bool grub_action(void)
 
   for( p = devices ; (s = strtok(p,":")) != 0 ; p = 0 )
   {
-    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%s'",s);
+    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%.8s'",s);
     
     if(!execute(command,INSTALL_ROOT,0))
       return false;
