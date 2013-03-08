@@ -5,8 +5,8 @@ implement network install (mirror and connection)
 implement method to control default groups selected
 implement local source install
 implement raid setup
+add progress dialog to grub setup
 replace gradual reallocs with one massive allocation then shrinking it
-add raid to grub2 detection
 look into what can be done about sfdisk failing due to busy devices
 look into revising how we use blkid
 look into how systemd handles locale, vc layout, x11 layout, time, and hostname
