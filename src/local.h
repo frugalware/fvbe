@@ -202,7 +202,7 @@ extern void ui_window_text(const char *title,const char *text);
 extern bool ui_window_partition(struct device **devices,struct disk **disks);
 extern bool ui_window_format(struct format **targets);
 extern bool ui_window_install(struct install *groups);
-extern bool ui_window_name(char **hostname,char **prettyhostname);
+extern bool ui_window_host(char **hostname,char **prettyhostname);
 extern bool ui_window_root(struct account *data);
 extern bool ui_window_user(struct account *data);
 extern bool ui_window_time(char **data,char **zone,bool *utc);

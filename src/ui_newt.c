@@ -1510,7 +1510,7 @@ extern bool ui_window_format(struct format **targets)
   return true;
 }
 
-extern bool ui_window_name(char **hostname,char **prettyhostname)
+extern bool ui_window_host(char **hostname,char **prettyhostname)
 {
   int textbox_width = 0;
   int textbox_height = 0;
@@ -1593,6 +1593,7 @@ extern bool ui_window_name(char **hostname,char **prettyhostname)
     {
       if(strlen(name1) == 0 || strlen(name2) == 0 || *(name1+strspn(name1,LOWER_CHARS "-")) != 0)
       {
+        ui_dialog_text(HOST_ERROR_TITLE,HOST_ERROR_TEXT);
         continue;
       }
 
