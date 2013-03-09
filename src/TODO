@@ -6,7 +6,6 @@ implement method to control default groups selected
 implement local source install
 implement raid setup
 replace gradual reallocs with one massive allocation then shrinking it
-look into revising how we use blkid
 look into how systemd handles locale, vc layout, x11 layout, time, and hostname
 replace timezone and other simple UIs with list UI
 
