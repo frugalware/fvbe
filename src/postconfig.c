@@ -260,7 +260,7 @@ static bool write_fstab(void)
   return true;
 }
 
-static bool write_hostname(const char *hostname)
+static bool write_hostname(const char *hostname,const char *prettyhostname)
 {
   FILE *file = 0;
   
@@ -271,6 +271,16 @@ static bool write_hostname(const char *hostname)
   }
   
   fprintf(file,"%s\n",hostname);
+  
+  fclose(file);
+  
+  if((file = fopen("etc/machine-info","wb")) == 0)
+  {
+    error(strerror(errno));
+    return false;
+  }
+  
+  fprintf(file,"PRETTY_HOSTNAME='%s'\n",prettyhostname);
   
   fclose(file);
   
@@ -582,6 +592,8 @@ static bool grub_action(void)
 
 static bool postconfig_run(void)
 {
+  char *hostname = 0;
+  char *prettyhostname = 0;
   struct account account = {0};
   char *zone = 0;
   bool utc = true;
@@ -611,8 +623,16 @@ static bool postconfig_run(void)
   if(!write_fstab())
     return false;
 
-  if(!write_hostname("testbed"))
+  if(!ui_window_host(&hostname,&prettyhostname) || !write_hostname(hostname,prettyhostname))
+  {
+    free(hostname);
+    free(prettyhostname);
     return false;
+  }
+
+  free(hostname);
+  
+  free(prettyhostname);
 
   if(!is_root_setup() && (!ui_window_root(&account) || !root_action(&account)))
   {
