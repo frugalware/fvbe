@@ -532,6 +532,9 @@ static bool grub_action(void)
   char devices[PATH_MAX] = {0};
   char *s = 0;
   char *p = 0;
+  size_t i = 0;
+  size_t count = 0;
+  int percent = 0;
   char command[_POSIX_ARG_MAX] = {0};
   
   strfcpy(path,sizeof(path),"/sys/block/%s",basename(rootdevice));
@@ -545,16 +548,34 @@ static bool grub_action(void)
     return false;
   }
 
-  for( p = devices ; (s = strtok(p,":")) != 0 ; p = 0 )
+  count = strpbrklen(devices,":") + 1;
+
+  for( p = devices ; (s = strtok(p,":")) != 0 ; p = 0, ++i )
   {
     strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%.8s'",s);
-    
+   
+    percent = (float) (i+1) / count * 100;
+   
+    strfcpy(path,sizeof(path),"(%zu/%zu) - %.8s",i+1,count,s);
+   
+    ui_dialog_progress(_("Installing GRUB"),path,percent);
+   
     if(!execute(command,INSTALL_ROOT,0))
+    {
+      ui_dialog_progress(0,0,-1);
       return false;
+    }
   }
 
+  ui_dialog_progress(_("Generating GRUB Config"),"",100);
+
   if(!execute("grub-mkconfig -o /boot/grub/grub.cfg",INSTALL_ROOT,0))
+  {
+    ui_dialog_progress(0,0,-1);
     return false;
+  }
+
+  ui_dialog_progress(0,0,-1);
 
   return true;
 }
