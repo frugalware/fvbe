@@ -467,7 +467,6 @@ extern void device_close(struct device *device)
 
 extern struct disk *disk_open(struct device *device)
 {
-  int fd = -1;
   blkid_probe probe = 0;
   blkid_partlist partlist = 0;
   blkid_parttable parttable = 0;
@@ -485,21 +484,8 @@ extern struct disk *disk_open(struct device *device)
     goto bail;
   }
 
-  if((fd = open(device->path,O_RDONLY)) == -1)
+  if((probe = blkid_new_probe_from_filename(device->path)) == 0)
   {
-    error(strerror(errno));
-    goto bail;
-  }
-
-  if((probe = blkid_new_probe()) == 0)
-  {
-    error(strerror(errno));
-    goto bail;
-  }
-
-  if(blkid_probe_set_device(probe,fd,0,0) == -1)
-  {
-    errno = EINVAL;
     error(strerror(errno));
     goto bail;
   }
@@ -584,9 +570,6 @@ extern struct disk *disk_open(struct device *device)
     result->table[i].disk = result;
 
 bail:
-
-  if(fd != -1)
-    close(fd);
 
   if(probe != 0)
     blkid_free_probe(probe);
