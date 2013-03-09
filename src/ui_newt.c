@@ -1510,6 +1510,107 @@ extern bool ui_window_format(struct format **targets)
   return true;
 }
 
+extern bool ui_window_name(char **hostname,char **prettyhostname)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int label1_width = 0;
+  int label1_height = 0;
+  int label2_width = 0;
+  int label2_height = 0;
+  int entry_left = 0;
+  int entry_width = 0;
+  int entry_height = 0;
+  int next_width = 0;
+  int next_height = 0;
+  newtComponent textbox = 0;
+  newtComponent label1 = 0;
+  newtComponent entry1 = 0;
+  const char *name1 = 0;
+  newtComponent label2 = 0;
+  newtComponent entry2 = 0;
+  const char *name2 = 0;
+  newtComponent next = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
+
+  if(hostname == 0 || prettyhostname == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  if(!get_text_screen_size(HOST_TEXT,&textbox_width,&textbox_height))
+    return false;
+  
+  if(!get_label_screen_size(HOSTNAME_ENTRY_TEXT,&label1_width,&label1_height))
+    return false;
+  
+  if(!get_label_screen_size(PRETTY_HOSTNAME_ENTRY_TEXT,&label2_width,&label2_height))
+    return false;
+
+  entry_left = max(label1_width,label2_width) + 1;
+
+  entry_width = NEWT_WIDTH - entry_left;
+
+  entry_height = 1;
+
+  if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
+    return false;
+
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,HOST_TITLE) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return false;
+  }
+
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,HOST_TEXT);
+
+  label1 = newtLabel(0,textbox_height+1,HOSTNAME_ENTRY_TEXT);
+
+  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&name1,0);
+
+  label2 = newtLabel(0,textbox_height+label1_height+2,PRETTY_HOSTNAME_ENTRY_TEXT);
+
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&name2,0);
+
+  next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
+
+  newtFormAddComponents(form,textbox,label1,entry1,label2,entry2,next,(void *) 0);
+
+  newtFormSetCurrent(form,entry1);
+
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    {
+      if(strlen(name1) == 0 || strlen(name2) == 0 || *(name1+strspn(name1,LOWER_CHARS "-")) != 0)
+      {
+        continue;
+      }
+
+      *hostname = strdup(name1);
+      
+      *prettyhostname = strdup(name2);
+
+      break;
+    }
+  }
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
+  
+  return true;
+}
+
 extern bool ui_window_root(struct account *data)
 {
   int textbox_width = 0;
