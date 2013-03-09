@@ -48,6 +48,23 @@ extern void fetch_real_devices(const char *base,char *s,size_t n)
   globfree(&ge);
 }
 
+extern size_t strpbrklen(const char *s,const char *accept)
+{
+  size_t n = 0;
+
+  if(s == 0 || accept == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  for( ; (s = strpbrk(s,accept)) != 0 ; ++s, ++n )
+    ;
+
+  return n;
+}
+
 extern bool areweinvc(void)
 {
   char tty[TEXT_MAX] = {0};

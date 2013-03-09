@@ -110,6 +110,7 @@ struct module
 };
 
 extern void fetch_real_devices(const char *base,char *s,size_t n);
+extern size_t strpbrklen(const char *s,const char *accept);
 extern bool areweinvc(void);
 extern void file2str(const char *path,char *s,size_t n);
 extern void strfcpy(char *s,size_t n,const char *fmt,...) __attribute__((format(printf,3,4)));
