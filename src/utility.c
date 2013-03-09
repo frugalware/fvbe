@@ -17,19 +17,6 @@
 
 #include "local.h"
 
-static inline bool umount_retry(const char *path)
-{
-  size_t i = 0;
-  
-  for( ; i < 5 ; ++i )
-    if(umount2(path,UMOUNT_NOFOLLOW) == -1 && errno != ENOENT)
-      sleep(1);
-    else
-      return true;
-  
-  return false;  
-}
-
 extern void fetch_real_devices(const char *base,char *s,size_t n)
 {
   char buf[PATH_MAX] = {0};
@@ -213,15 +200,15 @@ extern void umount_all(void)
   for( i = 0 ; paths[i] != 0 ; ++i )
   {
     path = paths[i];
-  
-    if(!umount_retry(path))
+    
+    if(umount2(path,MNT_DETACH|UMOUNT_NOFOLLOW) == -1 && errno != ENOENT)
     {
       error(strerror(errno));
       goto bail;
     }
   }
 
-  if(!umount_retry(INSTALL_ROOT))
+  if(umount2(INSTALL_ROOT,MNT_DETACH|UMOUNT_NOFOLLOW) == -1 && errno != ENOENT)
   {
     error(strerror(errno));
     goto bail;
