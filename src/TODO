@@ -5,9 +5,7 @@ implement network install (mirror and connection)
 implement method to control default groups selected
 implement local source install
 implement raid setup
-replace gradual reallocs with one massive allocation then shrinking it
 look into how systemd handles locale, vc layout, x11 layout, time, and hostname
-replace timezone and other simple UIs with list UI
 
 future improvements:
 
@@ -22,3 +20,4 @@ implement extlinux bootloader support
 implement gui frontend
 try to make the installer able to launch the configuration tools individually to replace frugalwareutils
 disable tty blanking
+redo how format structs are allocated
