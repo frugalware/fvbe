@@ -5,7 +5,6 @@ implement network install (mirror and connection)
 implement method to control default groups selected
 implement local source install
 implement raid setup
-look into how systemd handles locale, vc layout, x11 layout, time, and hostname
 
 future improvements:
 
