@@ -93,6 +93,7 @@ struct module *modules[] =
   &layout_module,
   &greeter_module,
   &partition_module,
+  &raid_module,
   &format_module,
   &install_module,
   &postconfig_module,

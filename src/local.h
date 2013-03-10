@@ -214,6 +214,7 @@ extern struct module locale_module;
 extern struct module layout_module;
 extern struct module greeter_module;
 extern struct module partition_module;
+extern struct module raid_module;
 extern struct module format_module;
 extern struct module install_module;
 extern struct module postconfig_module;
