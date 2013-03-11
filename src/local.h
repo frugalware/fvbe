@@ -110,6 +110,7 @@ struct module
   const char *name;
 };
 
+extern bool isbusy(const char *path);
 extern void fetch_real_devices(const char *base,char *s,size_t n);
 extern size_t strpbrklen(const char *s,const char *accept);
 extern bool areweinvc(void);

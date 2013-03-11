@@ -17,6 +17,25 @@
 
 #include "local.h"
 
+extern bool isbusy(const char *path)
+{
+  int fd = -1;
+
+  if(path == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  if((fd = open(path,O_RDONLY|O_EXCL)) == -1)
+    return true;
+  
+  close(fd);
+  
+  return false;
+}
+
 extern void fetch_real_devices(const char *base,char *s,size_t n)
 {
   char buf[PATH_MAX] = {0};
