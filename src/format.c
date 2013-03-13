@@ -419,7 +419,9 @@ static bool format_prepare_source(void)
 {
   bool fvbe = areweinfvbe();
   char iso[PATH_MAX] = {0};
+  struct stat st = {0};
   char groups[LINE_MAX] = {0};
+  const char *source = "unknown";
 
   if(fvbe && find_local_iso(iso,sizeof(iso)))
   {
@@ -432,23 +434,31 @@ static bool format_prepare_source(void)
       return false;
     }
     
-    file2str("/mnt/iso/packages/groups",groups,sizeof(groups));
+    if(stat("/mnt/iso/packages",&st) == 0)
+    {
+      file2str("/mnt/iso/packages/groups",groups,sizeof(groups));
 
-    if(strlen(groups) == 0)
-    {
-      error("no groups file or empty group files");
-      return false;
+      if(strlen(groups) == 0)
+      {
+        error("no groups file or empty group files");
+        return false;
+      }
+    
+      g->groups = strdup(groups);
+    
+      if(mount("/mnt/iso/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+      {
+        error(strerror(errno));
+        return false;
+      }
+      
+      source = "iso";
     }
-    
-    g->groups = strdup(groups);
-    
-    if(mount("/mnt/iso/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+    else
     {
-      error(strerror(errno));
-      return false;
+      error("no packages on the iso");
+      source = "network";
     }
-    
-    error("using iso for package source");
   }
   else if(!fvbe)
   {
@@ -458,12 +468,14 @@ static bool format_prepare_source(void)
       return false;
     }
     
-    error("using cache for package source");
+    source = "cache";
   }
   else if(fvbe)
   {
-    error("using network for package source");
+    source = "network";
   }
+  
+  eprintf("%s: using %s for package source\n",__func__,source);
   
   return true;
 }
