@@ -63,7 +63,7 @@ else
 fi
 
 # Script for setting up the end-user customizations during boot-up.
-cat > $FVBE_ROOT/usr/sbin/fvbe-setup << EOF
+cat > $FVBE_ROOT/usr/libexec/fvbe-setup << EOF
 #!/bin/sh
 
 set -e
@@ -78,7 +78,7 @@ for i in \$(cat /proc/cmdline); do
   fi
 done
 EOF
-chmod +x $FVBE_ROOT/usr/sbin/fvbe-setup
+chmod +x $FVBE_ROOT/usr/libexec/fvbe-setup
 
 # Service for launching fvbe-setup.
 cat > $FVBE_ROOT/lib/systemd/system/fvbe.service << EOF
@@ -88,7 +88,7 @@ After=sysinit.target
 Before=default.target
 
 [Service]
-ExecStart=/usr/sbin/fvbe-setup
+ExecStart=/usr/libexec/fvbe-setup
 RemainAfterExit=yes
 
 [Install]
