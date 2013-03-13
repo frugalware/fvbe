@@ -135,6 +135,7 @@ tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique
 if [ "$FVBE_ROOTFS_CLEAN" = "yes" ]; then
   rm -rf $FVBE_ROOT/boot/*
   find $FVBE_ROOT -name '*.a' -delete
+  find $FVBE_ROOT -name '*.h' -delete
 fi
 
 # Unmount all paths mounted earlier.
