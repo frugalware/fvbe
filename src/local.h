@@ -154,11 +154,11 @@ static inline long maxv(long *v,size_t size)
   return i;
 }
 static inline const char *strng(const char *s) { return (s == 0) ? "" : s; }
-static inline bool areweinfwlive(void)
+static inline bool areweinfvbe(void)
 {
   const char *env = getenv("HOSTNAME");
   
-  return (env != 0 && strcmp(env,"fwlive") == 0);
+  return (env != 0 && strcmp(env,"fvbe") == 0);
 }
 static inline bool areweinx11(void)
 {

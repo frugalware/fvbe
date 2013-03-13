@@ -166,9 +166,9 @@ static bool layout_set_layout(void)
 {
   char command[_POSIX_ARG_MAX] = {0};
 
-  if(!areweinfwlive())
+  if(!areweinfvbe())
   {
-    error("we are not in fwlive, so skip setting the keyboard layout\n");
+    error("we are not in fvbe, so skip setting the keyboard layout\n");
     return true;
   }
 
