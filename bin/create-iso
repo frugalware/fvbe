@@ -46,7 +46,7 @@ cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 # Setup the pacman-g2 package cache.
 if [ -n "$FVBE_ISO_PACKAGES" ]; then
   mkdir -p $FVBE_ROOT/packages
-  for i in $(pacman-g2 -b $(pwd) -Sg $FVBE_ISO_PACKAGES); do
+  for i in $(pacman-g2 -b $(pwd) --config pacman-g2.conf -Sg $FVBE_ISO_PACKAGES); do
     echo $i >> tmp1
   done
   for i in $FVBE_ISO_PACKAGES; do
@@ -61,7 +61,7 @@ if [ -n "$FVBE_ISO_PACKAGES" ]; then
       fi
     done
   done << EOF
-$(pacman-g2 -b $(pwd) -Si $(cat tmp1) | sed -n -r -e '/^Depends On/{:loop;N;/\nRemoves/!b loop;s/\nRemoves.*$//;s/^Depends On[^:]+://;s/[><=]+\S+//g;p}')
+$(pacman-g2 -b $(pwd) --config pacman-g2.conf -Si $(cat tmp1) | sed -n -r -e '/^Depends On/{:loop;N;/\nRemoves/!b loop;s/\nRemoves.*$//;s/^Depends On[^:]+://;s/[><=]+\S+//g;p}')
 EOF
   cat tmp1 >> tmp2
   sort -u < tmp2 > tmp1
@@ -74,7 +74,7 @@ EOF
     cp /var/cache/pacman-g2/pkg/$FPM $FVBE_ROOT/packages/$FPM
     echo "$sum  $FVBE_ROOT/packages/$FPM" >> tmp2
   done << EOF
-$(pacman-g2 -b $(pwd) -Si $(cat tmp1) | sed -n -r '/^Name[^:]+:/{;s/Name[^:]+://;:ver;N;/\nVersion[^:]+:/!{s/\n.*//;b ver};s/\nVersion[^:]+//;:sum;N;/\nSHA1 Sum[^:]+/!{s/\n.*//;b sum};s/\nSHA1 Sum[^:]+//;s/\s+//g;p}')
+$(pacman-g2 -b $(pwd) --config pacman-g2.conf -Si $(cat tmp1) | sed -n -r '/^Name[^:]+:/{;s/Name[^:]+://;:ver;N;/\nVersion[^:]+:/!{s/\n.*//;b ver};s/\nVersion[^:]+//;:sum;N;/\nSHA1 Sum[^:]+/!{s/\n.*//;b sum};s/\nSHA1 Sum[^:]+//;s/\s+//g;p}')
 EOF
   sha1sum -c tmp2
   rm -f tmp1 tmp2
