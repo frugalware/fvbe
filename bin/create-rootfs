@@ -21,7 +21,7 @@ while read line; do
 	fi
 done < mounts
 [ -d "$FVBE_ROOT" ] && umount $FVBE_ROOT
-rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts
+rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2
 
 # Create the virtual disk and mount it.
 dd if=/dev/zero of=rootfs.img bs=$(( 128 * 1024 )) count=$(( ($FVBE_ROOTFS_SIZE * 1024 * 1024 * 1024) / (128 * 1024) ))
@@ -123,13 +123,12 @@ cat > $FVBE_ROOT/etc/machine-info << EOF
 PRETTY_HOSTNAME="$FVBE_ROOTFS_PRETTY_HOSTNAME"
 EOF
 
-# Copy kernel and initrd for later use.
+# Cache files or data from the ROOTFS that we'll use in the ISO.
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
-
-# Cache information from the rootfs for use in pre-boot.
 chroot $FVBE_ROOT sh -c "locale --all-locales | grep '\\.utf8$' | sort --unique" > locales
 tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
+cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
 
 # Prune unimportant paths.
 if [ "$FVBE_ROOTFS_CLEAN" = "yes" ]; then
@@ -162,4 +161,4 @@ mv rootfs.img $FVBE_ROOT/LiveOS/rootfs.img
 mksquashfs $FVBE_ROOT squashfs.img -noappend -no-progress -comp $FVBE_ROOTFS_COMPRESS
 
 # Clean up leftovers.
-rm -rf mounts $FVBE_ROOT pacman-g2.conf
+rm -rf mounts $FVBE_ROOT
