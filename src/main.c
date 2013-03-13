@@ -40,6 +40,8 @@ static void global_cleanup(void)
   
     free(g->fstabdata);
   }
+
+  free(g->groups);
   
   memset(g,0,sizeof(struct global));
 }

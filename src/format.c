@@ -19,6 +19,52 @@
 
 static struct format **targets = 0;
 
+static inline bool find_local_iso(char *path,size_t size)
+{
+  blkid_cache cache = 0;
+  blkid_dev_iterate iter = 0;
+  blkid_dev dev = 0;
+
+  *path = 0;
+
+  if(blkid_get_cache(&cache,"/dev/null") != 0)
+  {
+    error("failed to create blkid cache");
+    goto bail;
+  }
+  
+  if(blkid_probe_all(cache) != 0)
+  {
+    error("failed to probe blkid devices");
+    goto bail;
+  }
+  
+  if(blkid_probe_all_removable(cache) != 0)
+  {
+    error("failed to probe removable blkid devices");
+    goto bail;
+  }
+  
+  if((iter = blkid_dev_iterate_begin(cache)) == 0)
+  {
+    error("failed to create blkid dev iter");
+    goto bail;
+  }
+  
+  while(blkid_dev_next(iter,&dev) == 0)
+    if(blkid_dev_has_tag(dev,"TYPE","iso9660") && blkid_dev_has_tag(dev,"LABEL","FVBE"))
+      strfcpy(path,size,"%s",blkid_dev_devname(dev));
+  
+  blkid_dev_iterate_end(iter);
+  
+bail:
+
+  if(cache != 0)
+    blkid_put_cache(cache);
+  
+  return (*path != 0);
+}
+
 static inline void free_target(struct format *p)
 {
   free(p->devicepath);
@@ -331,7 +377,7 @@ static bool format_create_paths(void)
     "/dev",
     "/tmp",
     "/var/tmp",
-    "/var/cache/pacman-g2",
+    "/var/cache/pacman-g2/pkg",
     "/var/log",
     "/etc/X11/xorg.conf.d",
     0
@@ -369,6 +415,59 @@ static void format_prepare_fstab(void)
   } while(i > 0);
 }
 
+static bool format_prepare_source(void)
+{
+  bool fvbe = areweinfvbe();
+  char iso[PATH_MAX] = {0};
+  char groups[LINE_MAX] = {0};
+
+  if(fvbe && find_local_iso(iso,sizeof(iso)))
+  {
+    if(!mkdir_recurse("/mnt/iso"))
+      return false;
+    
+    if(mount(iso,"/mnt/iso","iso9660",MS_RDONLY,0) == -1)
+    {
+      error(strerror(errno));
+      return false;
+    }
+    
+    file2str("/mnt/iso/packages/groups",groups,sizeof(groups));
+
+    if(strlen(groups) == 0)
+    {
+      error("no groups file or empty group files");
+      return false;
+    }
+    
+    g->groups = strdup(groups);
+    
+    if(mount("/mnt/iso/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+    {
+      error(strerror(errno));
+      return false;
+    }
+    
+    error("using iso for package source");
+  }
+  else if(!fvbe)
+  {
+    if(mount("/var/cache/pacman-g2/pkg",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+    {
+      error(strerror(errno));
+      return false;
+    }
+    
+    error("using cache for package source");
+  }
+  else if(fvbe)
+  {
+    error("using network for package source");
+  }
+  
+  return true;
+}
+
 static bool format_run(void)
 {
   if(!format_setup())
@@ -393,6 +492,9 @@ static bool format_run(void)
 
   format_prepare_fstab();
 
+  if(!format_prepare_source())
+    return false;
+  
   return true;
 }
 
