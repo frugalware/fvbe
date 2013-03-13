@@ -118,6 +118,11 @@ cat > $FVBE_ROOT/etc/hostname << EOF
 $FVBE_ROOTFS_HOSTNAME
 EOF
 
+# System pretty hostname setup.
+cat > $FVBE_ROOT/etc/machine-info << EOF
+PRETTY_HOSTNAME="$FVBE_ROOTFS_PRETTY_HOSTNAME"
+EOF
+
 # Copy kernel and initrd for later use.
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
