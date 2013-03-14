@@ -422,6 +422,9 @@ static bool install_database_update(void)
     return false;
   }
 
+  if(g->groups != 0)
+    return true;
+
   if(pacman_db_update(1,dl_database) == -1)
   {
     error(pacman_strerror(pm_errno));
@@ -454,6 +457,31 @@ static bool install_groups_get(struct install **groups)
     errno = EINVAL;
     error(strerror(errno));
     return false;
+  }
+
+  if(g->groups != 0)
+  {
+    char *p = g->groups;
+    char *s = 0;
+  
+    matches = strpbrklen(g->groups," ") + 1;
+    
+    grps = malloc0(sizeof(struct install) * (matches + 1));
+    
+    for( ; (s = strtok(p," ")) != 0 ; p = 0, ++j )
+    {
+      grps[j].name = strdup(s);
+      
+      grps[j].checked = (strcmp(s,"base") == 0);
+    }
+    
+    grps[j].name = 0;
+    
+    grps[j].checked = false;
+    
+    *groups = grps;
+    
+    return true;
   }
 
   if((list = pacman_db_getgrpcache(dl_database)) == 0)
