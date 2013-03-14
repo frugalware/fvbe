@@ -1,7 +1,7 @@
-consider what to do about fwlive networking
-add better cleanup to fwlive generation commands
+fvbe:
+
+consider what to do about fvbe networking
 consider adding locale packages namely manpages and aspell
 figure out how best to integrate fwsetup
-update the frugalware release
-run the sysupgrade hook of frugalware package?
+update the frugalware release via the sysupgrade hook of frugalware package
 setup DM for whichever GUI mode we are using
