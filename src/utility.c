@@ -302,6 +302,12 @@ extern void umount_all(void)
     goto bail;
   }
 
+  if(umount2("/mnt/iso",MNT_DETACH|UMOUNT_NOFOLLOW) == -1 && errno != ENOENT)
+  {
+    error(strerror(errno));
+    goto bail;
+  }
+
 bail:
 
   if(file != 0)
