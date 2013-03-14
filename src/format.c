@@ -65,6 +65,18 @@ bail:
   return (*path != 0);
 }
 
+static inline bool copy_fdb(const char *fdb)
+{
+  char old[PATH_MAX] = {0};
+  char new[PATH_MAX] = {0};
+  
+  strfcpy(old,sizeof(old),"/mnt/iso/packages/%s.fdb",fdb);
+  
+  strfcpy(new,sizeof(new),INSTALL_ROOT "/var/lib/pacman-g2/%s.fdb",fdb);
+  
+  return copy(old,new);
+}
+
 static inline void free_target(struct format *p)
 {
   free(p->devicepath);
@@ -377,6 +389,7 @@ static bool format_create_paths(void)
     "/dev",
     "/tmp",
     "/var/tmp",
+    "/var/lib/pacman-g2",
     "/var/cache/pacman-g2/pkg",
     "/var/log",
     "/etc/X11/xorg.conf.d",
@@ -449,6 +462,12 @@ static bool format_prepare_source(void)
       if(mount("/mnt/iso/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
       {
         error(strerror(errno));
+        return false;
+      }
+      
+      if(!copy_fdb("frugalware") && !copy_fdb("frugalware-current"))
+      {
+        error("failed to find the fdb");
         return false;
       }
       
