@@ -581,7 +581,7 @@ static bool install_groups_get(struct install **groups)
     if(cache)
     {
       grps[j].name = strdup(s);
-      grps[j].checked = false;
+      grps[j].checked = (strcmp(s,"base") == 0);
       ++j;
     }
   }
