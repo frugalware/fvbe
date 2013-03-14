@@ -123,6 +123,9 @@ cat > $FVBE_ROOT/etc/machine-info << EOF
 PRETTY_HOSTNAME="$FVBE_ROOTFS_PRETTY_HOSTNAME"
 EOF
 
+# System issue setup.
+sed -i 's|Frugalware|Frugalware Versatile Bootable Environment|' $FVBE_ROOT/etc/issue{,.net}
+
 # Cache files or data from the ROOTFS that we'll use in the ISO.
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
