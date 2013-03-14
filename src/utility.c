@@ -17,6 +17,58 @@
 
 #include "local.h"
 
+extern bool copy(const char *old,const char *new)
+{
+  FILE *in = 0;
+  FILE *out = 0;
+  bool success = true;
+  size_t n = 0;
+  size_t size = 128 * KIBIBYTE;
+  unsigned char *buf = 0;
+  
+  if(old == 0 || new == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  if((in = fopen(old,"rb")) == 0 || (out = fopen(new,"wb")) == 0 || (buf = malloc0(size)) == 0)
+  {
+    error(strerror(errno));
+    success = false;
+    goto bail;
+  }
+
+  while(true)
+  {
+    if((n = fread(buf,1,size,in)) == 0)
+      break;
+    
+    if(fwrite(buf,1,n,out) != n)
+      break;
+  }
+
+  if(ferror(in) != 0 || ferror(out) != 0)
+  {
+    error(strerror(errno));
+    success = false;
+    goto bail;
+  }
+
+bail:
+
+  if(in != 0)
+    fclose(in);
+  
+  if(out != 0)
+    fclose(out);
+
+  free(buf);
+
+  return success;
+}
+
 extern bool isbusy(const char *path)
 {
   int fd = -1;
