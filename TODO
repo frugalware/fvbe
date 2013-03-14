@@ -5,3 +5,22 @@ consider adding locale packages namely manpages and aspell
 figure out how best to integrate fwsetup
 update the frugalware release via the sysupgrade hook of frugalware package
 setup DM for whichever GUI mode we are using
+
+fwsetup:
+
+implement network setup
+implement network install (mirror and connection)
+implement raid setup
+
+replace my method of retrieving disk unique identifier with libblkid's API, should be in v2.23.
+if libfdisk can replace our writing needs, then use that instead of running fdisk/gdisk.
+see if unicode handling of GPT partition names can be fixed
+test 4096 byte sector disk drive handling code in block.c
+implement lvm setup
+implement encrypted root setup
+implement extlinux bootloader support
+implement gui frontend
+try to make the installer able to launch the configuration tools individually to replace frugalwareutils
+disable tty blanking
+redo how format structs are allocated
+full UEFI support
