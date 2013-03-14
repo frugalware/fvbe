@@ -2,8 +2,6 @@ before 1.9:
 
 implement network setup
 implement network install (mirror and connection)
-implement method to control default groups selected
-implement local source install
 implement raid setup
 
 future improvements:
