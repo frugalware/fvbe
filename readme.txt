@@ -29,10 +29,19 @@ You need at least one valid device to act as your root partition.
 At least 2 RAID partitions are needed in order to create a RAID device.
 RAID devices can only be created from RAID partitions.
 The partitions used in a RAID device should be on different physical drives.
-Filesystems can only be created from RAID devices, swap partitions, or data partitions.
+Swap can only be created on swap partitions.
+Filesystems can only be created on RAID devices or data partitions.
+Filesystems can only be mounted at root directories.
+At least one filesystem must be mounted as '/'.
 --
 
-== Partitioner
+== Locale and Layout Modules
+
+These modules are used to set the language, region localization, and keyboard layout that
+will be used throughout the rest of the installer. It is also used by the installation
+once the installer is finished.
+
+== Partition Module
 
 Our partitioner provides a simple means of modifying partition tables.
 With it, you can:
@@ -58,3 +67,11 @@ parted
 When doing this, select `Next` from our partitioner UI without modifying
 any of the tables from the UI. Our partitioner will just skip to the next
 module, using your existing partition tables.
+
+== Format Module
+
+Our formatter is used to format the filesystems that will be used on your
+new installation. If you choose to setup swap, they will be activated before
+the installation commences. If you choose to use `noformat`, then the existing
+filesystem will be reused. This is only advised if you know what you are doing.
+
