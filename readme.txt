@@ -33,6 +33,8 @@ Swap can only be created on swap partitions.
 Filesystems can only be created on RAID devices or data partitions.
 Filesystems can only be mounted at root directories.
 At least one filesystem must be mounted as '/'.
+An active and reliable internet connection is required for network installations to work.
+At least the base package group will be installed.
 --
 
 == Locale and Layout Modules
@@ -75,3 +77,20 @@ new installation. If you choose to setup swap, they will be activated before
 the installation commences. If you choose to use `noformat`, then the existing
 filesystem will be reused. This is only advised if you know what you are doing.
 
+
+== Install Module
+
+If you are installing from FVBE, then your installation will be limited to
+whatever package groups were provided with the ISO you downloaded and no
+packages will be downloaded. If the ISO did not come with any packages then
+all major package groups are available for download.
+
+If you are installing from an existing installation, then the installer will
+use your existing package cache. It will download a new database, thus a
+network connection is required even if your cache is complete.
+
+
+== Postconfig Module
+
+This module will prompt you for various configuration details it requires from
+you. It should not require any further details here.
