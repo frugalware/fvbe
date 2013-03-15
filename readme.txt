@@ -31,3 +31,30 @@ RAID devices can only be created from RAID partitions.
 The partitions used in a RAID device should be on different physical drives.
 Filesystems can only be created from RAID devices, swap partitions, or data partitions.
 --
+
+== Partitioner
+
+Our partitioner provides a simple means of modifying partition tables.
+With it, you can:
+
+--
+Create DOS or GPT tables.
+Create partitions at the end of the table.
+Delete partitions from the end of the table.
+Change a partition's type or purpose.
+Change a partition's name (GPT Only).
+Change a partition's active status.
+--
+
+If you need something more advanced, then you should use one of these
+included partitioners before starting the installer:
+
+--
+gdisk
+fdisk
+parted
+--
+
+When doing this, select `Next` from our partitioner UI without modifying
+any of the tables from the UI. Our partitioner will just skip to the next
+module, using your existing partition tables.
