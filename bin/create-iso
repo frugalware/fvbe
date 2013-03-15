@@ -107,6 +107,10 @@ menuentry 'Frugalware Versatile Bootable Environment' {
   linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video
   initrd /boot/initrd
 }
+menuentry 'Frugalware Versatile Bootable Environment (RAM)' {
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video rd.live.ram=1
+  initrd /boot/initrd
+}
 $(do_video)
 $(do_locales)
 $(do_layouts)
