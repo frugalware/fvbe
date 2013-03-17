@@ -19,64 +19,6 @@
 
 static struct format **targets = 0;
 
-static inline bool find_local_iso(char *path,size_t size)
-{
-  blkid_cache cache = 0;
-  blkid_dev_iterate iter = 0;
-  blkid_dev dev = 0;
-
-  *path = 0;
-
-  if(blkid_get_cache(&cache,"/dev/null") != 0)
-  {
-    error("failed to create blkid cache");
-    goto bail;
-  }
-  
-  if(blkid_probe_all(cache) != 0)
-  {
-    error("failed to probe blkid devices");
-    goto bail;
-  }
-  
-  if(blkid_probe_all_removable(cache) != 0)
-  {
-    error("failed to probe removable blkid devices");
-    goto bail;
-  }
-  
-  if((iter = blkid_dev_iterate_begin(cache)) == 0)
-  {
-    error("failed to create blkid dev iter");
-    goto bail;
-  }
-  
-  while(blkid_dev_next(iter,&dev) == 0)
-    if(blkid_dev_has_tag(dev,"TYPE","iso9660") && blkid_dev_has_tag(dev,"LABEL","FVBE"))
-      strfcpy(path,size,"%s",blkid_dev_devname(dev));
-  
-  blkid_dev_iterate_end(iter);
-  
-bail:
-
-  if(cache != 0)
-    blkid_put_cache(cache);
-  
-  return (*path != 0);
-}
-
-static inline bool copy_fdb(const char *fdb)
-{
-  char old[PATH_MAX] = {0};
-  char new[PATH_MAX] = {0};
-  
-  strfcpy(old,sizeof(old),ISO_ROOT "/packages/%s.fdb",fdb);
-  
-  strfcpy(new,sizeof(new),INSTALL_ROOT "/var/lib/pacman-g2/%s.fdb",fdb);
-  
-  return copy(old,new);
-}
-
 static inline void free_target(struct format *p)
 {
   free(p->devicepath);
@@ -379,35 +321,6 @@ static bool format_process_devices(void)
   return true;
 }
 
-static bool format_create_paths(void)
-{
-  size_t i = 0;
-  static const char *paths[] =
-  {
-    "/sys",
-    "/proc",
-    "/dev",
-    "/tmp",
-    "/var/tmp",
-    "/var/lib/pacman-g2",
-    "/var/cache/pacman-g2/pkg",
-    "/var/log",
-    "/etc/X11/xorg.conf.d",
-    0
-  };  
-  char path[PATH_MAX] = {0};
-
-  for( ; paths[i] != 0 ; ++i )
-  {
-    strfcpy(path,sizeof(path),INSTALL_ROOT "%s",paths[i]);
-    
-    if(!mkdir_recurse(path))
-      return false;
-  }
-
-  return true;
-}
-
 static void format_prepare_fstab(void)
 {
   size_t i = 0;
@@ -428,77 +341,6 @@ static void format_prepare_fstab(void)
   } while(i > 0);
 }
 
-static bool format_prepare_source(void)
-{
-  bool fvbe = areweinfvbe();
-  char iso[PATH_MAX] = {0};
-  struct stat st = {0};
-  char groups[LINE_MAX] = {0};
-  const char *source = "unknown";
-
-  if(fvbe && find_local_iso(iso,sizeof(iso)))
-  {
-    if(!mkdir_recurse(ISO_ROOT))
-      return false;
-    
-    if(mount(iso,ISO_ROOT,"iso9660",MS_RDONLY,0) == -1)
-    {
-      error(strerror(errno));
-      return false;
-    }
-    
-    if(stat(ISO_ROOT "/packages",&st) == 0)
-    {
-      file2str(ISO_ROOT "/packages/groups",groups,sizeof(groups));
-
-      if(strlen(groups) == 0)
-      {
-        error("no groups file or empty group files");
-        return false;
-      }
-    
-      g->groups = strdup(groups);
-    
-      if(mount(ISO_ROOT "/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
-      {
-        error(strerror(errno));
-        return false;
-      }
-      
-      if(!copy_fdb("frugalware") && !copy_fdb("frugalware-current"))
-      {
-        error("failed to find the fdb");
-        return false;
-      }
-      
-      source = "iso";
-    }
-    else
-    {
-      error("no packages on the iso");
-      source = "network";
-    }
-  }
-  else if(!fvbe)
-  {
-    if(mount("/var/cache/pacman-g2/pkg",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
-    {
-      error(strerror(errno));
-      return false;
-    }
-    
-    source = "cache";
-  }
-  else if(fvbe)
-  {
-    source = "network";
-  }
-  
-  eprintf("%s: using %s for package source\n",__func__,source);
-  
-  return true;
-}
-
 static bool format_run(void)
 {
   if(!format_setup())
@@ -515,17 +357,8 @@ static bool format_run(void)
   if(!format_process_devices())
     return false;
 
-  if(!format_create_paths())
-    return false;
-
-  if(!mount_special())
-    return false;
-
   format_prepare_fstab();
 
-  if(!format_prepare_source())
-    return false;
-  
   return true;
 }
 

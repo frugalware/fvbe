@@ -97,6 +97,7 @@ struct module *modules[] =
   &partition_module,
   &raid_module,
   &format_module,
+  &preconfig_module,
   &install_module,
   &postconfig_module,
   &finale_module,

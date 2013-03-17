@@ -217,41 +217,6 @@ extern void strfcat(char *s,size_t n,const char *fmt,...)
   va_end(args);
 }
 
-extern bool mount_special(void)
-{
-  if(mount("none",INSTALL_ROOT "/dev","devtmpfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  if(mount("none",INSTALL_ROOT "/proc","proc",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  if(mount("none",INSTALL_ROOT "/sys","sysfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  if(mount("none",INSTALL_ROOT "/tmp","tmpfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-  
-  if(mount("none",INSTALL_ROOT "/var/tmp","tmpfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  return true;
-}
-
 extern void umount_all(void)
 {
   FILE *file = 0;
