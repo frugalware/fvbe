@@ -547,7 +547,7 @@ static bool grub_action(void)
   int percent = 0;
   char command[_POSIX_ARG_MAX] = {0};
   
-  strfcpy(path,sizeof(path),"/sys/block/%s",basename(rootdevice));
+  strfcpy(path,sizeof(path),"/sys/class/block/%s",basename(rootdevice));
   
   fetch_real_devices(path,devices,sizeof(devices));
 

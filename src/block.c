@@ -135,16 +135,6 @@ static inline bool israid(const struct stat *st)
   return (major(st->st_rdev) == MD_MAJOR);
 }
 
-static inline bool doglob(const char *pattern,int *flags,glob_t *ge)
-{
-  int rv = glob(pattern,*flags,0,ge);
-  
-  if(rv == 0)
-    *flags |= GLOB_APPEND;
-
-  return (rv == 0 || rv == GLOB_NOMATCH);
-}
-
 // TODO: replace this function with something better. only works on little endian cpus.
 static bool putdosuuid(struct disk *disk)
 {
@@ -275,51 +265,88 @@ static bool newpartition(struct disk *disk,long long size,struct partition *part
 
 extern struct device **device_probe_all(bool disk,bool raid)
 {
-  glob_t ge = {0};
-  int flags = 0;
-  struct device **devices = 0;
+  DIR *dir = 0;
+  regex_t disk_re = {0};
+  regex_t raid_re = {0};
   size_t i = 0;
-  size_t n = 0;
-  struct device *device = 0;
+  size_t size = 4096;
+  struct device **devices = 0;
+  struct dirent entry = {0};
+  struct dirent *p = 0;
+  char path[PATH_MAX] = {0};
 
-  if(disk == false)
+  if(disk == false && raid == false)
   {
     errno = EINVAL;
     error(strerror(errno));
     return 0;
   }
 
-  if(disk && !doglob("/dev/[hsv]d[a-z]",&flags,&ge))
+  if((dir = opendir("/sys/class/block")) == 0)
   {
-    globfree(&ge);
     error(strerror(errno));
-    return 0;
+    goto bail;
   }
 
-  if(raid && (!doglob("/dev/md[0-9]",&flags,&ge) || !doglob("/dev/md[0-9][0-9]",&flags,&ge) || !doglob("/dev/md[0-9][0-9][0-9]",&flags,&ge)))
+  if(regcomp(&disk_re,"^[hsv]d[a-z]$",REG_EXTENDED|REG_NOSUB) != 0)
   {
-    globfree(&ge);
-    error(strerror(errno));
-    return 0;
+    error("invalid regular expression");
+    goto bail;
   }
 
-  devices = malloc0(ge.gl_pathc * sizeof(struct device *));
-
-  for( ; i < ge.gl_pathc ; ++i )
+  if(regcomp(&raid_re,"^md[0-9]+$",REG_EXTENDED|REG_NOSUB) != 0)
   {
-    device = device_open(ge.gl_pathv[i]);
+    error("invalid regular expression");
+    goto bail;
+  }
 
-    if(device == 0)
+  devices = malloc0(sizeof(struct device *) * size);
+
+  while(readdir_r(dir,&entry,&p) == 0 && p != 0)
+  {
+    const char *name = p->d_name;
+    struct device *device = 0;
+    
+    if(
+      i == size - 1          ||
+      strcmp(name,".") == 0  ||
+      strcmp(name,"..") == 0
+    )
       continue;
-
-    devices[n++] = device;
+    
+    if(disk && regexec(&disk_re,name,0,0,0) == 0)
+      strfcpy(path,sizeof(path),"/dev/%s",name);
+    else if(raid && regexec(&raid_re,name,0,0,0) == 0)
+      strfcpy(path,sizeof(path),"/dev/%s",name);
+    else
+      continue;
+    
+    if((device = device_open(path)) == 0)
+      continue;
+    
+    devices[i++] = device;
   }
 
-  devices = realloc(devices,(n + 1) * sizeof(struct device *));
+  if(i == 0)
+  {
+    error("no devices found");
+    free(devices);
+    devices = 0;
+    goto bail;
+  }
 
-  devices[n] = 0;
+  devices[i] = 0;
 
-  globfree(&ge);
+  devices = realloc(devices,sizeof(struct device *) * (i+1));
+
+bail:
+
+  if(dir != 0)
+    closedir(dir);
+
+  regfree(&disk_re);
+  
+  regfree(&raid_re);
 
   return devices;
 }
