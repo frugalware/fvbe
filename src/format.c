@@ -70,7 +70,7 @@ static inline bool copy_fdb(const char *fdb)
   char old[PATH_MAX] = {0};
   char new[PATH_MAX] = {0};
   
-  strfcpy(old,sizeof(old),"/mnt/iso/packages/%s.fdb",fdb);
+  strfcpy(old,sizeof(old),ISO_ROOT "/packages/%s.fdb",fdb);
   
   strfcpy(new,sizeof(new),INSTALL_ROOT "/var/lib/pacman-g2/%s.fdb",fdb);
   
@@ -438,18 +438,18 @@ static bool format_prepare_source(void)
 
   if(fvbe && find_local_iso(iso,sizeof(iso)))
   {
-    if(!mkdir_recurse("/mnt/iso"))
+    if(!mkdir_recurse(ISO_ROOT))
       return false;
     
-    if(mount(iso,"/mnt/iso","iso9660",MS_RDONLY,0) == -1)
+    if(mount(iso,ISO_ROOT,"iso9660",MS_RDONLY,0) == -1)
     {
       error(strerror(errno));
       return false;
     }
     
-    if(stat("/mnt/iso/packages",&st) == 0)
+    if(stat(ISO_ROOT "/packages",&st) == 0)
     {
-      file2str("/mnt/iso/packages/groups",groups,sizeof(groups));
+      file2str(ISO_ROOT "/packages/groups",groups,sizeof(groups));
 
       if(strlen(groups) == 0)
       {
@@ -459,7 +459,7 @@ static bool format_prepare_source(void)
     
       g->groups = strdup(groups);
     
-      if(mount("/mnt/iso/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+      if(mount(ISO_ROOT "/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
       {
         error(strerror(errno));
         return false;
