@@ -67,6 +67,8 @@ struct global
 {
   unsigned int seed;
   FILE *logfile;
+  const char *hostroot;
+  const char *guestroot;
   char *kbdlayout;
   char *xkblayout;
   char *xkbmodel;

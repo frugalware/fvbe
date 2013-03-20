@@ -71,6 +71,10 @@ extern int main(int argc,char **argv)
 
   setbuf(g->logfile,0);
 
+  g->hostroot = "/";
+  
+  g->guestroot = INSTALL_ROOT;
+
   code = ui_main(argc,argv);
 
   umount_all();
