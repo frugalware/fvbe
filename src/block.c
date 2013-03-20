@@ -139,7 +139,7 @@ static inline bool israid(const struct stat *st)
 static bool putdosuuid(struct disk *disk)
 {
   int fd = -1;
-  unsigned int n = (disk->dosuuid == 0) ? (unsigned int) rand_r(&seed) : disk->dosuuid;
+  unsigned int n = (disk->dosuuid == 0) ? (unsigned int) rand_r(&g->seed) : disk->dosuuid;
   
   if(
     (fd = open(disk->device->path,O_WRONLY)) == -1 ||

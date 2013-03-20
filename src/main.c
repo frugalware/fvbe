@@ -17,11 +17,12 @@
 
 #include "local.h"
 
-FILE *logfile = 0;
-
 static void global_cleanup(void)
 {
   char **p = 0;
+
+  if(g->logfile)
+    fclose(g->logfile);
 
   free(g->kbdlayout);
   
@@ -57,30 +58,24 @@ extern int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
 
-  seed = time(0);
+  g->seed = time(0);
 
   remove(LOGFILE);
 
-  logfile = fopen(LOGFILE,"a");
-
-  if(logfile == 0)
+  if((g->logfile = fopen(LOGFILE,"a")) == 0)
   {
     perror("main");
 
     return EXIT_FAILURE;
   }
 
-  setbuf(logfile,0);
+  setbuf(g->logfile,0);
 
   code = ui_main(argc,argv);
 
   umount_all();
 
   global_cleanup();
-
-  fclose(logfile);
-
-  logfile = 0;
 
   return code;
 }
@@ -103,5 +98,3 @@ struct module *modules[] =
   &finale_module,
   0
 };
-
-unsigned int seed;

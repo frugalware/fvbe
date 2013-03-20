@@ -60,11 +60,13 @@
 #define MEBIBYTE (1LL << 20LL)
 #define GIBIBYTE (1LL << 30LL)
 #define TEBIBYTE (1LL << 40LL)
-#define error(S) fprintf(logfile,"%s: %s\n",__func__,S)
-#define eprintf(...) fprintf(logfile,__VA_ARGS__)
+#define error(S) fprintf(g->logfile,"%s: %s\n",__func__,S)
+#define eprintf(...) fprintf(g->logfile,__VA_ARGS__)
 
 struct global
 {
+  unsigned int seed;
+  FILE *logfile;
   char *kbdlayout;
   char *xkblayout;
   char *xkbmodel;
@@ -210,7 +212,6 @@ extern bool ui_window_host(char **hostname,char **prettyhostname);
 extern bool ui_window_root(struct account *data);
 extern bool ui_window_user(struct account *data);
 extern bool ui_window_time(char **data,char **zone,bool *utc);
-extern FILE *logfile;
 extern int main(int argc,char **argv);
 
 extern struct global *g;
@@ -225,4 +226,3 @@ extern struct module install_module;
 extern struct module postconfig_module;
 extern struct module finale_module;
 extern struct module *modules[];
-extern unsigned int seed;
