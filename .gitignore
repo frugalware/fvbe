@@ -1,2 +1,6 @@
 *~
 *.o
+build
+.project
+.cproject
+
