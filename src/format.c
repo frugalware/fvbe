@@ -299,7 +299,7 @@ static bool format_process_devices(void)
     }
     else
     {
-      strfcpy(path,sizeof(path),"%s%s",INSTALL_ROOT,target->mountpath);
+      strfcpy(path,sizeof(path),"%s%s",g->guestroot,target->mountpath);
 
       if(!mkdir_recurse(path))
       {

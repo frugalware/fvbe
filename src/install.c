@@ -275,7 +275,7 @@ static bool install_setup(void)
   const char *cachedir = 0;
   const char *hooksdir = 0;
 
-  if(pacman_initialize(INSTALL_ROOT) == -1)
+  if(pacman_initialize(g->guestroot) == -1)
   {
     error(pacman_strerror(pm_errno));
     return false;
@@ -395,17 +395,17 @@ static bool install_setup(void)
     return false;
   }
 
-  strfcpy(path,sizeof(path),"%s/%s",INSTALL_ROOT,dbdir);
+  strfcpy(path,sizeof(path),"%s/%s",g->guestroot,dbdir);
 
   if(!mkdir_recurse(path))
     return false;
 
-  strfcpy(path,sizeof(path),"%s/%s",INSTALL_ROOT,cachedir);
+  strfcpy(path,sizeof(path),"%s/%s",g->guestroot,cachedir);
 
   if(!mkdir_recurse(path))
     return false;
 
-  strfcpy(path,sizeof(path),"%s/%s",INSTALL_ROOT,hooksdir);
+  strfcpy(path,sizeof(path),"%s/%s",g->guestroot,hooksdir);
 
   if(!mkdir_recurse(path))
     return false;

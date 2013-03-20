@@ -68,9 +68,9 @@ static inline bool preconfig_copy_fdb(const char *fdb)
   char old[PATH_MAX] = {0};
   char new[PATH_MAX] = {0};
   
-  strfcpy(old,sizeof(old),ISO_ROOT "/packages/%s.fdb",fdb);
+  strfcpy(old,sizeof(old),"%s/packages/%s.fdb",ISO_ROOT,fdb);
   
-  strfcpy(new,sizeof(new),INSTALL_ROOT "/var/lib/pacman-g2/%s.fdb",fdb);
+  strfcpy(new,sizeof(new),"%s/var/lib/pacman-g2/%s.fdb",g->guestroot,fdb);
   
   return copy(old,new);
 }
@@ -95,7 +95,7 @@ static bool preconfig_create_paths(void)
 
   for( ; paths[i] != 0 ; ++i )
   {
-    strfcpy(path,sizeof(path),INSTALL_ROOT "%s",paths[i]);
+    strfcpy(path,sizeof(path),"%s%s",g->guestroot,paths[i]);
     
     if(!mkdir_recurse(path))
       return false;
@@ -106,31 +106,43 @@ static bool preconfig_create_paths(void)
 
 extern bool preconfig_mount_extra(void)
 {
-  if(mount("none",INSTALL_ROOT "/dev","devtmpfs",0,0) == -1)
+  char path[PATH_MAX] = {0};
+
+  strfcpy(path,sizeof(path),"%s/dev",g->guestroot);
+
+  if(mount("none",path,"devtmpfs",0,0) == -1)
   {
     error(strerror(errno));
     return false;
   }
 
-  if(mount("none",INSTALL_ROOT "/proc","proc",0,0) == -1)
+  strfcpy(path,sizeof(path),"%s/proc",g->guestroot);
+
+  if(mount("none",path,"proc",0,0) == -1)
   {
     error(strerror(errno));
     return false;
   }
 
-  if(mount("none",INSTALL_ROOT "/sys","sysfs",0,0) == -1)
+  strfcpy(path,sizeof(path),"%s/sys",g->guestroot);
+
+  if(mount("none",path,"sysfs",0,0) == -1)
   {
     error(strerror(errno));
     return false;
   }
 
-  if(mount("none",INSTALL_ROOT "/tmp","tmpfs",0,0) == -1)
+  strfcpy(path,sizeof(path),"%s/tmp",g->guestroot);
+
+  if(mount("none",path,"tmpfs",0,0) == -1)
   {
     error(strerror(errno));
     return false;
   }
+
+  strfcpy(path,sizeof(path),"%s/var/tmp",g->guestroot);
   
-  if(mount("none",INSTALL_ROOT "/var/tmp","tmpfs",0,0) == -1)
+  if(mount("none",path,"tmpfs",0,0) == -1)
   {
     error(strerror(errno));
     return false;
@@ -144,6 +156,7 @@ static bool preconfig_prepare_source(void)
 {
   bool fvbe = areweinfvbe();
   char iso[PATH_MAX] = {0};
+  char path[PATH_MAX] = {0};
   struct stat st = {0};
   char groups[LINE_MAX] = {0};
   const char *source = "unknown";
@@ -170,8 +183,10 @@ static bool preconfig_prepare_source(void)
       }
     
       g->groups = strdup(groups);
-    
-      if(mount(ISO_ROOT "/packages",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+      
+      strfcpy(path,sizeof(path),"%s/var/cache/pacman-g2/pkg",g->guestroot);
+     
+      if(mount(ISO_ROOT "/packages",path,"",MS_BIND,0) == -1)
       {
         error(strerror(errno));
         return false;
@@ -193,7 +208,9 @@ static bool preconfig_prepare_source(void)
   }
   else if(!fvbe)
   {
-    if(mount("/var/cache/pacman-g2/pkg",INSTALL_ROOT "/var/cache/pacman-g2/pkg","",MS_BIND,0) == -1)
+    strfcpy(path,sizeof(path),"%s/var/cache/pacman-g2/pkg",g->guestroot);
+  
+    if(mount("/var/cache/pacman-g2/pkg",path,"",MS_BIND,0) == -1)
     {
       error(strerror(errno));
       return false;

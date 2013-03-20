@@ -383,7 +383,7 @@ static bool root_action(struct account *account)
 
   strfcpy(command,sizeof(command),"echo '%s:%s' | chpasswd",account->user,account->password);
 
-  return execute(command,INSTALL_ROOT,0);
+  return execute(command,g->guestroot,0);
 }
 
 static bool user_action(struct account *account)
@@ -399,12 +399,12 @@ static bool user_action(struct account *account)
 
   strfcpy(command,sizeof(command),"useradd -m -c '%s' -g '%s' -G '%s' -d '%s' -s '%s' '%s'",strng(account->name),account->group,account->groups,account->home,account->shell,account->user);
 
-  if(!execute(command,INSTALL_ROOT,0))
+  if(!execute(command,g->guestroot,0))
     return false;
 
   strfcpy(command,sizeof(command),"echo '%s:%s' | chpasswd",account->user,account->password);
 
-  if(!execute(command,INSTALL_ROOT,0))
+  if(!execute(command,g->guestroot,0))
     return false;
 
   return true;
@@ -499,7 +499,7 @@ static bool time_action(char *zone,bool utc)
 
   strfcpy(buf,sizeof(buf),"hwclock --systohc %s",(utc) ? "--utc" : "--localtime");
 
-  if(!execute(buf,INSTALL_ROOT,0))
+  if(!execute(buf,g->guestroot,0))
     return false;
 
   return true;
@@ -570,7 +570,7 @@ static bool grub_action(void)
    
     ui_dialog_progress(_("Installing GRUB"),path,percent);
    
-    if(!execute(command,INSTALL_ROOT,0))
+    if(!execute(command,g->guestroot,0))
     {
       ui_dialog_progress(0,0,-1);
       return false;
@@ -579,7 +579,7 @@ static bool grub_action(void)
 
   ui_dialog_progress(_("Generating GRUB Config"),"",100);
 
-  if(!execute("grub-mkconfig -o /boot/grub/grub.cfg",INSTALL_ROOT,0))
+  if(!execute("grub-mkconfig -o /boot/grub/grub.cfg",g->guestroot,0))
   {
     ui_dialog_progress(0,0,-1);
     return false;
@@ -605,7 +605,7 @@ static bool postconfig_run(void)
   };
   char *mode = 0;
 
-  if(chdir(INSTALL_ROOT) == -1)
+  if(chdir(g->guestroot) == -1)
   {
     error(strerror(errno));
     return false;
