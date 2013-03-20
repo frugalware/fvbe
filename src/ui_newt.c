@@ -143,7 +143,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   label1 = newtLabel(0,textbox_height+1,FORMAT_MOUNT_ENTRY_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : "/",entry1_width,&path,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry1_width,&path,0);
 
   label2 = newtLabel(0,textbox_height+label1_height+2,FORMAT_PARAMETERS_ENTRY_TEXT);
 
@@ -1483,7 +1483,7 @@ extern bool ui_window_format(struct format **targets)
           continue;
         }
 
-        if(strcmp(target->mountpath,"/") == 0)
+        if(strcmp(target->mountpath,g->hostroot) == 0)
         {
           root = true;
           continue;

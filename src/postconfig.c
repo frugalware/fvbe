@@ -241,7 +241,7 @@ static bool write_fstab(void)
       return false;
     }
 
-    if(strcmp(path,"/") == 0)
+    if(strcmp(path,g->hostroot) == 0)
       rootdevice = device;
     
     fprintf(file,
@@ -489,7 +489,7 @@ static bool time_action(char *zone,bool utc)
     return false;
   }
 
-  strfcpy(buf,sizeof(buf),"/" TZDIR "/%s",zone);
+  strfcpy(buf,sizeof(buf),"%s" TZDIR "/%s",g->hostroot,zone);
 
   if(symlink(buf,TZFILE) == -1)
   {

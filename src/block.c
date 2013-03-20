@@ -207,7 +207,7 @@ static bool zapdisk(const char *path)
 
   strfcpy(command,sizeof(command),"sgdisk --zap-all '%s'",path);
 
-  return execute(command,"/",0);
+  return execute(command,g->hostroot,0);
 }
 
 static inline long long alignsector(const struct device *device,long long sector)
@@ -1222,7 +1222,7 @@ extern bool disk_flush(struct disk *disk)
   if(!zapdisk(disk->device->path))
     return false;
 
-  if(!execute(command,"/",0))
+  if(!execute(command,g->hostroot,0))
     return false;
 
   if(disk->type == DISKTYPE_DOS && !putdosuuid(disk))

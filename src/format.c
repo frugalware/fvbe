@@ -206,7 +206,7 @@ static bool format_sort_devices(void)
   {
     struct format *target = *p;
 
-    if(strcmp(target->newfilesystem,"swap") != 0 && strcmp(target->mountpath,"/") == 0)
+    if(strcmp(target->newfilesystem,"swap") != 0 && strcmp(target->mountpath,g->hostroot) == 0)
       break;
   }
 
@@ -280,7 +280,7 @@ static bool format_process_devices(void)
 
       strfcpy(command,sizeof(command),"%s %s %s",program,target->options,target->devicepath);
 
-      if(!execute(command,"/",0))
+      if(!execute(command,g->hostroot,0))
       {
         ui_dialog_progress(0,0,-1);
         return false;
@@ -291,7 +291,7 @@ static bool format_process_devices(void)
     {
       strfcpy(command,sizeof(command),"swapon %s",target->devicepath);
 
-      if(!execute(command,"/",0))
+      if(!execute(command,g->hostroot,0))
       {
         ui_dialog_progress(0,0,-1);
         return false;

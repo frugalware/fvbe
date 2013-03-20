@@ -189,7 +189,7 @@ static bool layout_set_layout(void)
     return true;
   }
 
-  return execute(command,"/",0);
+  return execute(command,g->hostroot,0);
 }
 
 static bool layout_run(void)

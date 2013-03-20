@@ -527,7 +527,7 @@ extern bool execute(const char *command,const char *root,pid_t *cpid)
     if(chroot(root) == -1)
       _exit(210);
 
-    if(chdir("/") == -1)
+    if(chdir(g->hostroot) == -1)
       _exit(220);
 
     execl("/bin/sh","/bin/sh","-c",command,(void *) 0);
