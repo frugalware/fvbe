@@ -215,6 +215,23 @@ static bool update_via_old(const struct layout *layout)
 
 static bool update_via_new(const struct layout *layout)
 {
+  char command[_POSIX_ARG_MAX] = {0};
+
+  strfcpy(command,sizeof(command),"localectl --no-convert set-keymap '%s'",layout->kbdlayout);
+
+  if(!execute(command,g->guestroot,0))
+    return false;
+
+  strfcpy(command,sizeof(command),"localectl --no-convert set-x11-keymap '%s' %s' '%s' '%s'",
+    strng(layout->xkblayout),
+    strng(layout->xkbmodel),
+    strng(layout->xkbvariant),
+    strng(layout->xkboptions)
+  );
+
+  if(!execute(command,g->guestroot,0))
+    return false;
+
   return true;
 }
 
