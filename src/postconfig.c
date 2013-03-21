@@ -247,65 +247,9 @@ static bool write_fstab(void)
   return true;
 }
 
-static bool is_root_setup(void)
-{
-  FILE *file = 0;
-  char line[LINE_MAX] = {0};
-  char *tmp = 0;
-  char *user = 0;
-  char *pwd = 0;
-  bool result = false;
-
-  file = fopen("etc/shadow","rb");
-
-  if(file == 0)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  while(fgets(line,LINE_MAX,file) != 0)
-  {
-    tmp = line;
-
-    if((user = strsep(&tmp,":\n")) == 0)
-      continue;
-
-    if((pwd = strsep(&tmp,":\n")) == 0)
-      continue;
-
-    if(strcmp(user,"root") == 0)
-    {
-      result = (strlen(pwd) > 1);
-      break;
-    }
-  }
-
-  fclose(file);
-
-  return result;
-}
-
-static bool root_action(struct account *account)
-{
-  char command[_POSIX_ARG_MAX] = {0};
-
-  if(account == 0 || account->user == 0 || account->password == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(command,sizeof(command),"echo '%s:%s' | chpasswd",account->user,account->password);
-
-  return execute(command,g->guestroot,0);
-}
 
 static bool postconfig_run(void)
 {
-  struct account account = {0};
-
   if(chdir(g->guestroot) == -1)
   {
     error(strerror(errno));
@@ -323,14 +267,6 @@ static bool postconfig_run(void)
 
   if(!write_fstab())
     return false;
-
-  if(!is_root_setup() && (!ui_window_root(&account) || !root_action(&account)))
-  {
-    account_free(&account);
-    return false;
-  }
-
-  account_free(&account);
 
   return true;
 }
