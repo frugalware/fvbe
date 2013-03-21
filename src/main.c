@@ -118,3 +118,8 @@ struct module *modules[] =
   &finale_module,
   0
 };
+
+struct module *utilities[] =
+{
+  0
+};

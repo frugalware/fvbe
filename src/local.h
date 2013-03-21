@@ -229,3 +229,4 @@ extern struct module install_module;
 extern struct module postconfig_module;
 extern struct module finale_module;
 extern struct module *modules[];
+extern struct module *utilities[];
