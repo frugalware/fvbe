@@ -286,50 +286,6 @@ static bool is_root_setup(void)
   return result;
 }
 
-static bool is_user_setup(void)
-{
-  FILE *file = 0;
-  char line[LINE_MAX] = {0};
-  char *tmp = 0;
-  char *gid = 0;
-  bool result = false;
-
-  file = fopen("etc/passwd","rb");
-
-  if(file == 0)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  while(fgets(line,LINE_MAX,file) != 0)
-  {
-    tmp = line;
-
-    if(strsep(&tmp,":\n") == 0)
-      continue;
-
-    if(strsep(&tmp,":\n") == 0)
-      continue;
-
-    if(strsep(&tmp,":\n") == 0)
-      continue;
-
-    if((gid = strsep(&tmp,":\n")) == 0)
-      continue;
-
-    if(strcmp(gid,"100") == 0)
-    {
-      result = true;
-      break;
-    }
-  }
-
-  fclose(file);
-
-  return result;
-}
-
 static bool root_action(struct account *account)
 {
   char command[_POSIX_ARG_MAX] = {0};
@@ -344,52 +300,6 @@ static bool root_action(struct account *account)
   strfcpy(command,sizeof(command),"echo '%s:%s' | chpasswd",account->user,account->password);
 
   return execute(command,g->guestroot,0);
-}
-
-static bool user_action(struct account *account)
-{
-  char command[_POSIX_ARG_MAX] = {0};
-
-  if(account == 0 || account->user == 0 || account->password == 0 || account->group == 0 || account->groups == 0 || account->home == 0 || account->shell == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(command,sizeof(command),"useradd -m -c '%s' -g '%s' -G '%s' -d '%s' -s '%s' '%s'",strng(account->name),account->group,account->groups,account->home,account->shell,account->user);
-
-  if(!execute(command,g->guestroot,0))
-    return false;
-
-  strfcpy(command,sizeof(command),"echo '%s:%s' | chpasswd",account->user,account->password);
-
-  if(!execute(command,g->guestroot,0))
-    return false;
-
-  return true;
-}
-
-static void account_free(struct account *account)
-{
-  if(account == 0)
-    return;
-
-  free(account->name);
-
-  free(account->user);
-
-  free(account->password);
-
-  free(account->group);
-
-  free(account->groups);
-
-  free(account->home);
-
-  free(account->shell);
-
-  memset(account,0,sizeof(struct account));
 }
 
 static bool postconfig_run(void)
@@ -415,14 +325,6 @@ static bool postconfig_run(void)
     return false;
 
   if(!is_root_setup() && (!ui_window_root(&account) || !root_action(&account)))
-  {
-    account_free(&account);
-    return false;
-  }
-
-  account_free(&account);
-
-  if(!is_user_setup() && (!ui_window_user(&account) || !user_action(&account)))
   {
     account_free(&account);
     return false;

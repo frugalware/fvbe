@@ -17,6 +17,28 @@
 
 #include "local.h"
 
+extern void account_free(struct account *account)
+{
+  if(account == 0)
+    return;
+
+  free(account->name);
+
+  free(account->user);
+
+  free(account->password);
+
+  free(account->group);
+
+  free(account->groups);
+
+  free(account->home);
+
+  free(account->shell);
+
+  free(account);
+}
+
 extern bool copy(const char *old,const char *new)
 {
   FILE *in = 0;

@@ -124,6 +124,7 @@ struct tool
   const char *name;
 };
 
+extern void account_free(struct account *account);
 extern bool copy(const char *old,const char *new);
 extern bool isbusy(const char *path);
 extern void fetch_root_device(char *s,size_t n);
@@ -236,6 +237,7 @@ extern struct module install_module;
 extern struct module postconfig_module;
 extern struct module finale_module;
 extern struct module *modules[];
+extern struct tool userconfig_tool;
 extern struct tool hostconfig_tool;
 extern struct tool modeconfig_tool;
 extern struct tool timeconfig_tool;
