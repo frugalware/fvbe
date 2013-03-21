@@ -63,61 +63,6 @@ bail:
   return (char *) uuid;
 }
 
-static bool write_locale_conf(void)
-{
-  const char *var = "LANG";
-  const char *locale = 0;
-  FILE *file = 0;
-  size_t i = 0;
-  static const char *vars[] =
-  {
-    "LC_CTYPE",
-    "LC_NUMERIC",
-    "LC_TIME",
-    "LC_COLLATE",
-    "LC_MONETARY",
-    "LC_MESSAGES",
-    "LC_PAPER",
-    "LC_NAME",
-    "LC_ADDRESS",
-    "LC_TELEPHONE",
-    "LC_MEASUREMENT",
-    "LC_IDENTIFICATION",
-    0
-  };
-  
-  if((locale = getenv(var)) == 0 || strlen(locale) == 0)
-  {
-    eprintf("%s is not defined.\n",var);
-    return false;
-  }
-  
-  if((file = fopen("etc/locale.conf","wb")) == 0)
-  {
-    error(strerror(errno));
-    return false;
-  }
-  
-  fprintf(file,
-    "LANG=%s\n",
-    locale
-  );
-
-  for( ; vars[i] != 0 ; ++i )
-  {
-    var = vars[i];
-    
-    if((locale = getenv(var)) == 0 || strlen(locale) == 0)
-      continue;
-    
-    fprintf(file,"%s=%s\n",var,locale);
-  }
-
-  fclose(file);
-
-  return true;
-}
-
 static bool write_fstab(void)
 {
   FILE *file = 0;
@@ -182,10 +127,7 @@ static bool postconfig_run(void)
     error(strerror(errno));
     return false;
   }
-
-  if(!write_locale_conf())
-    return false;
-
+  
   if(!write_fstab())
     return false;
 

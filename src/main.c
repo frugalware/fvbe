@@ -124,6 +124,7 @@ struct module *modules[] =
 
 struct tool *tools[] =
 {
+  &langconfig_tool,
   &kbconfig_tool,
   &rootconfig_tool,
   &userconfig_tool,

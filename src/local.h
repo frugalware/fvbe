@@ -232,6 +232,7 @@ extern struct module install_module;
 extern struct module postconfig_module;
 extern struct module finale_module;
 extern struct module *modules[];
+extern struct tool langconfig_tool;
 extern struct tool kbconfig_tool;
 extern struct tool rootconfig_tool;
 extern struct tool userconfig_tool;
