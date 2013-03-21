@@ -122,6 +122,32 @@ static bool update_via_old(void)
 
 static bool update_via_new(void)
 {
+  const char *var = vars[0];
+  const char *locale = 0;
+  char command[_POSIX_ARG_MAX] = {0};
+  size_t i = 1;
+
+  if((locale = getenv(var)) == 0 || strlen(locale) == 0)
+  {
+    eprintf("%s is not defined.\n",var);
+    return false;
+  }
+
+  strfcpy(command,sizeof(command),"localectl set-locale '%s=%s'",var,locale);
+
+  for( ; vars[i] != 0 ; ++i )
+  {
+    var = vars[i];
+    
+    if((locale = getenv(var)) == 0 || strlen(locale) == 0)
+      continue;
+    
+    strfcat(command,sizeof(command)," '%s=%s'",var,locale);
+  }
+
+  if(!execute(command,g->guestroot,0))
+    return false;
+
   return true;
 }
 
