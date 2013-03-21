@@ -132,7 +132,7 @@ struct module *modules[] =
   0
 };
 
-struct module *utilities[] =
+struct tool *tools[] =
 {
   0
 };

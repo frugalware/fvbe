@@ -117,6 +117,13 @@ struct module
   const char *name;
 };
 
+struct tool
+{
+  bool (*start) (void);
+  bool (*finish) (void);
+  const char *name;
+};
+
 extern bool copy(const char *old,const char *new);
 extern bool isbusy(const char *path);
 extern void fetch_real_devices(const char *base,char *s,size_t n);
@@ -228,4 +235,4 @@ extern struct module install_module;
 extern struct module postconfig_module;
 extern struct module finale_module;
 extern struct module *modules[];
-extern struct module *utilities[];
+extern struct tool *tools[];
