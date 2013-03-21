@@ -87,9 +87,22 @@ extern int main(int argc,char **argv)
 
   setbuf(g->logfile,0);
 
-  g->hostroot = "/";
+  if(strcmp(g->logpath,"/var/log/fwsetup.log") == 0)
+  {
+    g->insetup = true;
   
-  g->guestroot = INSTALL_ROOT;
+    g->hostroot = "/";
+  
+    g->guestroot = "/mnt/install";
+  }
+  else
+  {
+    g->insetup = false;
+  
+    g->hostroot = "/";
+  
+    g->guestroot = "/";
+  }
 
   code = ui_main(argc,argv);
 
