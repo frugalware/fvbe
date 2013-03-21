@@ -62,7 +62,6 @@ static bool update_via_new(const char *hostname,const char *prettyhostname)
     return false;
   
   return true;  
-
 }
 
 static bool hostconfig_action(const char *hostname,const char *prettyhostname)
