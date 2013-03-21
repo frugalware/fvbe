@@ -253,7 +253,10 @@ static bool kbconfig_start(void)
   if(!ui_window_list(LAYOUT_TITLE,LAYOUT_TEXT,entries,&entry))
     return false;
 
-  if((layout = *(struct layout **) bsearch(entry,layouts,count,sizeof(struct layout *),bsearch_compare)) == 0)
+  if(
+    (layout = bsearch(entry,layouts,count,sizeof(struct layout *),bsearch_compare)) == 0 ||
+    (layout = *(struct layout **) layout) == 0
+  )
   {
     error("no matching layout");
     return false;
