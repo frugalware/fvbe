@@ -688,7 +688,7 @@ extern int ui_main(int argc,char **argv)
     {
       eprintf("A fatal error has been reported by module '%s'.\n",module->name);
       module->reset();
-      strfcpy(text,sizeof(text),_("A fatal error has been reported by module '%s'.\nPlease read the logfile at '%s'.\nThank you.\n"),module->name,LOGFILE);
+      strfcpy(text,sizeof(text),_("A fatal error has been reported by module '%s'.\nPlease read the logfile at '%s'.\nThank you.\n"),module->name,g->logpath);
       ui_dialog_text(_("Module Fatal Error"),text);
       break;
     }

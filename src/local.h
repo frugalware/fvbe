@@ -66,6 +66,7 @@
 struct global
 {
   unsigned int seed;
+  char *logpath;
   FILE *logfile;
   const char *hostroot;
   const char *guestroot;

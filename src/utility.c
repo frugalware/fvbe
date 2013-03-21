@@ -513,7 +513,7 @@ extern bool execute(const char *command,const char *root,pid_t *cpid)
 
   if(pid == 0)
   {
-    int fd = open(LOGFILE,O_WRONLY|O_APPEND|O_CREAT,0644);
+    int fd = open(g->logpath,O_WRONLY|O_APPEND|O_CREAT,0644);
 
     if(fd == -1)
       _exit(200);

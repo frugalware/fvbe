@@ -21,6 +21,8 @@ static void global_cleanup(void)
 {
   char **p = 0;
 
+  free(g->logpath);
+
   if(g->logfile)
     fclose(g->logfile);
 
@@ -47,11 +49,23 @@ static void global_cleanup(void)
   memset(g,0,sizeof(struct global));
 }
 
+static void setup_logpath(const char *s)
+{
+  char buf[_POSIX_ARG_MAX] = {0};
+  char path[PATH_MAX] = {0};
+  
+  strfcpy(buf,sizeof(buf),"%s",s);
+  
+  strfcpy(path,sizeof(path),"/var/log/%s.log",basename(buf));
+  
+  g->logpath = strdup(path);
+}
+
 extern int main(int argc,char **argv)
 {
   int code = 0;
 
-  if(geteuid() != 0)
+  if(getuid() != 0)
   {
     printf("You must run this as root.\n");
 
@@ -60,9 +74,11 @@ extern int main(int argc,char **argv)
 
   g->seed = time(0);
 
-  remove(LOGFILE);
+  setup_logpath(*argv);
 
-  if((g->logfile = fopen(LOGFILE,"a")) == 0)
+  remove(g->logpath);
+
+  if((g->logfile = fopen(g->logpath,"a")) == 0)
   {
     perror("main");
 
