@@ -24,3 +24,4 @@ try to make the installer able to launch the configuration tools individually to
 disable tty blanking
 redo how format structs are allocated
 full UEFI support
+consider using loadkeys and setxkbmap to set the mapping immediately
