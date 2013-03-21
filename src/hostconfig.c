@@ -84,7 +84,7 @@ static bool hostconfig_finish(void)
 {
   bool success = true;
   
-  if(hostname && prettyhostname)
+  if(hostname != 0 && prettyhostname != 0)
     success = hostconfig_action(hostname,prettyhostname);
 
   free(hostname);
