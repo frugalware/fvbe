@@ -620,7 +620,6 @@ extern int ui_main(int argc,char **argv)
 {
   int w = 0;
   int h = 0;
-  struct module *module = 0;
   size_t n = 0;
   char text[TEXT_MAX] = {0};
   int code = EXIT_FAILURE;
@@ -668,6 +667,8 @@ extern int ui_main(int argc,char **argv)
 
   if(g->insetup)
   {
+    struct module *module = 0;
+  
     while(true)
     {
       module = modules[n];
@@ -684,9 +685,7 @@ extern int ui_main(int argc,char **argv)
 
       eprintf("About to run module '%s'.\n",module->name);
 
-      bool success = module->run();
-
-      if(!success)
+      if(!module->run())
       {
         eprintf("A fatal error has been reported by module '%s'.\n",module->name);
         module->reset();
