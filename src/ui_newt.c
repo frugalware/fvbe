@@ -728,6 +728,7 @@ extern int ui_main(int argc,char **argv)
       tool->name == 0
     )
     {
+      errno = EINVAL;
       error(strerror(errno));
     }
     else
