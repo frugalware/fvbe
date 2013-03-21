@@ -39,20 +39,9 @@ static void global_cleanup(void)
   memset(g,0,sizeof(struct global));
 }
 
-static void setup_logpath(const char *s)
-{
-  char buf[_POSIX_ARG_MAX] = {0};
-  char path[PATH_MAX] = {0};
-  
-  strfcpy(buf,sizeof(buf),"%s",s);
-  
-  strfcpy(path,sizeof(path),"/var/log/%s.log",basename(buf));
-  
-  g->logpath = strdup(path);
-}
-
 extern int main(int argc,char **argv)
 {
+  char path[PATH_MAX] = {0};
   int code = 0;
 
   if(getuid() != 0)
@@ -64,7 +53,16 @@ extern int main(int argc,char **argv)
 
   g->seed = time(0);
 
-  setup_logpath(*argv);
+  g->name = strrchr(*argv,'/');
+  
+  if(g->name == 0)
+    g->name = *argv;
+  else
+    ++g->name;
+
+  strfcpy(path,sizeof(path),"/var/log/%s.log",g->name);
+
+  g->logpath = strdup(path);
 
   remove(g->logpath);
 
@@ -77,7 +75,7 @@ extern int main(int argc,char **argv)
 
   setbuf(g->logfile,0);
 
-  if(strcmp(g->logpath,"/var/log/fwsetup.log") == 0)
+  if(strcmp(g->name,"fwsetup") == 0)
   {
     g->insetup = true;
   

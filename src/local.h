@@ -64,6 +64,7 @@
 struct global
 {
   unsigned int seed;
+  const char *name;
   char *logpath;
   FILE *logfile;
   bool insetup;
