@@ -213,7 +213,7 @@ static bool langconfig_start(void)
     }    
   }
 
-  if(setlocale(LC_ALL,"") == 0)
+  if(g->insetup && setlocale(LC_ALL,"") == 0)
   {
     error(strerror(errno));
     return false;
