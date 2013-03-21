@@ -68,12 +68,19 @@ extern int main(int argc,char **argv)
 
   if((g->logfile = fopen(g->logpath,"a")) == 0)
   {
-    perror("main");
+    perror(__func__);
 
     return EXIT_FAILURE;
   }
 
   setbuf(g->logfile,0);
+
+  if(chmod(g->logpath,0600) == -1)
+  {
+    perror(__func__);
+    
+    return EXIT_FAILURE;
+  }
 
   if(strcmp(g->name,"fwsetup") == 0)
   {

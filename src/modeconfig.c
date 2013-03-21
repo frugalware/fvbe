@@ -68,7 +68,7 @@ static bool modeconfig_finish(void)
 {
   bool success = true;
 
-  if(mode)
+  if(mode != 0)
   {
     success = modeconfig_action(mode);
   
