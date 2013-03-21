@@ -19,7 +19,7 @@
 
 static struct account *account = 0;
 
-static bool rootsetup_action(const struct account *account)
+static bool rootconfig_action(const struct account *account)
 {
   char command[_POSIX_ARG_MAX] = {0};
 
@@ -35,7 +35,7 @@ static bool rootsetup_action(const struct account *account)
   return execute(command,g->guestroot,0);
 }
 
-static bool rootsetup_start(void)
+static bool rootconfig_start(void)
 {
   account = malloc0(sizeof(struct account));
 
@@ -45,13 +45,13 @@ static bool rootsetup_start(void)
   return true;
 }
 
-static bool rootsetup_finish(void)
+static bool rootconfig_finish(void)
 {
   bool success = true;
   
   if(account != 0)
   {
-    success = rootsetup_action(account);
+    success = rootconfig_action(account);
     account_free(account);
     account = 0;
   }
@@ -59,9 +59,9 @@ static bool rootsetup_finish(void)
   return success;
 }
 
-struct tool rootsetup_tool =
+struct tool rootconfig_tool =
 {
-  rootsetup_start,
-  rootsetup_finish,
+  rootconfig_start,
+  rootconfig_finish,
   __FILE__
 };
