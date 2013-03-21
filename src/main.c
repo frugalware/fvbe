@@ -26,16 +26,6 @@ static void global_cleanup(void)
   if(g->logfile)
     fclose(g->logfile);
 
-  free(g->kbdlayout);
-  
-  free(g->xkblayout);
-  
-  free(g->xkbmodel);
-  
-  free(g->xkbvariant);
-  
-  free(g->xkboptions);
-  
   if(g->fstabdata != 0)
   {
     for( p = g->fstabdata ; *p != 0 ; ++p )
@@ -134,6 +124,7 @@ struct module *modules[] =
 
 struct tool *tools[] =
 {
+  &kbconfig_tool,
   &rootconfig_tool,
   &userconfig_tool,
   &hostconfig_tool,
