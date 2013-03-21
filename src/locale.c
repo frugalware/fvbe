@@ -19,7 +19,7 @@
 
 static bool locale_run(void)
 {
-  return true;
+  return langconfig_tool.start();
 }
 
 static void locale_reset(void)

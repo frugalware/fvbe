@@ -131,6 +131,23 @@ static bool postconfig_run(void)
   if(!write_fstab())
     return false;
 
+  if(!langconfig_tool.finish() || !kbconfig_tool.finish())
+    return false;
+
+  for( size_t i = 2 ; tools[i] != 0 ; ++i )
+  {
+    struct tool *tool = tools[i];
+    
+    if(!tool->start())
+    {
+      tool->finish();
+      return false;
+    }
+    
+    if(!tool->finish())
+      return false;
+  }
+
   return true;
 }
 

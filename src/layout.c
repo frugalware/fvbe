@@ -19,7 +19,7 @@
 
 static bool layout_run(void)
 {
-  return true;
+  return kbconfig_tool.start();
 }
 
 static void layout_reset(void)
