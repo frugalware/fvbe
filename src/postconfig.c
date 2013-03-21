@@ -419,50 +419,11 @@ static void account_free(struct account *account)
   memset(account,0,sizeof(struct account));
 }
 
-
-static bool mode_action(const char *mode)
-{
-  const char *old = 0;
-  const char *new = "etc/systemd/system/default.target";
-
-  if(strcmp(mode,"Text Console") == 0)
-    old = "/lib/systemd/system/multi-user.target";
-  else if(strcmp(mode,"Display Manager") == 0)
-    old = "/lib/systemd/system/graphical.target";
-  else
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  if(unlink(new) == -1 && errno != ENOENT)
-  {
-    error(strerror(errno));
-    return false;
-  }
-  
-  if(symlink(old,new) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-  
-  return true;
-}
-
 static bool postconfig_run(void)
 {
   char *hostname = 0;
   char *prettyhostname = 0;
   struct account account = {0};
-  static char *modes[] =
-  {
-    "Text Console",
-    "Display Manager",
-    0
-  };
-  char *mode = 0;
 
   if(chdir(g->guestroot) == -1)
   {
@@ -508,9 +469,6 @@ static bool postconfig_run(void)
   }
 
   account_free(&account);
-
-  if(!ui_window_list(MODE_TITLE,MODE_TEXT,modes,&mode) || !mode_action(mode))
-    return false;
 
   return true;
 }
