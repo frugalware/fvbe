@@ -80,7 +80,7 @@ static bool update_via_old(const char *zone,bool utc)
     return false;
   }
 
-  strfcpy(buf,sizeof(buf),"%susr/share/zoneinfo/%s",g->hostroot,zone);
+  strfcpy(buf,sizeof(buf),"/usr/share/zoneinfo/%s",zone);
 
   if(symlink(buf,"etc/localtime") == -1)
   {
@@ -136,7 +136,7 @@ static bool timeconfig_finish(void)
 {
   bool success = true;
 
-  if(zone)
+  if(zone != 0)
     success = timeconfig_action(zone,utc);
 
   if(zones != 0)
