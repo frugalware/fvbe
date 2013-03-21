@@ -134,6 +134,7 @@ struct module *modules[] =
 
 struct tool *tools[] =
 {
+  &hostconfig_tool,
   &modeconfig_tool,
   &timeconfig_tool,
   &grubconfig_tool,

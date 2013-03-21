@@ -236,6 +236,7 @@ extern struct module install_module;
 extern struct module postconfig_module;
 extern struct module finale_module;
 extern struct module *modules[];
+extern struct tool hostconfig_tool;
 extern struct tool modeconfig_tool;
 extern struct tool timeconfig_tool;
 extern struct tool grubconfig_tool;
