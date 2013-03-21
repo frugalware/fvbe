@@ -536,60 +536,6 @@ static bool mode_action(const char *mode)
   return true;
 }
 
-static bool grub_action(void)
-{
-  char path[PATH_MAX] = {0};
-  char devices[PATH_MAX] = {0};
-  char *s = 0;
-  char *p = 0;
-  size_t i = 0;
-  size_t count = 0;
-  int percent = 0;
-  char command[_POSIX_ARG_MAX] = {0};
-  
-  strfcpy(path,sizeof(path),"/sys/class/block/%s",basename(rootdevice));
-  
-  fetch_real_devices(path,devices,sizeof(devices));
-
-  if(strlen(devices) == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  count = strpbrklen(devices,":") + 1;
-
-  for( p = devices ; (s = strtok(p,":")) != 0 ; p = 0, ++i )
-  {
-    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%.8s'",s);
-   
-    percent = (float) (i+1) / count * 100;
-   
-    strfcpy(path,sizeof(path),"(%zu/%zu) - %.8s",i+1,count,s);
-   
-    ui_dialog_progress(_("Installing GRUB"),path,percent);
-   
-    if(!execute(command,g->guestroot,0))
-    {
-      ui_dialog_progress(0,0,-1);
-      return false;
-    }
-  }
-
-  ui_dialog_progress(_("Generating GRUB Config"),"",100);
-
-  if(!execute("grub-mkconfig -o /boot/grub/grub.cfg",g->guestroot,0))
-  {
-    ui_dialog_progress(0,0,-1);
-    return false;
-  }
-
-  ui_dialog_progress(0,0,-1);
-
-  return true;
-}
-
 static bool postconfig_run(void)
 {
   char *hostname = 0;
@@ -654,9 +600,6 @@ static bool postconfig_run(void)
     return false;
 
   if(!ui_window_list(MODE_TITLE,MODE_TEXT,modes,&mode) || !mode_action(mode))
-    return false;
-
-  if(ui_dialog_yesno(GRUB_TITLE,GRUB_TEXT,false) && !grub_action())
     return false;
 
   return true;

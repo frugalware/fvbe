@@ -134,5 +134,6 @@ struct module *modules[] =
 
 struct tool *tools[] =
 {
+  &grubconfig_tool,
   0
 };
