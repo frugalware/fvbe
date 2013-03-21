@@ -132,3 +132,5 @@ struct tool *tools[] =
   &grubconfig_tool,
   0
 };
+
+const size_t tools_count = sizeof(tools) / sizeof(*tools);

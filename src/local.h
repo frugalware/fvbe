@@ -242,3 +242,4 @@ extern struct tool modeconfig_tool;
 extern struct tool timeconfig_tool;
 extern struct tool grubconfig_tool;
 extern struct tool *tools[];
+extern const size_t tools_count;
