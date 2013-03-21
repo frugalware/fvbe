@@ -17,76 +17,72 @@
 
 #include "local.h"
 
-static const char *tzfile = "etc/localtime";
-static const char *tzdir = "usr/share/zoneinfo";
-static const char *tzsearchdir = "usr/share/zoneinfo/posix";
-
-static size_t size = 0;
-static size_t count = 0;
-static char **data = 0;
+static char **zones = 0;
 static char *zone = 0;
 static bool utc = true;
 
-static int nftw_callback(const char *path,const struct stat *st,int type,struct FTW *fb)
+static int qsort_callback(const void *A,const void *B)
 {
-  if(type == FTW_D || type == FTW_DP)
-    return 0;
-
-  if(data == 0)
-  {
-    ++size;
-  }
-  else
-  {
-    data[count] = strdup(path + strlen(tzsearchdir) + 1);
-    ++count;
-  }
-
-  return 0;
-}
-
-static int qsort_callback(const void *a,const void *b)
-{
-  const char *A = *(const char **) a;
-  const char *B = *(const char **) b;
-
-  return strcmp(A,B);
+  const char *a = *(const char **) A;
+  const char *b = *(const char **) B;
+  
+  return strcmp(a,b);
 }
 
 static bool timeconfig_setup(void)
 {
-  if(nftw(tzsearchdir,nftw_callback,512,FTW_DEPTH|FTW_PHYS) == -1)
+  FILE *file = 0;
+  char line[LINE_MAX] = {0};
+  size_t i = 0;
+  size_t size = 4096;
+  char *p = 0;
+  
+  if((file = fopen("usr/share/zoneinfo/zone.tab","rb")) == 0)
   {
     error(strerror(errno));
     return false;
   }
 
-  data = malloc0(sizeof(char *) * (size + 1));
+  zones = malloc0(sizeof(char *) * size);
 
-  if(nftw(tzsearchdir,nftw_callback,512,FTW_DEPTH|FTW_PHYS) == -1)
+  while(fgets(line,sizeof(line),file) != 0)
   {
-    error(strerror(errno));
-    return false;
+    if(
+      i == size - 1                    ||
+      *line == '#'                     ||
+      strtok(line,SPACE_CHARS) == 0    ||
+      strtok(0,SPACE_CHARS) == 0       ||
+      (p = strtok(0,SPACE_CHARS)) == 0
+    )
+      continue;
+    
+    zones[i++] = strdup(p);
   }
 
-  qsort(data,size,sizeof(char *),qsort_callback);
+  fclose(file);
+
+  zones[i] = 0;
+  
+  zones = realloc(zones,sizeof(char *) * (i+1));
+
+  qsort(zones,i,sizeof(char *),qsort_callback);
 
   return true;
 }
 
-static bool timeconfig_action(const char *zone,bool utc)
+static bool update_via_old(const char *zone,bool utc)
 {
   char buf[_POSIX_ARG_MAX] = {0};
 
-  if(unlink(tzfile) == -1 && errno != ENOENT)
+  if(unlink("etc/localtime") == -1 && errno != ENOENT)
   {
     error(strerror(errno));
     return false;
   }
 
-  strfcpy(buf,sizeof(buf),"%s%s/%s",g->hostroot,tzdir,zone);
+  strfcpy(buf,sizeof(buf),"%susr/share/zoneinfo/%s",g->hostroot,zone);
 
-  if(symlink(buf,tzfile) == -1)
+  if(symlink(buf,"etc/localtime") == -1)
   {
     error(strerror(errno));
     return false;
@@ -100,12 +96,37 @@ static bool timeconfig_action(const char *zone,bool utc)
   return true;
 }
 
+static bool update_via_new(const char *zone,bool utc)
+{
+  char command[_POSIX_ARG_MAX] = {0};
+  
+  strfcpy(command,sizeof(command),"timedatectl set-timezone '%s'",zone);
+  
+  if(!execute(command,g->guestroot,0))
+    return false;
+  
+  strfcpy(command,sizeof(command),"timedatectl set-local-rtc '%s'",(utc) ? "0" : "1");
+
+  if(!execute(command,g->guestroot,0))
+    return false;
+  
+  return true;  
+}
+
+static bool timeconfig_action(const char *zone,bool utc)
+{
+  if(g->insetup)
+    return update_via_old(zone,utc);
+  
+  return update_via_new(zone,utc);
+}
+
 static bool timeconfig_start(void)
 {
   if(!timeconfig_setup())
     return false;
 
-  if(!ui_window_time(data,&zone,&utc))
+  if(!ui_window_time(zones,&zone,&utc))
     return false;
 
   return true;
@@ -118,18 +139,14 @@ static bool timeconfig_finish(void)
   if(zone)
     success = timeconfig_action(zone,utc);
 
-  size = 0;
-
-  count = 0;
-
-  if(data != 0)
+  if(zones != 0)
   {
-    for( size_t i = 0 ; data[i] != 0 ; ++i )
-      free(data[i]);
+    for( char **p = zones ; *p != 0 ; ++p )
+      free(*p);
 
-    free(data);
+    free(zones);
 
-    data = 0;
+    zones = 0;
   }
 
   zone = 0;

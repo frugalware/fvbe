@@ -56,7 +56,6 @@ static bool modeconfig_action(const char *mode)
   return true;
 }
 
-
 static bool modeconfig_start(void)
 {
   if(!ui_window_list(MODE_TITLE,MODE_TEXT,modes,&mode))
