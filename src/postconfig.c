@@ -17,16 +17,6 @@
 
 #include "local.h"
 
-#define TZSEARCHDIR "usr/share/zoneinfo/posix"
-#define TZDIR "usr/share/zoneinfo"
-#define TZFILE "etc/localtime"
-#define TZSEARCHSIZE (sizeof(TZSEARCHDIR)-1)
-
-static size_t tz_size = 0;
-static size_t tz_count = 0;
-static char **tz_data = 0;
-static char *rootdevice = 0;
-
 static inline void put_xkb_var(FILE *file,char *s1,char *s2)
 {
   if(s1 == 0 || strlen(s1) == 0)
@@ -241,9 +231,6 @@ static bool write_fstab(void)
       return false;
     }
 
-    if(strcmp(path,g->hostroot) == 0)
-      rootdevice = device;
-    
     fprintf(file,
       "UUID=%s %s %s defaults %s\n",
       uuid,
@@ -432,78 +419,6 @@ static void account_free(struct account *account)
   memset(account,0,sizeof(struct account));
 }
 
-static int timezone_nftw_callback(const char *path,const struct stat *st,int type,struct FTW *fb)
-{
-  if(type == FTW_D || type == FTW_DP)
-    return 0;
-
-  if(tz_data == 0)
-  {
-    ++tz_size;
-  }
-  else
-  {
-    tz_data[tz_count] = strdup(path + TZSEARCHSIZE + 1);
-    ++tz_count;
-  }
-
-  return 0;
-}
-
-static int timezone_cmp_callback(const void *a,const void *b)
-{
-  const char *A = *(const char **) a;
-  const char *B = *(const char **) b;
-
-  return strcmp(A,B);
-}
-
-static bool get_timezone_data(void)
-{
-  if(nftw(TZSEARCHDIR,timezone_nftw_callback,512,FTW_DEPTH|FTW_PHYS) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  tz_data = malloc0(sizeof(char *) * (tz_size + 1));
-
-  if(nftw(TZSEARCHDIR,timezone_nftw_callback,512,FTW_DEPTH|FTW_PHYS) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  qsort(tz_data,tz_size,sizeof(char *),timezone_cmp_callback);
-
-  return true;
-}
-
-static bool time_action(char *zone,bool utc)
-{
-  char buf[_POSIX_ARG_MAX] = {0};
-
-  if(unlink(TZFILE) == -1 && errno != ENOENT)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(buf,sizeof(buf),"%s" TZDIR "/%s",g->hostroot,zone);
-
-  if(symlink(buf,TZFILE) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(buf,sizeof(buf),"hwclock --systohc %s",(utc) ? "--utc" : "--localtime");
-
-  if(!execute(buf,g->guestroot,0))
-    return false;
-
-  return true;
-}
 
 static bool mode_action(const char *mode)
 {
@@ -541,8 +456,6 @@ static bool postconfig_run(void)
   char *hostname = 0;
   char *prettyhostname = 0;
   struct account account = {0};
-  char *zone = 0;
-  bool utc = true;
   static char *modes[] =
   {
     "Text Console",
@@ -596,9 +509,6 @@ static bool postconfig_run(void)
 
   account_free(&account);
 
-  if(!get_timezone_data() || !ui_window_time(tz_data,&zone,&utc) || !time_action(zone,utc))
-    return false;
-
   if(!ui_window_list(MODE_TITLE,MODE_TEXT,modes,&mode) || !mode_action(mode))
     return false;
 
@@ -607,21 +517,6 @@ static bool postconfig_run(void)
 
 static void postconfig_reset(void)
 {
-  tz_size = 0;
-
-  tz_count = 0;
-
-  if(tz_data != 0)
-  {
-    for( size_t i = 0 ; tz_data[i] != 0 ; ++i )
-      free(tz_data[i]);
-
-    free(tz_data);
-
-    tz_data = 0;
-  }
-
-  rootdevice = 0;
 }
 
 struct module postconfig_module =
