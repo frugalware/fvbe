@@ -666,40 +666,43 @@ extern int ui_main(int argc,char **argv)
 
   newtCls();
 
-  while(true)
+  if(g->insetup)
   {
-    module = modules[n];
+    while(true)
+    {
+      module = modules[n];
+
+      if(module == 0)
+        break;
+
+      if(module->run == 0 || module->reset == 0 || module->name == 0)
+      {
+        errno = EINVAL;
+        error(strerror(errno));
+        break;
+      }
+
+      eprintf("About to run module '%s'.\n",module->name);
+
+      bool success = module->run();
+
+      if(!success)
+      {
+        eprintf("A fatal error has been reported by module '%s'.\n",module->name);
+        module->reset();
+        strfcpy(text,sizeof(text),_("A fatal error has been reported by module '%s'.\nPlease read the logfile at '%s'.\nThank you.\n"),module->name,g->logpath);
+        ui_dialog_text(_("Module Fatal Error"),text);
+        break;
+      }
+
+      module->reset();
+
+      ++n;
+    }
 
     if(module == 0)
-      break;
-
-    if(module->run == 0 || module->reset == 0 || module->name == 0)
-    {
-      errno = EINVAL;
-      error(strerror(errno));
-      break;
-    }
-
-    eprintf("About to run module '%s'.\n",module->name);
-
-    bool success = module->run();
-
-    if(!success)
-    {
-      eprintf("A fatal error has been reported by module '%s'.\n",module->name);
-      module->reset();
-      strfcpy(text,sizeof(text),_("A fatal error has been reported by module '%s'.\nPlease read the logfile at '%s'.\nThank you.\n"),module->name,g->logpath);
-      ui_dialog_text(_("Module Fatal Error"),text);
-      break;
-    }
-
-    module->reset();
-
-    ++n;
+      code = EXIT_SUCCESS;
   }
-
-  if(module == 0)
-    code = EXIT_SUCCESS;
 
   newtFinished();
 
