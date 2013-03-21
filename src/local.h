@@ -42,6 +42,7 @@
 #include <time.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <search.h>
 #include <blkid.h>
 #include "text.h"
 

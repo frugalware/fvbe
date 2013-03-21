@@ -32,6 +32,18 @@ union partition_action
   uintptr_t data;
 };
 
+static int lfind_compare(const void *A,const void *B)
+{
+  const char *a = (const char *) A;
+  const struct tool *b = *(const struct tool **) B;
+  size_t n = 0;
+  
+  for( ; b->name[n] != '.' && b->name[n] != 0 ; ++n )
+    ;
+  
+  return strncmp(a,b->name,n);
+}
+
 static inline bool findpath(struct format **targets,struct format *target,const char *path)
 {
   struct format **p = targets;
@@ -701,6 +713,43 @@ extern int ui_main(int argc,char **argv)
 
     if(module == 0)
       code = EXIT_SUCCESS;
+  }
+  else
+  {
+    struct tool *tool = 0;
+
+    n = tools_count;
+      
+    if(
+      (tool = lfind(g->name,tools,&n,sizeof(struct tool *),lfind_compare)) == 0  ||
+      (tool = *(struct tool **) tool) == 0                                       ||
+      tool->start == 0                                                           ||
+      tool->finish == 0                                                          ||
+      tool->name == 0
+    )
+    {
+      error(strerror(errno));
+    }
+    else
+    {
+      eprintf("About to run tool '%s'.\n",tool->name);
+      
+      if(!tool->start())
+      {
+        tool->finish();
+        strfcpy(text,sizeof(text),_("A fatal error has been reported by tool '%s'.\nPlease read the logfile at '%s'.Thank you.\n"),tool->name,g->logpath);
+        ui_dialog_text(_("Tool Fatal Error"),text);
+      }
+      else if(!tool->finish())
+      {
+        strfcpy(text,sizeof(text),_("A fatal error has been reported by tool '%s'.\nPlease read the logfile at '%s'.Thank you.\n"),tool->name,g->logpath);
+        ui_dialog_text(_("Tool Fatal Error"),text);
+      }
+      else
+      {
+        code = EXIT_SUCCESS;
+      }
+    }
   }
 
   newtFinished();
