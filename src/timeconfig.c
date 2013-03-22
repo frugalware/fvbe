@@ -115,9 +115,7 @@ static bool update_via_new(const char *zone,bool utc)
 
 static bool timeconfig_action(const char *zone,bool utc)
 {
-  struct stat st = {0};
-
-  if(g->insetup || stat("etc/adjtime",&st) == -1)
+  if(g->insetup)
     return update_via_old(zone,utc);
   
   return update_via_new(zone,utc);
