@@ -23,4 +23,3 @@ implement gui frontend
 disable tty blanking
 redo how format structs are allocated
 full UEFI support
-consider using loadkeys and setxkbmap to set the mapping immediately
