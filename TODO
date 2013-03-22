@@ -20,7 +20,6 @@ implement lvm setup
 implement encrypted root setup
 implement extlinux bootloader support
 implement gui frontend
-try to make the installer able to launch the configuration tools individually to replace frugalwareutils
 disable tty blanking
 redo how format structs are allocated
 full UEFI support
