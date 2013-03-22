@@ -202,6 +202,31 @@ static bool kbconfig_setup(void)
   return true;
 }
 
+static bool kbconfig_update(const struct layout *layout)
+{
+  char command[_POSIX_ARG_MAX] = {0};
+  
+  strfcpy(command,sizeof(command),"loadkeys '%s'",layout->kbdlayout);
+  
+  if(!execute(command,g->hostroot,0))
+    return false;
+
+  if(areweinx11())
+  {
+    strfcpy(command,sizeof(command),"setxkbmap -layout '%s' -model '%s' -variant '%s' -option '' -option '%s'",
+      strng(layout->xkblayout),
+      strng(layout->xkbmodel),
+      strng(layout->xkbvariant),
+      strng(layout->xkboptions)
+    );
+    
+    if(!execute(command,g->hostroot,0))
+      return false;
+  }
+  
+  return true;
+}
+
 static bool update_via_old(const struct layout *layout)
 {
   if(!write_vconsole_conf(layout))
@@ -261,6 +286,9 @@ static bool kbconfig_start(void)
     error("no matching layout");
     return false;
   }
+
+  if(!kbconfig_update(layout))
+    return false;
 
   return true;
 }
