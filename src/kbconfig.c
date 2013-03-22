@@ -142,7 +142,7 @@ static bool kbconfig_setup(void)
   char *xkboptions = 0;
   struct layout *layout = 0;
   
-  if((file = fopen("usr/share/systemd/kbd-model-map","rb")) == 0)
+  if((file = fopen("/usr/share/systemd/kbd-model-map","rb")) == 0)
   {
     error(strerror(errno));
     return false;

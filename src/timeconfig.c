@@ -37,7 +37,7 @@ static bool timeconfig_setup(void)
   size_t size = 4096;
   char *p = 0;
   
-  if((file = fopen("usr/share/zoneinfo/zone.tab","rb")) == 0)
+  if((file = fopen("/usr/share/zoneinfo/zone.tab","rb")) == 0)
   {
     error(strerror(errno));
     return false;
