@@ -719,8 +719,12 @@ extern int ui_main(int argc,char **argv)
     struct tool *tool = 0;
 
     n = tools_count;
-      
-    if(
+
+    if(chdir(g->guestroot) == -1)
+    {
+      error(strerror(errno));
+    }
+    else if(
       (tool = lfind(g->name,tools,&n,sizeof(struct tool *),lfind_compare)) == 0  ||
       (tool = *(struct tool **) tool) == 0                                       ||
       tool->start == 0                                                           ||
