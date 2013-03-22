@@ -99,12 +99,21 @@ static bool update_via_old(const char *zone,bool utc)
 static bool update_via_new(const char *zone,bool utc)
 {
   char command[_POSIX_ARG_MAX] = {0};
+  struct stat st = {0};
   
   strfcpy(command,sizeof(command),"timedatectl set-timezone '%s'",zone);
   
   if(!execute(command,g->guestroot,0))
     return false;
-  
+
+  if(stat("etc/adjtime",&st) == -1)
+  {
+    strfcpy(command,sizeof(command),"hwclock --systohc %s",(utc) ? "--utc" : "--localtime");
+
+    if(!execute(command,g->guestroot,0))
+      return false;
+  }
+
   strfcpy(command,sizeof(command),"timedatectl set-local-rtc '%s'",(utc) ? "0" : "1");
 
   if(!execute(command,g->guestroot,0))
