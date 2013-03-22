@@ -101,7 +101,8 @@ extern int main(int argc,char **argv)
 
   code = ui_main(argc,argv);
 
-  umount_all();
+  if(g->insetup)
+    umount_all();
 
   global_cleanup();
 
