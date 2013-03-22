@@ -294,6 +294,8 @@ static bool kbconfig_finish(void)
     layouts = 0;
   }
 
+  free(entries);
+
   entries = 0;
   
   count = 0;
