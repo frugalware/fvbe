@@ -99,11 +99,7 @@ static bool update_via_old(void)
     return false;
   }
   
-  fprintf(file,
-    "%s=%s\n",
-    var,
-    locale
-  );
+  fprintf(file,"%s=%s\n",var,locale);
 
   for( ; vars[i] != 0 ; ++i )
   {
