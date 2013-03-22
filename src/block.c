@@ -85,6 +85,14 @@ struct disk
   int size;
 };
 
+struct raid
+{
+  struct device *device;
+  int level;
+  struct device *devices[128];
+  int size;
+};
+
 static inline bool isdisk(const struct stat *st)
 {
   switch(major(st->st_rdev))
@@ -349,6 +357,20 @@ bail:
   regfree(&raid_re);
 
   return devices;
+}
+
+static inline int raidmindisks(int level)
+{
+  if(level == 0 || level == 1)
+    return 2;
+  
+  if(level == 4 || level == 5)
+    return 3;
+  
+  if(level == 6 || level == 10)
+    return 4;
+  
+  return -1;
 }
 
 extern struct device *device_open(const char *path)
@@ -1237,4 +1259,124 @@ extern void disk_close(struct disk *disk)
     return;
 
   free(disk);
+}
+
+extern struct raid *raid_open(struct device *device)
+{
+  char base[PATH_MAX] = {0};
+  char path[PATH_MAX] = {0};
+  char buf[LINE_MAX] = {0};
+  int level = 0;
+  int disks = 0;
+  struct device *devices[128] = {0};
+  struct raid *raid = 0;
+
+  if(device == 0 || device->type != DEVICETYPE_RAID)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  strfcpy(base,sizeof(base),"%s",device->path);
+
+  strfcpy(path,sizeof(path),"/sys/class/block/%s/md/level",basename(base));
+
+  file2str(path,buf,sizeof(buf));
+
+  if(strlen(buf) == 0)
+  {
+    error("failed to retrieve raid level");
+    return 0;
+  }
+
+  if(sscanf(buf,"raid%d",&level) != 1 || raidmindisks(level) == -1)
+  {
+    error("invalid raid level");
+    return 0;
+  }
+
+  strfcpy(path,sizeof(path),"/sys/class/block/%s/md/raid_disks",basename(base));
+
+  file2str(path,buf,sizeof(buf));
+
+  if(strlen(buf) == 0)
+  {
+    error("failed to retrieve raid disks");
+    return 0;
+  }
+
+  if(sscanf(buf,"%d",&disks) != 1 || disks < raidmindisks(level) || disks > 128)
+  {
+    error("invalid raid disks");
+    return 0;
+  }
+
+  for( int i = 0 ; i < disks ; ++i )
+  {
+    ssize_t n = -1;
+  
+    strfcpy(path,sizeof(path),"/sys/class/block/%s/md/rd%d",basename(base),i);
+    
+    // < 1 means empty or error. == sizeof(buf) means it is truncated.
+    if((n = readlink(path,buf,sizeof(buf))) < 1 || n == sizeof(buf))
+    {
+      if(n != -1)
+        errno = ERANGE;
+ 
+      error(strerror(errno));
+ 
+      for( int j = 0 ; j < i ; ++j )
+        device_close(devices[j]);
+ 
+      return 0;
+    }
+    
+    buf[n] = 0;
+    
+    if(strncmp(buf,"dev-",4) != 0)
+    {
+      error("invalid raid slave name");
+
+      for( int j = 0 ; j < i ; ++j )
+        device_close(devices[j]);
+ 
+      return 0;
+    }
+    
+    strfcpy(path,sizeof(path),"/dev/%s",buf+4);
+    
+    if((devices[i] = device_open(path)) == 0)
+    {
+      error("unable to open raid slave");
+ 
+      for( int j = 0 ; j < i ; ++j )
+        device_close(devices[j]);
+ 
+      return 0;
+    }
+  }
+
+  raid = malloc0(sizeof(struct raid));
+
+  raid->device = device;
+  
+  raid->level = level;
+
+  raid->size = disks;
+
+  memcpy(raid->devices,devices,sizeof(devices));
+
+  return raid;
+}
+
+extern void raid_close(struct raid *raid)
+{
+  if(raid == 0)
+    return;
+  
+  for( int i = 0 ; i < raid->size ; ++i )
+    device_close(raid->devices[i]);
+  
+  free(raid);
 }

@@ -79,6 +79,8 @@ struct device;
 
 struct disk;
 
+struct raid;
+
 struct format
 {
   char *devicepath;
@@ -207,6 +209,8 @@ extern long long disk_partition_get_size(struct disk *disk,int n);
 extern void disk_delete_partition(struct disk *disk);
 extern bool disk_flush(struct disk *disk);
 extern void disk_close(struct disk *disk);
+extern struct raid *raid_open(struct device *device);
+extern void raid_close(struct raid *raid);
 extern int ui_main(int argc,char **argv);
 extern void ui_dialog_text(const char *title,const char *text);
 extern bool ui_dialog_yesno(const char *title,const char *text,bool defaultno);
