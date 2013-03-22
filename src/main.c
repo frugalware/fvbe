@@ -99,6 +99,12 @@ extern int main(int argc,char **argv)
     g->guestroot = "/";
   }
 
+  if(setlocale(LC_ALL,"") == 0)
+  {
+    error(strerror(errno));
+    return false;
+  }
+ 
   code = ui_main(argc,argv);
 
   if(g->insetup)
