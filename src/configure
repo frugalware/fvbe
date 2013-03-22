@@ -53,7 +53,7 @@ test "$UI" = "newt" && ! pkg_config_exists "libnewt" && error "libnewt was not f
 
 CFLAGS="$CFLAGS $(pkg-config --cflags pacman blkid)"
 LDFLAGS="$LDFLAGS $(pkg-config --libs pacman blkid)"
-SOURCES="main.c utility.c block.c locale.c layout.c greeter.c partition.c raid.c format.c preconfig.c install.c postconfig.c finale.c"
+SOURCES="main.c utility.c block.c locale.c layout.c greeter.c partition.c raid.c format.c preconfig.c install.c postconfig.c finale.c grubconfig.c hostconfig.c rootconfig.c userconfig.c timeconfig.c modeconfig.c langconfig.c kbconfig.c"
 
 if test "$UI" = "newt"; then
   CFLAGS="$CFLAGS -DUI_NEWT $(pkg-config --cflags libnewt)"
