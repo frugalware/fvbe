@@ -222,7 +222,7 @@ static bool update_via_new(const struct layout *layout)
   if(!execute(command,g->guestroot,0))
     return false;
 
-  strfcpy(command,sizeof(command),"localectl --no-convert set-x11-keymap '%s' %s' '%s' '%s'",
+  strfcpy(command,sizeof(command),"localectl --no-convert set-x11-keymap '%s' '%s' '%s' '%s'",
     strng(layout->xkblayout),
     strng(layout->xkbmodel),
     strng(layout->xkbvariant),
