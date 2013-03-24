@@ -61,6 +61,8 @@
 #define TEBIBYTE (1LL << 40LL)
 #define error(S) fprintf(g->logfile,"%s: %s\n",__func__,S)
 #define eprintf(...) fprintf(g->logfile,__VA_ARGS__)
+#define alloc(T,N) ((T*)malloc0(sizeof(T)*(N)))
+#define redim(P,T,N) ((T*)realloc(P,sizeof(T)*(N)))
 
 struct global
 {
