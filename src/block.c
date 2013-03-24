@@ -1370,6 +1370,28 @@ extern struct raid *raid_open(struct device *device)
   return raid;
 }
 
+extern struct raid *raid_open_empty(int level,int disks,struct device **devices)
+{
+  struct raid *raid = 0;
+
+  if(raidmindisks(level) == -1 || disks < raidmindisks(level) || disks > 128 || devices == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  raid = malloc0(sizeof(struct raid));
+  
+  raid->level = level;
+  
+  raid->size = disks;
+  
+  memcpy(raid->devices,devices,sizeof(struct device *) * disks);
+  
+  return raid;
+}
+
 extern int raid_get_level(struct raid *raid)
 {
   if(raid == 0)

@@ -210,6 +210,7 @@ extern void disk_delete_partition(struct disk *disk);
 extern bool disk_flush(struct disk *disk);
 extern void disk_close(struct disk *disk);
 extern struct raid *raid_open(struct device *device);
+extern struct raid *raid_open_empty(int level,int disks,struct device **devices);
 extern int raid_get_level(struct raid *raid);
 extern int raid_get_count(struct raid *raid);
 extern struct device *raid_get_device(struct raid *raid,int n);
