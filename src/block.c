@@ -952,7 +952,7 @@ extern void disk_partition_set_purpose(struct disk *disk,int n,const char *purpo
 {
   struct partition *part = 0;
 
-  if(disk == 0 || n < 0 || n > disk->size || purpose == 0)
+  if(disk == 0 || n < 0 || n >= disk->size || purpose == 0)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -999,7 +999,7 @@ extern void disk_partition_set_active(struct disk *disk,int n,bool active)
 {
   struct partition *part = 0;
 
-  if(disk == 0 || n < 0 || n > disk->size)
+  if(disk == 0 || n < 0 || n >= disk->size)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1025,7 +1025,7 @@ extern void disk_partition_set_name(struct disk *disk,int n,const char *name)
 {
   struct partition *part = 0;
 
-  if(disk == 0 || n < 0 || n > disk->size || disk->type != DISKTYPE_GPT || name == 0 || strlen(name) > 36)
+  if(disk == 0 || n < 0 || n >= disk->size || disk->type != DISKTYPE_GPT || name == 0 || strlen(name) > 36)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1049,7 +1049,7 @@ extern const char *disk_partition_get_purpose(struct disk *disk,int n)
   struct partition *part = 0;
   const char *purpose = "unknown";
 
-  if(disk == 0 || n < 0 || n > disk->size)
+  if(disk == 0 || n < 0 || n >= disk->size)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1097,7 +1097,7 @@ extern bool disk_partition_get_active(struct disk *disk,int n)
   struct partition *part = 0;
   bool active = false;
 
-  if(disk == 0 || n < 0 || n > disk->size)
+  if(disk == 0 || n < 0 || n >= disk->size)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1118,7 +1118,7 @@ extern const char *disk_partition_get_name(struct disk *disk,int n)
 {
   struct partition *part = 0;
 
-  if(disk == 0 || n < 0 || n > disk->size || disk->type != DISKTYPE_GPT)
+  if(disk == 0 || n < 0 || n >= disk->size || disk->type != DISKTYPE_GPT)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1134,7 +1134,7 @@ extern int disk_partition_get_number(struct disk *disk,int n)
 {
   struct partition *part = 0;
 
-  if(disk == 0 || n < 0 || n > disk->size)
+  if(disk == 0 || n < 0 || n >= disk->size)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1150,7 +1150,7 @@ extern long long disk_partition_get_size(struct disk *disk,int n)
 {
   struct partition *part = 0;
 
-  if(disk == 0 || n < 0 || n > disk->size)
+  if(disk == 0 || n < 0 || n >= disk->size)
   {
     errno = EINVAL;
     error(strerror(errno));
