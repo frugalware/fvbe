@@ -1370,6 +1370,42 @@ extern struct raid *raid_open(struct device *device)
   return raid;
 }
 
+extern int raid_get_level(struct raid *raid)
+{
+  if(raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return -1;
+  }
+
+  return raid->level;
+}
+
+extern int raid_get_count(struct raid *raid)
+{
+  if(raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return -1;
+  }
+  
+  return raid->size;
+}
+
+extern struct device *raid_get_device(struct raid *raid,int n)
+{
+  if(raid == 0 || n >= raid->size)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+  
+  return raid->devices[n];
+}
+
 extern void raid_close(struct raid *raid)
 {
   if(raid == 0)
