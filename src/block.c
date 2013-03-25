@@ -308,7 +308,7 @@ extern struct device **device_probe_all(bool disk,bool raid)
     goto bail;
   }
 
-  devices = malloc0(sizeof(struct device *) * size);
+  devices = alloc(struct device *,size);
 
   while(readdir_r(dir,&entry,&p) == 0 && p != 0)
   {
@@ -437,7 +437,7 @@ extern struct device *device_open(const char *path)
   else
     type = DEVICETYPE_UNKNOWN;
 
-  device = malloc0(sizeof(struct device));
+  device = alloc(struct device,1);
 
   device->path = strdup(path);
 
@@ -1357,7 +1357,7 @@ extern struct raid *raid_open(struct device *device)
     }
   }
 
-  raid = malloc0(sizeof(struct raid));
+  raid = alloc(struct raid,1);
 
   raid->device = device;
   
@@ -1381,7 +1381,7 @@ extern struct raid *raid_open_empty(int level,int disks,struct device **devices)
     return 0;
   }
 
-  raid = malloc0(sizeof(struct raid));
+  raid = alloc(struct raid,1);
   
   raid->level = level;
   

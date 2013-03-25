@@ -30,7 +30,7 @@ static bool partition_setup(void)
   for( ; devices[i] != 0 ; ++i )
     ;
 
-  disks = malloc0(sizeof(struct disk *) * (i + 1));
+  disks = alloc(struct disk *,i + 1);
 
   for( i = 0 ; devices[i] != 0 ; ++i )
     disks[i] = disk_open(devices[i]);

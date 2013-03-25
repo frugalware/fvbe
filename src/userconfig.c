@@ -45,7 +45,7 @@ static bool userconfig_action(const struct account *account)
 
 static bool userconfig_start(void)
 {
-  account = malloc0(sizeof(struct account));
+  account = alloc(struct account,1);
   
   if(!ui_window_user(account))
     return false;

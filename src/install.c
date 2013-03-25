@@ -466,7 +466,7 @@ static bool install_groups_get(struct install **groups)
   
     matches = strpbrklen(g->groups," ") + 1;
     
-    grps = malloc0(sizeof(struct install) * (matches + 1));
+    grps = alloc(struct install,matches + 1);
     
     for( ; (s = strtok(p," ")) != 0 ; p = 0, ++j )
     {
@@ -539,7 +539,7 @@ static bool install_groups_get(struct install **groups)
     return false;
   }
 
-  grps = malloc0(sizeof(struct install) * (matches + 1));
+  grps = alloc(struct install,matches + 1);
 
   for( ; list ; list = pacman_list_next(list) )
   {

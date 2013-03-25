@@ -54,7 +54,7 @@ static bool langconfig_setup(void)
     return false;
   }
   
-  locales = malloc0(sizeof(char *) * size);
+  locales = alloc(char *,size);
   
   while(fgets(line,sizeof(line),pipe) != 0)
   {

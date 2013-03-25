@@ -107,7 +107,7 @@ static bool format_setup(void)
   if((devices = device_probe_all(true,true)) == 0)
     return false;
 
-  targets = malloc0(size * sizeof(struct format *));
+  targets = alloc(struct format *,size);
 
   for( p = devices ; *p != 0 ; ++p )
   {
@@ -130,7 +130,7 @@ static bool format_setup(void)
         )
           continue;
 
-        target = malloc0(sizeof(struct format));
+        target = alloc(struct format,1);
 
         add_target(target,&n,&size);
 
@@ -147,7 +147,7 @@ static bool format_setup(void)
     }
     else if(strcmp(type,"raid") == 0)
     {
-      target = malloc0(sizeof(struct format));
+      target = alloc(struct format,1);
       
       add_target(target,&n,&size);
       
@@ -329,7 +329,7 @@ static void format_prepare_fstab(void)
   for( ; targets[i] != 0 ; ++i )
     ;
   
-  g->fstabdata = malloc0(sizeof(char *) * (i+1));
+  g->fstabdata = alloc(char *,i + 1);
 
   g->fstabdata[i] = 0;
 

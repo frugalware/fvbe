@@ -148,7 +148,7 @@ static bool kbconfig_setup(void)
     return false;
   }
   
-  layouts = malloc0(sizeof(struct layout *) * size);
+  layouts = alloc(struct layout *,size);
   
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -163,7 +163,7 @@ static bool kbconfig_setup(void)
     )
       continue;
     
-    layout = malloc0(sizeof(struct layout));
+    layout = alloc(struct layout,1);
     
     put_token(kbdlayout,&layout->kbdlayout);
 
@@ -184,7 +184,7 @@ static bool kbconfig_setup(void)
 
   qsort(layouts,i,sizeof(struct layout *),qsort_compare);
 
-  entries = malloc0(sizeof(char *) * (i+1));
+  entries = alloc(char *,i + 1);
 
   entries[i] = 0;
 

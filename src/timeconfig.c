@@ -43,7 +43,7 @@ static bool timeconfig_setup(void)
     return false;
   }
 
-  zones = malloc0(sizeof(char *) * size);
+  zones = alloc(char *,size);
 
   while(fgets(line,sizeof(line),file) != 0)
   {

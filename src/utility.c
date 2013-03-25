@@ -55,7 +55,7 @@ extern bool copy(const char *old,const char *new)
     return false;
   }
   
-  if((in = fopen(old,"rb")) == 0 || (out = fopen(new,"wb")) == 0 || (buf = malloc0(size)) == 0)
+  if((in = fopen(old,"rb")) == 0 || (out = fopen(new,"wb")) == 0 || (buf = alloc(unsigned char,size)) == 0)
   {
     error(strerror(errno));
     success = false;
@@ -294,7 +294,7 @@ extern void umount_all(void)
     return;    
   }
 
-  paths = malloc0(sizeof(char *) * size);
+  paths = alloc(char *,size);
 
   while(fgets(line,sizeof(line),file) != 0)
   {

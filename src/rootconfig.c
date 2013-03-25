@@ -37,7 +37,7 @@ static bool rootconfig_action(const struct account *account)
 
 static bool rootconfig_start(void)
 {
-  account = malloc0(sizeof(struct account));
+  account = alloc(struct account,1);
 
   if(!ui_window_root(account))
     return false;
