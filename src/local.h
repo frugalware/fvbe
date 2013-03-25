@@ -129,7 +129,6 @@ extern void account_free(struct account *account);
 extern bool copy(const char *old,const char *new);
 extern bool isbusy(const char *path);
 extern size_t strpbrklen(const char *s,const char *accept);
-extern bool areweinvc(void);
 extern void file2str(const char *path,char *s,size_t n);
 extern void strfcpy(char *s,size_t n,const char *fmt,...) __attribute__((format(printf,3,4)));
 extern void strfcat(char *s,size_t n,const char *fmt,...) __attribute__((format(printf,3,4)));

@@ -127,24 +127,6 @@ extern size_t strpbrklen(const char *s,const char *accept)
   return n;
 }
 
-extern bool areweinvc(void)
-{
-  char tty[TEXT_MAX] = {0};
-  regex_t re = {0};
-  bool result = true;
-
-  if(
-    ttyname_r(STDIN_FILENO,tty,sizeof(tty)) != 0                ||
-    regcomp(&re,"^/dev/tty[0-9]+$",REG_EXTENDED|REG_NOSUB) != 0 ||
-    regexec(&re,tty,0,0,0) != 0
-  )
-    result = false;
-
-  regfree(&re);
-  
-  return result;
-}
-
 extern void file2str(const char *path,char *s,size_t n)
 {
   FILE *file = 0;
