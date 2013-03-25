@@ -345,7 +345,7 @@ extern struct device **device_probe_all(bool disk,bool raid)
 
   devices[i] = 0;
 
-  devices = realloc(devices,sizeof(struct device *) * (i+1));
+  devices = redim(devices,struct device *,i + 1);
 
 bail:
 

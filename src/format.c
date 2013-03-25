@@ -41,7 +41,7 @@ static inline void add_target(struct format *p,int *n,int *size)
   if(*n == *size)
   {
     *size *= 2;
-    targets = realloc(targets,*size * sizeof(struct format *));
+    targets = redim(targets,struct format *,*size);
   }
 
   targets[*n] = p;
@@ -169,7 +169,7 @@ static bool format_setup(void)
 
   free(devices);
 
-  targets = realloc(targets,n * sizeof(struct format *));
+  targets = redim(targets,struct format *,n);
 
   return (targets[0] != 0);
 }
@@ -194,7 +194,7 @@ static void format_filter_devices(void)
 
   targets[j++] = 0;
 
-  targets = realloc(targets,j * sizeof(struct format *));
+  targets = redim(targets,struct format *,j);
 }
 
 static bool format_sort_devices(void)

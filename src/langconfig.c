@@ -69,7 +69,7 @@ static bool langconfig_setup(void)
 
   locales[i] = 0;
 
-  locales = realloc(locales,sizeof(char *) * (i+1));
+  locales = redim(locales,char *,i + 1);
   
   if(pclose(pipe) == -1)
   {

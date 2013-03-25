@@ -180,7 +180,7 @@ static bool kbconfig_setup(void)
 
   layouts[i] = 0;
   
-  layouts = realloc(layouts,sizeof(struct layout *) * (i+1));
+  layouts = redim(layouts,struct layout *,i + 1);
 
   qsort(layouts,i,sizeof(struct layout *),qsort_compare);
 

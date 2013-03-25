@@ -63,7 +63,7 @@ static bool timeconfig_setup(void)
 
   zones[i] = 0;
   
-  zones = realloc(zones,sizeof(char *) * (i+1));
+  zones = redim(zones,char *,i + 1);
 
   qsort(zones,i,sizeof(char *),qsort_callback);
 
