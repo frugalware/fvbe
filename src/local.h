@@ -150,20 +150,20 @@ extern bool get_text_screen_size(const char *text,int *width,int *height);
 extern bool get_button_screen_size(const char *text,int *width,int *height);
 extern bool get_label_screen_size(const char *text,int *width,int *height);
 extern bool get_checkbox_screen_size(const char *text,int *width,int *height);
-static inline long min(long a,long b) { return (a < b) ? a : b; }
-static inline long max(long a,long b) { return (a > b) ? a : b; }
-static inline long minv(long *v,size_t size)
+static inline long long min(long long a,long long b) { return (a < b) ? a : b; }
+static inline long long max(long long a,long long b) { return (a > b) ? a : b; }
+static inline long long minv(long long *v,size_t size)
 {
-  long i = 0;
+  long long i = 0;
 
   for( size_t n = 0 ; n < size ; ++n )
     i = min(i,v[n]);
 
   return i;
 }
-static inline long maxv(long *v,size_t size)
+static inline long long maxv(long long *v,size_t size)
 {
-  long i = 0;
+  long long i = 0;
 
   for( size_t n = 0 ; n < size ; ++n )
     i = max(i,v[n]);
