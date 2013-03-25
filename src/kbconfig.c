@@ -211,7 +211,7 @@ static bool kbconfig_update(const struct layout *layout)
   if(!execute(command,g->hostroot,0))
     return false;
 
-  if(areweinx11())
+  if(inx11())
   {
     strfcpy(command,sizeof(command),"setxkbmap -layout '%s' -model '%s' -variant '%s' -option '' -option '%s'",
       strng(layout->xkblayout),

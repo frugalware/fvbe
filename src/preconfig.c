@@ -154,7 +154,7 @@ extern bool preconfig_mount_extra(void)
 
 static bool preconfig_prepare_source(void)
 {
-  bool fvbe = areweinfvbe();
+  bool fvbe = infvbe();
   char iso[PATH_MAX] = {0};
   char path[PATH_MAX] = {0};
   struct stat st = {0};
