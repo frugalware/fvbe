@@ -128,8 +128,6 @@ struct tool
 extern void account_free(struct account *account);
 extern bool copy(const char *old,const char *new);
 extern bool isbusy(const char *path);
-extern void fetch_root_device(char *s,size_t n);
-extern void fetch_real_devices(const char *base,char *s,size_t n);
 extern size_t strpbrklen(const char *s,const char *accept);
 extern bool areweinvc(void);
 extern void file2str(const char *path,char *s,size_t n);

@@ -19,6 +19,78 @@
 
 static bool action = false;
 
+static void fetch_root_device(char *s,size_t n)
+{
+  FILE *file = 0;
+  char line[LINE_MAX] = {0};
+  char *device = 0;
+  char *root = 0;
+
+  if(s == 0 || n == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return;
+  }
+  
+  *s = 0;
+  
+  if((file = fopen("/proc/mounts","rb")) == 0)
+  {
+    error(strerror(errno));
+    return;
+  }
+  
+  while(fgets(line,sizeof(line),file) != 0)
+  {
+    if((device = strtok(line,SPACE_CHARS)) == 0)
+      continue;
+    
+    if((root = strtok(0,SPACE_CHARS)) == 0)
+      continue;
+    
+    if(strcmp(root,g->guestroot) == 0)
+      break;
+  }
+  
+  if(feof(file) == 0)
+    strfcpy(s,n,"%s",device);
+  
+  fclose(file);
+}
+
+static void fetch_real_devices(const char *base,char *s,size_t n)
+{
+  char buf[PATH_MAX] = {0};
+  glob_t ge = {0};
+  size_t i = 0;
+
+  if(base == 0 || s == 0 || n == 0)
+    return;
+
+  strfcpy(buf,sizeof(buf),"%s/slaves/*",base);
+  
+  if(glob(buf,0,0,&ge) != 0)
+  {
+    strfcpy(buf,sizeof(buf),"%s",base);
+
+    if(*s == 0)
+      strfcpy(s,n,"/dev/%s",basename(buf));
+    else
+      strfcat(s,n,":/dev/%s",basename(buf));
+
+    globfree(&ge);
+    
+    return;
+  }
+
+  for( ; i < ge.gl_pathc ; ++i )
+    fetch_real_devices(ge.gl_pathv[i],s,n);
+  
+  globfree(&ge);
+}
+
+
 static bool grubconfig_action(void)
 {
   char device[PATH_MAX] = {0};
