@@ -794,6 +794,113 @@ static bool ui_dialog_partition_new_partition(struct disk *disk)
   return modified;
 }
 
+static bool ui_dialog_raid(struct device ***unused,struct raid **raid)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int ok_width = 0;
+  int ok_height = 0;
+  int cancel_width = 0;
+  int cancel_height = 0;
+  int levels_width = 0;
+  int levels_height = 0;
+  int devices_width = 0;
+  int devices_height = 0;
+  newtComponent textbox = 0;
+  newtComponent ok = 0;
+  newtComponent cancel = 0;
+  newtComponent levels = 0;
+  newtComponent devices = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
+
+  if(!get_text_screen_size(RAID_DIALOG_NEW_TEXT,&textbox_width,&textbox_height))
+    return false;
+
+  if(!get_button_screen_size(OK_BUTTON_TEXT,&ok_width,&ok_height))
+    return false;
+
+  if(!get_button_screen_size(CANCEL_BUTTON_TEXT,&cancel_width,&cancel_height))
+    return false;
+
+  levels_width = NEWT_WIDTH;
+  
+  levels_height = 6;
+
+  devices_width = NEWT_WIDTH;
+  
+  devices_height = NEWT_HEIGHT - textbox_height - ok_height - levels_height - 3;
+
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,RAID_DIALOG_NEW_TITLE) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return false;
+  }
+
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,RAID_DIALOG_NEW_TEXT);
+
+  ok = newtButton(NEWT_WIDTH-ok_width-cancel_width,NEWT_HEIGHT-ok_height,OK_BUTTON_TEXT);
+
+  cancel = newtButton(NEWT_WIDTH-cancel_width,NEWT_HEIGHT-cancel_height,CANCEL_BUTTON_TEXT);
+
+  levels = newtListbox(0,textbox_height+1,levels_height,NEWT_FLAG_SCROLL);
+
+  newtListboxSetWidth(levels,levels_height);
+
+  newtListboxAppendEntry(levels,"level0",(void *) 0);
+
+  newtListboxAppendEntry(levels,"level1",(void *) 1);
+
+  newtListboxAppendEntry(levels,"level4",(void *) 4);
+
+  newtListboxAppendEntry(levels,"level5",(void *) 5);
+
+  newtListboxAppendEntry(levels,"level6",(void *) 6);
+
+  newtListboxAppendEntry(levels,"level10",(void *) 10);
+
+  newtListboxSetCurrent(levels,0);
+
+  devices = newtCheckboxTree(0,textbox_height+levels_height+2,devices_height,NEWT_FLAG_SCROLL);
+
+  newtCheckboxTreeSetWidth(devices,devices_width);
+
+  for( int i = 0 ; unused[0][i] != 0 ; ++i )
+  {
+    struct device *device = unused[0][i];
+  
+    newtCheckboxTreeAddItem(devices,device_get_path(device),device,0,i,NEWT_ARG_LAST);
+  }
+
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
+
+  newtFormAddComponents(form,textbox,ok,cancel,levels,devices,(void *) 0);
+
+  newtFormSetCurrent(form,levels);
+
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == ok)
+    {
+      break;
+    }
+    else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == cancel)
+    {
+      break;
+    }
+  }
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
+
+  return true;
+}
+
 extern int ui_main(int argc,char **argv)
 {
   int w = 0;
