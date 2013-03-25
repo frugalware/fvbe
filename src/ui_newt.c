@@ -1843,7 +1843,7 @@ extern bool ui_window_user(struct account *data)
   if(!get_label_screen_size(PASSWORD_CONFIRM_TEXT,&label4_width,&label4_height))
     return false;
 
-  entry_left = maxv( (long []) { label1_width, label2_width, label3_width, label4_width }, 4) + 1;
+  entry_left = maxv( (long long []) { label1_width, label2_width, label3_width, label4_width }, 4) + 1;
 
   entry_width = NEWT_WIDTH - entry_left;
 
