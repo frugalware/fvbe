@@ -105,6 +105,9 @@ static bool raid_run(void)
   if(!raid_setup())
     return false;
 
+  if(*unused == 0 && *used == 0)
+    return true;
+
   return true;
 }
 
