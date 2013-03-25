@@ -216,6 +216,7 @@ extern struct raid *raid_open_empty(int level,int disks,struct device **devices)
 extern int raid_get_level(struct raid *raid);
 extern int raid_get_count(struct raid *raid);
 extern struct device *raid_get_device(struct raid *raid,int n);
+extern long long raid_get_size(struct raid *raid);
 extern void raid_close(struct raid *raid);
 extern int ui_main(int argc,char **argv);
 extern void ui_dialog_text(const char *title,const char *text);

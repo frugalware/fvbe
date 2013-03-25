@@ -1473,6 +1473,18 @@ extern struct device *raid_get_device(struct raid *raid,int n)
   return raid->devices[n];
 }
 
+extern long long raid_get_size(struct raid *raid)
+{
+  if(raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  return raid->size;
+}
+
 extern void raid_close(struct raid *raid)
 {
   if(raid == 0)
