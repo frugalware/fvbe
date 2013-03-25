@@ -145,11 +145,6 @@ extern int get_text_length(const char *s);
 extern bool execute(const char *command,const char *root,pid_t *cpid);
 extern void *memdup(const void *mem,size_t size);
 extern void *malloc0(size_t size);
-extern int get_text_screen_width(const char *s);
-extern bool get_text_screen_size(const char *text,int *width,int *height);
-extern bool get_button_screen_size(const char *text,int *width,int *height);
-extern bool get_label_screen_size(const char *text,int *width,int *height);
-extern bool get_checkbox_screen_size(const char *text,int *width,int *height);
 static inline long long min(long long a,long long b) { return (a < b) ? a : b; }
 static inline long long max(long long a,long long b) { return (a > b) ? a : b; }
 static inline long long minv(long long *v,size_t size)

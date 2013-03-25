@@ -68,6 +68,172 @@ static inline bool findpath(struct format **targets,struct format *target,const 
   return false;
 }
 
+static int get_text_screen_width(const char *s)
+{
+  wchar_t wc = 0;
+  size_t n = 0;
+  size_t len = 0;
+  mbstate_t mbs = {0};
+  int w = 0;
+  int i = 0;
+
+  if(s == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return -1;
+  }
+
+  len = strlen(s);
+
+  while(true)
+  {
+    n = mbrtowc(&wc,s,len,&mbs);
+
+    if(n == (size_t) -1 || n == (size_t) -2)
+    {
+      error(strerror(errno));
+      return -1;
+    }
+
+    if(n == 0 || wc == L'\n')
+      break;
+
+    switch(wc)
+    {
+      case L'\t':
+        w += 8;
+        break;
+
+      default:
+        if((i = wcwidth(wc)) > 0)
+          w += i;
+        break;
+    }
+
+    s += n;
+
+    len -= n;
+  }
+
+  return w;
+}
+
+static bool get_text_screen_size(const char *text,int *width,int *height)
+{
+  const char *s = text;
+  int cw = 0;
+  int w = 0;
+  int h = 0;
+
+  if(text == 0 || width == 0 || height == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  while(true)
+  {
+    cw = get_text_screen_width(s);
+
+    if(cw == -1)
+      return false;
+
+    if(w < cw)
+      w = cw;
+
+    if((s = strchr(s,'\n')) == 0)
+      break;
+
+    ++h;
+
+    ++s;
+  }
+
+  *width = w;
+
+  *height = h;
+
+  return true;
+}
+
+static bool get_button_screen_size(const char *text,int *width,int *height)
+{
+  int w = 0;
+  int h = 0;
+
+  if(text == 0 || width == 0 || height == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  if((w = get_text_screen_width(text)) == -1)
+    return false;
+
+  w += 5;
+
+  h = 4;
+
+  *width = w;
+
+  *height = h;
+
+  return true;
+}
+
+static bool get_label_screen_size(const char *text,int *width,int *height)
+{
+  int w = 0;
+  int h = 0;
+
+  if(text == 0 || width == 0 || height == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  if((w = get_text_screen_width(text)) == -1)
+    return false;
+
+  h = 1;
+
+  *width = w;
+
+  *height = h;
+
+  return true;
+}
+
+static bool get_checkbox_screen_size(const char *text,int *width,int *height)
+{
+  int w = 0;
+  int h = 0;
+
+  if(text == 0 || width == 0 || height == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  if((w = get_text_screen_width(text)) == -1)
+    return false;
+
+  w += 4;
+
+  h = 1;
+
+  *width = w;
+
+  *height = h;
+
+  return true;
+}
+
 static bool ui_dialog_format(struct format **targets,struct format *target)
 {
   int textbox_width = 0;
