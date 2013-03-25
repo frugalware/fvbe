@@ -1492,7 +1492,7 @@ extern bool raid_start(struct raid *raid,const char *path)
 {
   char command[_POSIX_ARG_MAX] = {0};
 
-  if(raid == 0 || path == 0)
+  if(raid == 0 || path == 0 || raid->device != 0)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1506,6 +1506,8 @@ extern bool raid_start(struct raid *raid,const char *path)
 
   if(!execute(command,g->hostroot,0))
     return false;
+
+  raid->device = device_open(path);
 
   return true;
 }
@@ -1525,6 +1527,10 @@ extern bool raid_stop(struct raid *raid)
 
   if(!execute(command,g->hostroot,0))
     return false;
+
+  device_close(raid->device);
+
+  raid->device = 0;
 
   return true;
 }
