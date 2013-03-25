@@ -91,7 +91,7 @@ bail:
   return success;
 }
 
-extern bool isbusy(const char *path)
+extern bool isdevicebusy(const char *path)
 {
   int fd = -1;
 
