@@ -1488,6 +1488,47 @@ extern long long raid_get_size(struct raid *raid)
   return raid->size;
 }
 
+extern bool raid_start(struct raid *raid,const char *path)
+{
+  char command[_POSIX_ARG_MAX] = {0};
+
+  if(raid == 0 || path == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  strfcpy(command,sizeof(command),"yes 'y' | mdadm --create --level='%d' --raid-devices='%d' '%s'",raid->level,raid->disks,path);
+
+  for( int i = 0 ; i < raid->disks ; ++i )
+    strfcat(command,sizeof(command)," '%s'",raid->devices[i]->path);
+
+  if(!execute(command,g->hostroot,0))
+    return false;
+
+  return true;
+}
+
+extern bool raid_stop(struct raid *raid)
+{
+  char command[_POSIX_ARG_MAX] = {0};
+
+  if(raid == 0 || raid->device == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  strfcpy(command,sizeof(command),"mdadm --stop '%s'",raid->device->path);
+
+  if(!execute(command,g->hostroot,0))
+    return false;
+
+  return true;
+}
+
 extern void raid_close(struct raid *raid,bool closedevice)
 {
   if(raid == 0)

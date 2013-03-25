@@ -209,6 +209,8 @@ extern int raid_get_level(struct raid *raid);
 extern int raid_get_count(struct raid *raid);
 extern struct device *raid_get_device(struct raid *raid,int n);
 extern long long raid_get_size(struct raid *raid);
+extern bool raid_start(struct raid *raid,const char *path);
+extern bool raid_stop(struct raid *raid);
 extern void raid_close(struct raid *raid,bool closedevice);
 extern int ui_main(int argc,char **argv);
 extern void ui_dialog_text(const char *title,const char *text);
