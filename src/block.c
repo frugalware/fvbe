@@ -89,8 +89,9 @@ struct raid
 {
   struct device *device;
   int level;
+  int disks;
   struct device *devices[128];
-  int size;
+  long long size;
 };
 
 static inline bool isdisk(const struct stat *st)
@@ -269,6 +270,46 @@ static bool newpartition(struct disk *disk,long long size,struct partition *part
   part->size = (part->end - part->start) + 1;
 
   return true;
+}
+
+static void getraidsize(struct raid *raid)
+{
+  int level = raid->level;
+  int disks = raid->disks;
+  struct device **devices = raid->devices;
+  long long size = 0;
+
+  if(level == 0)
+  {
+    for( int i = 0 ; i < disks ; ++i )
+      size += devices[i]->size;
+  }
+  else if(level == 1 || level == 4 || level == 5 || level == 6 || level == 10)
+  {
+    long long minsize = 0;
+    
+    for( int i = 0 ; i < disks ; ++i )
+      minsize = min(minsize,devices[i]->size);
+    
+    if(level == 1)
+    {
+      size = minsize;
+    }
+    else if(level == 4 || level == 5)
+    {
+      size = minsize * (disks - 1);
+    }
+    else if(level == 6)
+    {
+      size = minsize * (disks - 2);
+    }
+    else if(level == 10)
+    {
+      size = minsize * (disks / 2);
+    }
+  }
+  
+  raid->size = size;
 }
 
 extern struct device **device_probe_all(bool disk,bool raid)
@@ -1363,9 +1404,11 @@ extern struct raid *raid_open(struct device *device)
   
   raid->level = level;
 
-  raid->size = disks;
+  raid->disks = disks;
 
   memcpy(raid->devices,devices,sizeof(devices));
+
+  getraidsize(raid);
 
   return raid;
 }
@@ -1385,9 +1428,11 @@ extern struct raid *raid_open_empty(int level,int disks,struct device **devices)
   
   raid->level = level;
   
-  raid->size = disks;
+  raid->disks = disks;
   
   memcpy(raid->devices,devices,sizeof(struct device *) * disks);
+  
+  getraidsize(raid);
   
   return raid;
 }
@@ -1413,12 +1458,12 @@ extern int raid_get_count(struct raid *raid)
     return -1;
   }
   
-  return raid->size;
+  return raid->disks;
 }
 
 extern struct device *raid_get_device(struct raid *raid,int n)
 {
-  if(raid == 0 || n >= raid->size)
+  if(raid == 0 || n >= raid->disks)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1433,7 +1478,7 @@ extern void raid_close(struct raid *raid)
   if(raid == 0)
     return;
   
-  for( int i = 0 ; i < raid->size ; ++i )
+  for( int i = 0 ; i < raid->disks ; ++i )
     device_close(raid->devices[i]);
   
   free(raid);
