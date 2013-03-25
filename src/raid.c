@@ -53,7 +53,7 @@ static bool raid_setup(void)
         {
           strfcpy(path,sizeof(path),"%s%d",device_get_path(device),disk_partition_get_number(disk,l));
           
-          if((unused[j] = device_open(path)) != 0)
+          if(!isdevicebusy(path) && (unused[j] = device_open(path)) != 0)
             ++j;
         }
       }
