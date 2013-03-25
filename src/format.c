@@ -160,7 +160,7 @@ static bool format_setup(void)
       probe_filesystem(target);
     }
 
-    disk_close(disk);
+    disk_close(disk,false);
 
     device_close(device);
   }

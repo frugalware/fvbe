@@ -110,7 +110,7 @@ static void partition_reset(void)
     {
       for( i = 0 ; i < j ; ++i )
       {
-        disk_close(disks[i]);
+        disk_close(disks[i],false);
       }
 
       free(disks);

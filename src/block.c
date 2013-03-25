@@ -1294,10 +1294,13 @@ extern bool disk_flush(struct disk *disk)
   return true;
 }
 
-extern void disk_close(struct disk *disk)
+extern void disk_close(struct disk *disk,bool closedevice)
 {
   if(disk == 0)
     return;
+
+  if(closedevice)
+    device_close(disk->device);
 
   free(disk);
 }
@@ -1485,13 +1488,16 @@ extern long long raid_get_size(struct raid *raid)
   return raid->size;
 }
 
-extern void raid_close(struct raid *raid)
+extern void raid_close(struct raid *raid,bool closedevice)
 {
   if(raid == 0)
     return;
   
   for( int i = 0 ; i < raid->disks ; ++i )
     device_close(raid->devices[i]);
+  
+  if(closedevice)
+    device_close(raid->device);
   
   free(raid);
 }
