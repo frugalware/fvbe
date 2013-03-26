@@ -175,6 +175,19 @@ static inline bool inx11(void)
   
   return (env != 0 && strlen(env) > 0);
 }
+static inline int raidmindisks(int level)
+{
+  if(level == 0 || level == 1)
+    return 2;
+  
+  if(level == 4 || level == 5)
+    return 3;
+  
+  if(level == 6 || level == 10)
+    return 4;
+  
+  return -1;
+}
 extern struct device **device_probe_all(bool disk,bool raid);
 extern struct device *device_open(const char *path);
 extern const char *device_get_path(struct device *device);
