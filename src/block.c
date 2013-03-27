@@ -92,6 +92,7 @@ struct raid
   int disks;
   struct device *devices[128];
   long long size;
+  char *path;
 };
 
 static inline bool isdisk(const struct stat *st)
@@ -1399,14 +1400,16 @@ extern struct raid *raid_open(struct device *device)
 
   getraidsize(raid);
 
+  raid->path = strdup(device->path);
+
   return raid;
 }
 
-extern struct raid *raid_open_empty(int level,int disks,struct device **devices)
+extern struct raid *raid_open_empty(const char *path,int level,int disks,struct device **devices)
 {
   struct raid *raid = 0;
 
-  if(raidmindisks(level) == -1 || disks < raidmindisks(level) || disks > 128 || devices == 0)
+  if(path == 0 || raidmindisks(level) == -1 || disks < raidmindisks(level) || disks > 128 || devices == 0)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1422,7 +1425,9 @@ extern struct raid *raid_open_empty(int level,int disks,struct device **devices)
   memcpy(raid->devices,devices,sizeof(struct device *) * disks);
   
   getraidsize(raid);
-  
+
+  raid->path = strdup(path);
+
   return raid;
 }
 
@@ -1474,18 +1479,18 @@ extern long long raid_get_size(struct raid *raid)
   return raid->size;
 }
 
-extern bool raid_start(struct raid *raid,const char *path)
+extern bool raid_start(struct raid *raid)
 {
   char command[_POSIX_ARG_MAX] = {0};
 
-  if(raid == 0 || path == 0 || raid->device != 0)
+  if(raid == 0 || raid->device != 0)
   {
     errno = EINVAL;
     error(strerror(errno));
     return false;
   }
 
-  strfcpy(command,sizeof(command),"yes 'y' | mdadm --create --level='%d' --raid-devices='%d' '%s'",raid->level,raid->disks,path);
+  strfcpy(command,sizeof(command),"yes 'y' | mdadm --create --level='%d' --raid-devices='%d' '%s'",raid->level,raid->disks,raid->path);
 
   for( int i = 0 ; i < raid->disks ; ++i )
     strfcat(command,sizeof(command)," '%s'",raid->devices[i]->path);
@@ -1493,7 +1498,7 @@ extern bool raid_start(struct raid *raid,const char *path)
   if(!execute(command,g->hostroot,0))
     return false;
 
-  raid->device = device_open(path);
+  raid->device = device_open(raid->path);
 
   return true;
 }
@@ -1531,6 +1536,8 @@ extern void raid_close(struct raid *raid,bool closedevice)
   
   if(closedevice)
     device_close(raid->device);
+  
+  free(raid->path);
   
   free(raid);
 }
