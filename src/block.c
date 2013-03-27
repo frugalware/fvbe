@@ -1479,6 +1479,18 @@ extern long long raid_get_size(struct raid *raid)
   return raid->size;
 }
 
+extern const char *raid_get_path(struct raid *raid)
+{
+  if(raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  return raid->path;
+}
+
 extern bool raid_start(struct raid *raid)
 {
   char command[_POSIX_ARG_MAX] = {0};
@@ -1514,7 +1526,7 @@ extern bool raid_stop(struct raid *raid)
     return false;
   }
 
-  strfcpy(command,sizeof(command),"mdadm --stop '%s'",raid->device->path);
+  strfcpy(command,sizeof(command),"mdadm --stop '%s'",raid->path);
 
   if(!execute(command,g->hostroot,0))
     return false;
