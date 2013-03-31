@@ -1738,6 +1738,7 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
   newtComponent listbox = 0;
   newtComponent form = 0;
   struct newtExitStruct es = {0};
+  char size[10] = {0};
   char text[TEXT_MAX] = {0};
 
   if(unused == 0 || used == 0)
@@ -1770,6 +1771,19 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
   listbox = newtListbox(0,textbox_height+1,listbox_height,NEWT_FLAG_RETURNEXIT|NEWT_FLAG_SCROLL);
+
+  for( int i = 0 ; used[0][i] != 0 ; ++i )
+  {
+    struct raid *raid = used[0][i];
+  
+    size_to_string(size,sizeof(size),raid_get_size(raid),false);
+  
+    strfcpy(text,sizeof(text),"%s %s level%d",raid_get_path(raid),size,raid_get_level(raid));
+    
+    newtListboxAppendEntry(listbox,text,raid);
+  }
+
+  newtListboxAppendEntry(listbox,RAID_CREATE_TEXT,0);
 
   newtListboxSetWidth(listbox,listbox_width);
 
