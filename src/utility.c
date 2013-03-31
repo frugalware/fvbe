@@ -50,6 +50,7 @@ extern void account_free(struct account *account)
 extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
 {
   size_t j = 0;
+  struct stat st = {0};
 
   if(raids == 0 || s == 0 || n == 0)
   {
@@ -63,18 +64,13 @@ extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
   
   for( int i = 0 ; i < 255 ; ++i, *s = 0 )
   {
-    struct device *device = 0;
-    
     strfcpy(s,n,"/dev/md%d",i);
     
     if(
       lfind(s,raids,&j,sizeof(struct raid *),raid_compare) != 0 ||
-      (device = device_open(s)) != 0
+      stat(s,&st) == 0
     )
-    {
-      device_close(device); 
       continue;
-    }
     
     break;
   }
