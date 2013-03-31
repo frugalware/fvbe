@@ -78,6 +78,44 @@ extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
   return (*s != 0);
 }
 
+extern void update_raid_add(struct device ***unused,struct raid ***used,struct raid *raid)
+{
+  size_t unused_size = 1; // Min size = 0
+  size_t used_size = 2;   // Min size = 1
+
+  if(unused == 0 || used == 0 || raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return;
+  }
+
+  for( size_t i = 0 ; unused[0][i] != 0 ; ++i )
+  {
+    if(!raid_has_device(raid,unused[0][i]))
+    {
+      ++unused_size;
+      continue;
+    } 
+   
+    for( size_t j = i + 1 ; unused[0][j] != 0 ; ++j )
+      unused[0][j - 1] = unused[0][j];
+  } 
+  
+  (*unused)[unused_size - 1] = 0;
+  
+  *unused = redim(*unused,struct device *,unused_size);
+
+  for( size_t i = 0 ; used[i] != 0 ; ++i )
+    ++used_size;
+
+  *used = redim(*used,struct raid *,used_size);
+  
+  (*used)[used_size - 2] = raid;
+  
+  (*used)[used_size - 1] = 0;
+}
+
 extern bool copy(const char *old,const char *new)
 {
   FILE *in = 0;
