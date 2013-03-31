@@ -903,7 +903,7 @@ static bool ui_dialog_raid(struct device ***unused,struct raid ***used,struct ra
 
   levels = newtListbox(0,textbox_height+1,levels_height,NEWT_FLAG_SCROLL);
 
-  newtListboxSetWidth(levels,levels_height);
+  newtListboxSetWidth(levels,levels_width);
 
   newtListboxAppendEntry(levels,"level0",(void *) 0);
 
@@ -1762,6 +1762,24 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
     eprintf("Failed to open a NEWT window.\n");
     return false;
   }
+
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,RAID_TEXT);
+
+  next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
+  listbox = newtListbox(0,textbox_height+1,listbox_height,NEWT_FLAG_RETURNEXIT|NEWT_FLAG_SCROLL);
+
+  newtListboxSetWidth(listbox,listbox_width);
+
+  newtListboxSetCurrent(listbox,0);
+
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
+
+  newtFormAddComponents(form,textbox,next,listbox,(void *) 0);
+
+  newtFormSetCurrent(form,listbox);
 
   return true;
 }
