@@ -1725,6 +1725,24 @@ extern bool ui_window_partition(struct device **devices,struct disk **disks)
   return true;
 }
 
+extern bool ui_window_raid(struct device ***unused,struct raid ***used)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int next_width = 0;
+  int next_height = 0;
+  int listbox_width = 0;
+  int listbox_height = 0;
+  newtComponent textbox = 0;
+  newtComponent next = 0;
+  newtComponent listbox = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
+  char text[TEXT_MAX] = {0};
+
+  return true;
+}
+
 extern bool ui_window_format(struct format **targets)
 {
   int textbox_width = 0;
