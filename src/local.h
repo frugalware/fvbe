@@ -230,7 +230,6 @@ extern bool raid_start(struct raid *raid);
 extern bool raid_stop(struct raid *raid);
 extern void raid_close(struct raid *raid,bool closedevice);
 extern int ui_main(int argc,char **argv);
-extern void ui_dialog_text(const char *title,const char *text);
 extern bool ui_dialog_yesno(const char *title,const char *text,bool defaultno);
 extern bool ui_dialog_progress(const char *title,const char *text,int percent);
 extern bool ui_window_list(const char *title,const char *text,char **entries,char **entry);
