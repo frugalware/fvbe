@@ -794,7 +794,7 @@ static bool ui_dialog_partition_new_partition(struct disk *disk)
   return modified;
 }
 
-static bool ui_dialog_raid(struct device ***unused,struct raid **raid)
+static bool ui_dialog_raid(struct device ***unused,struct raid ***used,struct raid **raid)
 {
   int textbox_width = 0;
   int textbox_height = 0;
@@ -813,6 +813,7 @@ static bool ui_dialog_raid(struct device ***unused,struct raid **raid)
   newtComponent devices = 0;
   newtComponent form = 0;
   struct newtExitStruct es = {0};
+  bool modified = false;
 
   if(!get_text_screen_size(RAID_DIALOG_NEW_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -886,6 +887,19 @@ static bool ui_dialog_raid(struct device ***unused,struct raid **raid)
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == ok)
     {
+      int level = (long) newtListboxGetCurrent(levels);
+      int n = 0;
+      struct device **disks = (struct device **) newtCheckboxTreeGetSelection(devices,&n);
+      char path[PATH_MAX] = {0};
+
+      if(raidmindisks(level) == -1 || disks == 0 || n < raidmindisks(level) || !find_unused_raid_device(*used,path,sizeof(path)))
+      {
+        ui_dialog_text(NO_RAID_DISKS_TITLE,NO_RAID_DISKS_TEXT);
+        continue;
+      }
+      
+      modified = ((*raid = raid_open_empty(path,level,n,disks)) != 0);
+      
       break;
     }
     else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == cancel)
@@ -898,7 +912,7 @@ static bool ui_dialog_raid(struct device ***unused,struct raid **raid)
 
   newtPopWindow();
 
-  return true;
+  return modified;
 }
 
 extern int ui_main(int argc,char **argv)
