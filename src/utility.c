@@ -17,6 +17,14 @@
 
 #include "local.h"
 
+static int raid_compare(const void *A,const void *B)
+{
+  const char *a = (const char *) A;
+  struct raid *b = *(struct raid **) B;
+  
+  return strcmp(a,raid_get_path(b));
+}
+
 extern void account_free(struct account *account)
 {
   if(account == 0)
@@ -37,6 +45,41 @@ extern void account_free(struct account *account)
   free(account->shell);
 
   free(account);
+}
+
+extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
+{
+  size_t j = 0;
+
+  if(raids == 0 || s == 0 || n == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  for( ; raids[j] != 0 ; ++j )
+    ;
+  
+  for( int i = 0 ; i < 255 ; ++i, *s = 0 )
+  {
+    struct device *device = 0;
+    
+    strfcpy(s,n,"/dev/md%d",i);
+    
+    if(
+      lfind(s,raids,&j,sizeof(struct raid *),raid_compare) != 0 ||
+      (device = device_open(s)) != 0
+    )
+    {
+      device_close(device); 
+      continue;
+    }
+    
+    break;
+  }
+  
+  return (*s != 0);
 }
 
 extern bool copy(const char *old,const char *new)
