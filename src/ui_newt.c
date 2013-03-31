@@ -895,10 +895,16 @@ static bool ui_dialog_raid(struct device ***unused,struct raid ***used,struct ra
       if(raidmindisks(level) == -1 || disks == 0 || n < raidmindisks(level) || !find_unused_raid_device(*used,path,sizeof(path)))
       {
         ui_dialog_text(NO_RAID_DISKS_TITLE,NO_RAID_DISKS_TEXT);
+        free(disks);
         continue;
       }
       
       modified = ((*raid = raid_open_empty(path,level,n,disks)) != 0);
+      
+      if(modified)
+        update_raid_add(unused,used,*raid);
+      
+      free(disks);
       
       break;
     }
