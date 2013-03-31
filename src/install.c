@@ -152,6 +152,12 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
   const char *title = 0;
   int percent = -1;
 
+  // This parameter is never used.
+  data1 = data1;
+  
+  // This parameter is never used.
+  data2 = data2;
+
   switch(event)
   {
     case PM_TRANS_EVT_RESOLVEDEPS_START:
@@ -221,7 +227,17 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
 
 static void install_conversation_callback(unsigned char event,void *data1,void *data2,void *data3,int *response)
 {
+  // This parameter is never used.
+  data1 = data1;
+
+  // This parameter is never used.
+  data2 = data2;
+
+  // This parameter is never used.
+  data3 = data3;
+
   eprintf("Unhandled pacman conversation event: %hhu\n",event);
+
   *response = 0;
 }
 
