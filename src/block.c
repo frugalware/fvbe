@@ -313,6 +313,14 @@ static void getraidsize(struct raid *raid)
   raid->size = size;
 }
 
+static int device_compare(const void *A,const void *B)
+{
+  struct device *a = (struct device *) A;
+  struct device *b = *(struct device **) B; 
+
+  return strcmp(a->path,b->path);
+}
+
 extern struct device **device_probe_all(bool disk,bool raid)
 {
   DIR *dir = 0;
@@ -1489,6 +1497,22 @@ extern const char *raid_get_path(struct raid *raid)
   }
 
   return raid->path;
+}
+
+extern bool raid_has_device(struct raid *raid,struct device *device)
+{
+  size_t disks = 0;
+
+  if(raid == 0 || raid->disks < 1 || device == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  disks = raid->disks;
+  
+  return (lfind(device,raid->devices,&disks,sizeof(struct device *),device_compare) != 0);
 }
 
 extern bool raid_start(struct raid *raid)

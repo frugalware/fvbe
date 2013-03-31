@@ -224,6 +224,7 @@ extern int raid_get_count(struct raid *raid);
 extern struct device *raid_get_device(struct raid *raid,int n);
 extern long long raid_get_size(struct raid *raid);
 extern const char *raid_get_path(struct raid *raid);
+extern bool raid_has_device(struct raid *raid,struct device *device);
 extern bool raid_start(struct raid *raid);
 extern bool raid_stop(struct raid *raid);
 extern void raid_close(struct raid *raid,bool closedevice);
