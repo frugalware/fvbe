@@ -1740,6 +1740,29 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
   struct newtExitStruct es = {0};
   char text[TEXT_MAX] = {0};
 
+  if(unused == 0 || used == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  if(!get_text_screen_size(RAID_TEXT,&textbox_width,&textbox_height))
+    return false;
+
+  if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
+    return false;
+
+  listbox_width = NEWT_WIDTH;
+
+  listbox_height = NEWT_HEIGHT - textbox_height - next_height - 2;
+
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,RAID_TITLE) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return false;
+  }
+
   return true;
 }
 
