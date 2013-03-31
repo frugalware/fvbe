@@ -1781,6 +1781,18 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
 
   newtFormSetCurrent(form,listbox);
 
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+      break;
+  }
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
+
   return true;
 }
 
