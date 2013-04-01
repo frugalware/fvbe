@@ -19,6 +19,7 @@
 
 static struct device **unused = 0;
 static struct raid **used = 0;
+static struct raid **stop = 0;
 
 static bool raid_setup(void)
 {
@@ -96,6 +97,8 @@ static bool raid_setup(void)
   used = redim(used,struct raid *,k + 1);
 
   free(devices);
+
+  stop = alloc(struct raid *,1);
 
   return true;
 }
