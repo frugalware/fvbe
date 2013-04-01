@@ -288,7 +288,7 @@ static void getraidsize(struct raid *raid)
   }
   else if(level == 1 || level == 4 || level == 5 || level == 6 || level == 10)
   {
-    long long minsize = 0;
+    long long minsize = LLONG_MAX;
     
     for( int i = 0 ; i < disks ; ++i )
       minsize = min(minsize,devices[i]->size);
