@@ -47,6 +47,23 @@ extern void account_free(struct account *account)
   free(account);
 }
 
+extern int get_number_padding(int n)
+{
+  int p = 1;
+
+  if(n < 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  for( ; (n / 10) > 0 ; n /= 10 )
+    ++p;
+  
+  return p;
+}
+
 extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
 {
   size_t j = 0;

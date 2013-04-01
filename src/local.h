@@ -126,6 +126,7 @@ struct tool
 };
 
 extern void account_free(struct account *account);
+extern int get_number_padding(int n);
 extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n);
 extern void update_raid_add(struct device ***unused,struct raid ***used,struct raid *raid);
 extern void update_raid_remove(struct device ***unused,struct raid ***used,struct raid *raid);
