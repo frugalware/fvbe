@@ -105,18 +105,19 @@ static bool raid_setup(void)
 
 static bool raid_flush(void)
 {
+  int i = 0;
   int count = 0;
   int padding = 0;
   char text[TEXT_MAX] = {0};
 
   if(*stop != 0)
   {
-    for( int i = 0, count = 0 ; stop[i] != 0 ; ++i )
+    for( i = 0, count = 0 ; stop[i] != 0 ; ++i )
       ++count;
     
     padding = get_number_padding(count);
     
-    for( int i = 0 ; i < count ; ++i )
+    for( i = 0 ; i < count ; ++i )
     {
       struct raid *raid = stop[i];
     
@@ -130,16 +131,18 @@ static bool raid_flush(void)
         return false;
       }
     }
+  
+    ui_dialog_progress(0,0,-1);
   }
   
   if(*used != 0)
   {
-    for( int i = 0, count = 0 ; used[i] != 0 ; ++i )
+    for( i = 0, count = 0 ; used[i] != 0 ; ++i )
       ++count;
     
     padding = get_number_padding(count);
     
-    for( int i = 0 ; i < count ; ++i )
+    for( i = 0 ; i < count ; ++i )
     {
       struct raid *raid = used[i];
       const char *origin = raid_get_origin(raid);
@@ -154,8 +157,10 @@ static bool raid_flush(void)
         return false;
       }
     }
-  }
   
+    ui_dialog_progress(0,0,-1);
+  }
+
   return true;
 }
 
