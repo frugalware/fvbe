@@ -106,7 +106,7 @@ extern void update_raid_add(struct device ***unused,struct raid ***used,struct r
   
   *unused = redim(*unused,struct device *,unused_size);
 
-  for( size_t i = 0 ; used[i] != 0 ; ++i )
+  for( size_t i = 0 ; used[0][i] != 0 ; ++i )
     ++used_size;
 
   *used = redim(*used,struct raid *,used_size);
