@@ -1725,7 +1725,7 @@ extern bool ui_window_partition(struct device **devices,struct disk **disks)
   return true;
 }
 
-extern bool ui_window_raid(struct device ***unused,struct raid ***used)
+extern bool ui_window_raid(struct device ***unused,struct raid ***used,struct raid ***stop)
 {
   int textbox_width = 0;
   int textbox_height = 0;
@@ -1741,7 +1741,7 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
   char size[10] = {0};
   char text[TEXT_MAX] = {0};
 
-  if(unused == 0 || used == 0)
+  if(unused == 0 || used == 0 || stop == 0)
   {
     errno = EINVAL;
     error(strerror(errno));
@@ -1822,9 +1822,16 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
       }
       else
       {
+        const char *origin = raid_get_origin(raid);
+      
         update_raid_remove(unused,used,raid);
         
         newtListboxDeleteEntry(listbox,raid);
+        
+        if(strcmp(origin,"memory") == 0)
+          raid_close(raid,true);
+        else if(strcmp(origin,"device") == 0)
+          update_raid_stop_add(stop,raid);
       }
     }
     else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)

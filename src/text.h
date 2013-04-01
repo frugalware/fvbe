@@ -58,6 +58,7 @@
 #define NO_GRUB_BIOS_TEXT _("At least one of your partition tables lacks space to embed GRUB.\nIf it is DOS, the 1st partition must have offset of at least 1 MiB.\nIf it is GPT, the BIOS partition must be at least 1 MiB in size.\nDo you wish to proceed anyway?\n")
 #define RAID_TITLE _("RAID Setup")
 #define RAID_TEXT _("Select a RAID device entry if you wish to delete it for reuse.\nSelect 'Create RAID Device' to create a new one from other devices.\nThese are in the list below.\n")
+#define RAID_CREATE_TEXT _("Create RAID Device")
 #define RAID_DIALOG_NEW_TITLE _("New RAID Device")
 #define RAID_DIALOG_NEW_TEXT _("Select a RAID level from the first list below.\nSelect devices from the second list below.\n")
 #define NO_RAID_DISKS_TITLE _("Insufficient RAID Devices")
