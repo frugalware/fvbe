@@ -1579,13 +1579,14 @@ extern bool raid_stop(struct raid *raid)
   return true;
 }
 
-extern void raid_close(struct raid *raid,bool closedevice)
+extern void raid_close(struct raid *raid,bool closedevices,bool closedevice)
 {
   if(raid == 0)
     return;
   
-  for( int i = 0 ; i < raid->disks ; ++i )
-    device_close(raid->devices[i]);
+  if(closedevices)
+    for( int i = 0 ; i < raid->disks ; ++i )
+      device_close(raid->devices[i]);
   
   if(closedevice)
     device_close(raid->device);

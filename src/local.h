@@ -231,7 +231,7 @@ extern const char *raid_get_origin(struct raid *raid);
 extern bool raid_has_device(struct raid *raid,struct device *device);
 extern bool raid_start(struct raid *raid);
 extern bool raid_stop(struct raid *raid);
-extern void raid_close(struct raid *raid,bool closedevice);
+extern void raid_close(struct raid *raid,bool closedevices,bool closedevice);
 extern int ui_main(int argc,char **argv);
 extern bool ui_dialog_yesno(const char *title,const char *text,bool defaultno);
 extern bool ui_dialog_progress(const char *title,const char *text,int percent);

@@ -69,7 +69,7 @@ static bool raid_setup(void)
     {
       if(k == size - 1)
       {
-        raid_close(raid,false);
+        raid_close(raid,true,false);
       
         device_close(device);
       
@@ -132,7 +132,7 @@ static void raid_reset(void)
   if(used != 0)
   {
     for( size_t i = 0 ; used[i] != 0 ; ++i )
-      raid_close(used[i],true);
+      raid_close(used[i],true,true);
     
     free(used);
     
@@ -142,7 +142,7 @@ static void raid_reset(void)
   if(stop != 0)
   {
     for( size_t i = 0 ; stop[i] != 0 ; ++i )
-      raid_close(stop[i],true);
+      raid_close(stop[i],true,true);
     
     free(stop);
     
