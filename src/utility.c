@@ -116,6 +116,47 @@ extern void update_raid_add(struct device ***unused,struct raid ***used,struct r
   (*used)[used_size - 1] = 0;
 }
 
+extern void update_raid_remove(struct device ***unused,struct raid ***used,struct raid *raid)
+{
+  size_t unused_size = 1; // Min size = 0
+  size_t used_size = 1;   // Min size = 0
+
+  if(unused == 0 || used == 0 || raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return;
+  }
+
+  for( size_t i = 0 ; unused[0][i] != 0 ; ++i )
+    ++unused_size;
+
+  unused_size += raid_get_count(raid);
+
+  *unused = redim(*unused,struct device *,unused_size);
+
+  for( int i = 0, j = raid_get_count(raid) ; i < j ; ++i )
+    (*unused)[unused_size - 1 - j + i] = raid_get_device(raid,i);
+
+  (*unused)[unused_size - 1] = 0;
+
+  for( size_t i = 0 ; used[0][i] != 0 ; ++i )
+  {
+    if(used[0][i] != raid)
+    {
+      ++used_size;
+      continue;
+    }
+    
+    for( size_t j = i + 1 ; used[0][j] != 0 ; ++j )
+      used[0][j - 1] = used[0][j];
+  }
+  
+  (*used)[used_size - 1] = 0;
+  
+  *used = redim(*used,struct raid *,used_size);
+}
+
 extern bool copy(const char *old,const char *new)
 {
   FILE *in = 0;
