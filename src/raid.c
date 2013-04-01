@@ -103,6 +103,66 @@ static bool raid_setup(void)
   return true;
 }
 
+static bool raid_flush(void)
+{
+  int count = 0;
+  int padding = 0;
+  int percent = 0;
+  char text[TEXT_MAX] = {0};
+
+  if(*stop != 0)
+  {
+    for( int i = 0, count = 1 ; stop[i] != 0 ; ++i )
+      ++count;
+    
+    padding = get_number_padding(count);
+    
+    for( int i = 0 ; i < count ; ++i )
+    {
+      struct raid *raid = stop[i];
+    
+      strfcpy(text,sizeof(text),"(%*d/%d) - %s",padding,i+1,count,raid_get_path(raid));
+
+      percent = (float) (i+1) / count * 100;
+
+      ui_dialog_progress(_("Stopping RAID Devices"),text,percent);
+
+      if(!raid_stop(raid))
+      {
+        ui_dialog_progress(0,0,-1);
+        return false;
+      }
+    }
+  }
+  
+  if(*used != 0)
+  {
+    for( int i = 0, count = 1 ; used[i] != 0 ; ++i )
+      ++count;
+    
+    padding = get_number_padding(count);
+    
+    for( int i = 0 ; i < count ; ++i )
+    {
+      struct raid *raid = used[i];
+    
+      strfcpy(text,sizeof(text),"(%*d/%d) - %s",padding,i+1,count,raid_get_path(raid));
+
+      percent = (float) (i+1) / count * 100;
+
+      ui_dialog_progress(_("Starting RAID Devices"),text,percent);
+
+      if(!raid_start(raid))
+      {
+        ui_dialog_progress(0,0,-1);
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
+
 static bool raid_run(void)
 {
   if(!raid_setup())
@@ -112,6 +172,9 @@ static bool raid_run(void)
     return true;
 
   if(!ui_window_raid(&unused,&used,&stop))
+    return false;
+
+  if(!raid_flush())
     return false;
 
   return true;
