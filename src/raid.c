@@ -116,6 +116,35 @@ static bool raid_run(void)
 
 static void raid_reset(void)
 {
+  if(unused != 0)
+  {
+    for( size_t i = 0 ; unused[i] != 0 ; ++i )
+      device_close(unused[i]);
+    
+    free(unused);
+    
+    unused = 0;
+  }
+  
+  if(used != 0)
+  {
+    for( size_t i = 0 ; used[i] != 0 ; ++i )
+      raid_close(used[i],true);
+    
+    free(used);
+    
+    used = 0;
+  }
+  
+  if(stop != 0)
+  {
+    for( size_t i = 0 ; stop[i] != 0 ; ++i )
+      raid_close(stop[i],true);
+    
+    free(stop);
+    
+    stop = 0;
+  }
 }
 
 struct module raid_module =
