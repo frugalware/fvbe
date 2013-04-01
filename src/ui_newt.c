@@ -1782,6 +1782,8 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used,struct ra
 
   listbox = newtListbox(0,textbox_height+1,listbox_height,NEWT_FLAG_RETURNEXIT|NEWT_FLAG_SCROLL);
 
+  newtListboxSetWidth(listbox,listbox_width);
+
   for( int i = 0 ; used[0][i] != 0 ; ++i )
   {
     struct raid *raid = used[0][i];
@@ -1793,9 +1795,8 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used,struct ra
     newtListboxAppendEntry(listbox,text,raid);
   }
 
-  newtListboxAppendEntry(listbox,RAID_CREATE_TEXT,0);
-
-  newtListboxSetWidth(listbox,listbox_width);
+  if(unused[0][0] != 0 && unused[0][1] != 0)
+    newtListboxAppendEntry(listbox,RAID_CREATE_TEXT,0);
 
   newtListboxSetCurrent(listbox,0);
 
@@ -1820,12 +1821,13 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used,struct ra
           size_to_string(size,sizeof(size),raid_get_size(raid),false);
   
           strfcpy(text,sizeof(text),"%s %s level%d",raid_get_path(raid),size,raid_get_level(raid));
-        
-          newtListboxInsertEntry(listbox,text,raid,0);
-          
-          newtListboxInsertEntry(listbox,RAID_CREATE_TEXT,0,0);
-          
+                  
           newtListboxDeleteEntry(listbox,0);
+
+          newtListboxAppendEntry(listbox,text,raid);
+          
+          if(unused[0][0] != 0 && unused[0][1] != 0)
+            newtListboxAppendEntry(listbox,RAID_CREATE_TEXT,0);
           
           newtListboxSetCurrentByKey(listbox,raid);
         }
@@ -1837,6 +1839,16 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used,struct ra
         update_raid_remove(unused,used,raid);
         
         newtListboxDeleteEntry(listbox,raid);
+
+        newtListboxDeleteEntry(listbox,0);
+        
+        if(unused[0][0] != 0 && unused[0][1] != 0)
+        {
+          newtListboxAppendEntry(listbox,RAID_CREATE_TEXT,0);
+          newtListboxSetCurrentByKey(listbox,0);
+        }
+        else
+          newtListboxSetCurrent(listbox,0);
         
         if(strcmp(origin,"memory") == 0)
           raid_close(raid,false,true);
