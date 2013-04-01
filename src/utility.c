@@ -157,6 +157,27 @@ extern void update_raid_remove(struct device ***unused,struct raid ***used,struc
   *used = redim(*used,struct raid *,used_size);
 }
 
+extern void update_raid_stop_add(struct raid ***stop,struct raid *raid)
+{
+  size_t size = 2; // Min size = 1
+
+  if(stop == 0 || raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return;
+  }
+
+  for( size_t i = 0 ; stop[0][i] != 0 ; ++i )
+    ++size;
+
+  *stop = redim(*stop,struct raid *,size);
+  
+  (*stop)[size - 2] = raid;
+  
+  (*stop)[size - 1] = 0;
+}
+
 extern bool copy(const char *old,const char *new)
 {
   FILE *in = 0;
