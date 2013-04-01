@@ -54,6 +54,7 @@ pacman-g2 --root $FVBE_ROOT --noprogressbar --noconfirm --config pacman-g2.conf 
 # Install fwsetup.
 install -m 0755 src/fwsetup $FVBE_ROOT/usr/sbin/fwsetup
 install -m 0755 src/fwsetup-valgrind $FVBE_ROOT/usr/sbin/fwsetup-valgrind
+install -m 0644 src/fwsetup.supp $FVBE_ROOT/usr/lib/valgrind/fwsetup.supp
 
 # Set the default systemd boot target.
 if [ -x "$FVBE_ROOT/usr/bin/X" ]; then
