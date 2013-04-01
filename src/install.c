@@ -118,14 +118,7 @@ static int install_download_callback(PM_NETBUF *ctl,int dl_xfered0,void *arg)
 
   size_to_string(dl_size_text+strlen(dl_size_text),sizeof(dl_size_text)-strlen(dl_size_text),dl_total,false);
 
-  if(dl_howmany < 10)
-    dl_pkg_padding = 1;
-  else if(dl_howmany < 100)
-    dl_pkg_padding = 2;
-  else if(dl_howmany < 1000)
-    dl_pkg_padding = 3;
-  else if(dl_howmany < 10000)
-    dl_pkg_padding = 4;
+  dl_pkg_padding = get_number_padding(dl_howmany);
 
   strfcpy(dl_pkg_text,sizeof(dl_pkg_text),"%*d/%d",dl_pkg_padding,dl_remain,dl_howmany);
 

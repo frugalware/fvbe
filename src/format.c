@@ -240,14 +240,7 @@ static bool format_process_devices(void)
   for( ; targets[j] != 0 ; ++j )
     ;
 
-  if(j < 10)
-    padding = 1;
-  else if(j < 100)
-    padding = 2;
-  else if(j < 1000)
-    padding = 3;
-  else if(j < 10000)
-    padding = 4;
+  padding = get_number_padding(j);
 
   for( ; i < j ; ++i )
   {
