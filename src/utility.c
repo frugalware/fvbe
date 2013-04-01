@@ -110,13 +110,7 @@ extern void update_raid_add(struct device ***unused,struct raid ***used,struct r
   for( size_t i = 0 ; unused[0][i] != 0 ; ++i )
   {
     if(!raid_has_device(raid,unused[0][i]))
-    {
-      ++unused_size;
-      continue;
-    } 
-   
-    for( size_t j = i + 1 ; unused[0][j] != 0 ; ++j )
-      unused[0][j - 1] = unused[0][j];
+      unused[0][unused_size++ - 1] = unused[0][i];
   } 
   
   (*unused)[unused_size - 1] = 0;
@@ -160,13 +154,7 @@ extern void update_raid_remove(struct device ***unused,struct raid ***used,struc
   for( size_t i = 0 ; used[0][i] != 0 ; ++i )
   {
     if(used[0][i] != raid)
-    {
-      ++used_size;
-      continue;
-    }
-    
-    for( size_t j = i + 1 ; used[0][j] != 0 ; ++j )
-      used[0][j - 1] = used[0][j];
+      used[0][used_size++ - 1] = used[0][i];
   }
   
   (*used)[used_size - 1] = 0;
