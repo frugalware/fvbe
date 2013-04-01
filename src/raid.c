@@ -107,7 +107,6 @@ static bool raid_flush(void)
 {
   int count = 0;
   int padding = 0;
-  int percent = 0;
   char text[TEXT_MAX] = {0};
 
   if(*stop != 0)
@@ -123,9 +122,7 @@ static bool raid_flush(void)
     
       strfcpy(text,sizeof(text),"(%*d/%d) - %s",padding,i+1,count,raid_get_path(raid));
 
-      percent = (float) (i+1) / count * 100;
-
-      ui_dialog_progress(_("Stopping RAID Devices"),text,percent);
+      ui_dialog_progress(_("Stopping RAID Devices"),text,get_percent(i+1,count));
 
       if(!raid_stop(raid))
       {
@@ -148,9 +145,7 @@ static bool raid_flush(void)
     
       strfcpy(text,sizeof(text),"(%*d/%d) - %s",padding,i+1,count,raid_get_path(raid));
 
-      percent = (float) (i+1) / count * 100;
-
-      ui_dialog_progress(_("Starting RAID Devices"),text,percent);
+      ui_dialog_progress(_("Starting RAID Devices"),text,get_percent(i+1,count));
 
       if(!raid_start(raid))
       {

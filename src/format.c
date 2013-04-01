@@ -232,7 +232,6 @@ static bool format_process_devices(void)
   int j = 0;
   int padding = 0;
   char text[256] = {0};
-  int percent = 0;
   const char *program = 0;
   char command[_POSIX_ARG_MAX] = {0};
   char path[PATH_MAX] = {0};
@@ -248,9 +247,7 @@ static bool format_process_devices(void)
 
     strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->devicepath,target->newfilesystem);
 
-    percent = (float) (i+1) / j * 100;
-
-    ui_dialog_progress(_("Formatting"),text,percent);
+    ui_dialog_progress(_("Formatting"),text,get_percent(i+1,j));
 
     if(target->format)
     {

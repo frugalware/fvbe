@@ -60,7 +60,6 @@ static int install_download_callback(PM_NETBUF *ctl,int dl_xfered0,void *arg)
 {
   int dl_amount = 0;
   int dl_total = 0;
-  int dl_percent = 0;
   float dl_timediff = 0;
   struct timeval dl_time2 = {0};
   char dl_eta_text[9] = {0};
@@ -78,8 +77,6 @@ static int install_download_callback(PM_NETBUF *ctl,int dl_xfered0,void *arg)
   dl_amount = dl_xfered0 + dl_offset;
 
   dl_total = * (int *) arg;
-
-  dl_percent = (float) dl_amount / dl_total * 100;
 
   gettimeofday(&dl_time2,0);
 
@@ -137,7 +134,7 @@ static int install_download_callback(PM_NETBUF *ctl,int dl_xfered0,void *arg)
 
   strfcpy(dl_text,sizeof(dl_text),"(%s) %s (%s) %s %s",dl_pkg_text,dl_file_text,dl_size_text,dl_rate_text,dl_eta_text);
 
-  return ui_dialog_progress(_("Downloading"),dl_text,dl_percent);
+  return ui_dialog_progress(_("Downloading"),dl_text,get_percent(dl_amount,dl_total));
 }
 
 static void install_event_callback(unsigned char event,void *data1,void *data2)
@@ -240,14 +237,7 @@ static void install_progress_callback(unsigned char event,char *pkg,int percent,
   int padding = 0;
   const char *title = 0;
 
-  if(howmany < 10)
-    padding = 1;
-  else if(howmany < 100)
-    padding = 2;
-  else if(howmany < 1000)
-    padding = 3;
-  else if(howmany < 10000)
-    padding = 4;
+  padding = get_number_padding(howmany);
 
   strfcpy(text,sizeof(text),"(%*d/%d)",padding,remain,howmany);
 

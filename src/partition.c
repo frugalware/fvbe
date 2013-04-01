@@ -43,8 +43,7 @@ static bool partition_flush(void)
   int i = 0;
   int j = 0;
   int padding = 0;
-  int percent = 0;
-  char text[LINE_MAX] = {0};
+  char text[TEXT_MAX] = {0};
 
   for( ; devices[j] != 0 ; ++j )
     ;
@@ -58,9 +57,7 @@ static bool partition_flush(void)
 
     strfcpy(text,sizeof(text),"(%*d/%d) - %s",padding,i+1,j,device_get_path(device));
 
-    percent = (float) (i+1) / j * 100;
-
-    ui_dialog_progress(_("Partitioning"),text,percent);
+    ui_dialog_progress(_("Partitioning"),text,get_percent(i+i,j));
 
     if(disk && !disk_flush(disk))
     {

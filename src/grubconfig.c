@@ -100,7 +100,6 @@ static bool grubconfig_action(void)
   char *p = 0;
   size_t i = 0;
   size_t count = 0;
-  int percent = 0;
   char command[_POSIX_ARG_MAX] = {0};
   
   fetch_root_device(device,sizeof(device));
@@ -129,11 +128,9 @@ static bool grubconfig_action(void)
   {
     strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%.8s'",s);
    
-    percent = (float) (i+1) / count * 100;
-   
     strfcpy(path,sizeof(path),"(%zu/%zu) - %.8s",i+1,count,s);
    
-    ui_dialog_progress(_("Installing GRUB"),path,percent);
+    ui_dialog_progress(_("Installing GRUB"),path,get_percent(i+1,count));
    
     if(!execute(command,g->guestroot,0))
     {

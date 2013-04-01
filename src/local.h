@@ -193,6 +193,10 @@ static inline int raidmindisks(int level)
   
   return -1;
 }
+static inline int get_percent(int a,int b)
+{
+  return ((int) (long double) a / b * 100);
+}
 extern struct device **device_probe_all(bool disk,bool raid);
 extern struct device *device_open(const char *path);
 extern const char *device_get_path(struct device *device);
