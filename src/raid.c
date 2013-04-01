@@ -111,7 +111,7 @@ static bool raid_flush(void)
 
   if(*stop != 0)
   {
-    for( int i = 0, count = 1 ; stop[i] != 0 ; ++i )
+    for( int i = 0, count = 0 ; stop[i] != 0 ; ++i )
       ++count;
     
     padding = get_number_padding(count);
@@ -134,7 +134,7 @@ static bool raid_flush(void)
   
   if(*used != 0)
   {
-    for( int i = 0, count = 1 ; used[i] != 0 ; ++i )
+    for( int i = 0, count = 0 ; used[i] != 0 ; ++i )
       ++count;
     
     padding = get_number_padding(count);
@@ -142,12 +142,13 @@ static bool raid_flush(void)
     for( int i = 0 ; i < count ; ++i )
     {
       struct raid *raid = used[i];
+      const char *origin = raid_get_origin(raid);
     
       strfcpy(text,sizeof(text),"(%*d/%d) - %s",padding,i+1,count,raid_get_path(raid));
 
       ui_dialog_progress(_("Starting RAID Devices"),text,get_percent(i+1,count));
 
-      if(!raid_start(raid))
+      if(strcmp(origin,"memory") == 0 && !raid_start(raid))
       {
         ui_dialog_progress(0,0,-1);
         return false;
