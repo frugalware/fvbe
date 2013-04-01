@@ -111,6 +111,9 @@ static bool raid_run(void)
   if(*unused == 0 && *used == 0)
     return true;
 
+  if(!ui_window_raid(&unused,&used,&stop))
+    return false;
+
   return true;
 }
 
