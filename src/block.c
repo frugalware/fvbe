@@ -93,6 +93,7 @@ struct raid
   struct device *devices[128];
   long long size;
   char *path;
+  char *origin;
 };
 
 static inline bool isdisk(const struct stat *st)
@@ -1410,6 +1411,8 @@ extern struct raid *raid_open(struct device *device)
 
   raid->path = strdup(device->path);
 
+  raid->origin = strdup("device");
+
   return raid;
 }
 
@@ -1435,6 +1438,8 @@ extern struct raid *raid_open_empty(const char *path,int level,int disks,struct 
   getraidsize(raid);
 
   raid->path = strdup(path);
+
+  raid->origin = strdup("memory");
 
   return raid;
 }
@@ -1497,6 +1502,18 @@ extern const char *raid_get_path(struct raid *raid)
   }
 
   return raid->path;
+}
+
+extern const char *raid_get_origin(struct raid *raid)
+{
+  if(raid == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return 0;
+  }
+
+  return raid->origin;
 }
 
 extern bool raid_has_device(struct raid *raid,struct device *device)
@@ -1574,6 +1591,8 @@ extern void raid_close(struct raid *raid,bool closedevice)
     device_close(raid->device);
   
   free(raid->path);
+  
+  free(raid->origin);
   
   free(raid);
 }
