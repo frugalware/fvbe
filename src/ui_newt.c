@@ -1799,8 +1799,38 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used)
   {
     newtFormRun(form,&es);
 
-    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == listbox)
+    {
+      struct raid *raid = newtListboxGetCurrent(listbox);
+      
+      if(raid == 0)
+      {
+        if(ui_dialog_raid(unused,used,&raid))
+        {
+          size_to_string(size,sizeof(size),raid_get_size(raid),false);
+  
+          strfcpy(text,sizeof(text),"%s %s level%d",raid_get_path(raid),size,raid_get_level(raid));
+        
+          newtListboxInsertEntry(listbox,text,raid,0);
+          
+          newtListboxInsertEntry(listbox,RAID_CREATE_TEXT,0,0);
+          
+          newtListboxDeleteEntry(listbox,0);
+          
+          newtListboxSetCurrentByKey(listbox,raid);
+        }
+      }
+      else
+      {
+        update_raid_remove(unused,used,raid);
+        
+        newtListboxDeleteEntry(listbox,raid);
+      }
+    }
+    else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    {
       break;
+    }
   }
 
   newtFormDestroy(form);
