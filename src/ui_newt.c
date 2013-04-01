@@ -1031,6 +1031,8 @@ extern int ui_main(int argc,char **argv)
 
   newtCls();
 
+  klogctl(8,0,1);
+
   if(g->insetup)
   {
     struct module *module = 0;
@@ -1110,6 +1112,8 @@ extern int ui_main(int argc,char **argv)
       }
     }
   }
+
+  klogctl(8,0,4);
 
   newtFinished();
 
