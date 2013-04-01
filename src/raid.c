@@ -142,7 +142,7 @@ static void raid_reset(void)
   if(stop != 0)
   {
     for( size_t i = 0 ; stop[i] != 0 ; ++i )
-      raid_close(stop[i],true,true);
+      raid_close(stop[i],false,true);
     
     free(stop);
     
