@@ -868,6 +868,8 @@ static bool ui_dialog_raid(struct device ***unused,struct raid ***used,struct ra
   newtComponent devices = 0;
   newtComponent form = 0;
   struct newtExitStruct es = {0};
+  char size[10] = {0};
+  char text[TEXT_MAX] = {0};
   bool modified = false;
 
   if(!get_text_screen_size(RAID_DIALOG_NEW_TEXT,&textbox_width,&textbox_height))
@@ -927,7 +929,11 @@ static bool ui_dialog_raid(struct device ***unused,struct raid ***used,struct ra
   {
     struct device *device = unused[0][i];
   
-    newtCheckboxTreeAddItem(devices,device_get_path(device),device,0,i,NEWT_ARG_LAST);
+    size_to_string(size,sizeof(size),device_get_size(device),false);
+  
+    strfcpy(text,sizeof(text),"%s %s",device_get_path(device),size);
+  
+    newtCheckboxTreeAddItem(devices,text,device,0,i,NEWT_ARG_LAST);
   }
 
   form = newtForm(0,0,NEWT_FLAG_NOF12);
@@ -1829,7 +1835,7 @@ extern bool ui_window_raid(struct device ***unused,struct raid ***used,struct ra
         newtListboxDeleteEntry(listbox,raid);
         
         if(strcmp(origin,"memory") == 0)
-          raid_close(raid,true);
+          raid_close(raid,false,true);
         else if(strcmp(origin,"device") == 0)
           update_raid_stop_add(stop,raid);
       }
