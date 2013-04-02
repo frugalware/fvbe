@@ -40,9 +40,10 @@ rootfs: bin/create-rootfs bin/fwsetup
 	bin/create-rootfs
 	touch rootfs
 
-iso: rootfs bin/create-iso bin/resolvegroups
+$(ISO): rootfs bin/create-iso bin/resolvegroups
 	bin/create-iso
-	touch iso
+
+iso: $(ISO)
 
 bin/fwsetup: $(OBJECTS)
 	cc $(LDFLAGS) $^ -o $@
@@ -53,4 +54,4 @@ bin/resolvegroups: src/resolvegroups.o
 setup: bin/fwsetup
 
 clean:
-	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) iso rootfs fvbe.conf
+	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) rootfs fvbe.conf

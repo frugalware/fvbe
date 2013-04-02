@@ -68,7 +68,7 @@ fi
 if test "$TYPE" = "basic"; then
   PACKAGES="base"
 elif test "$TYPE" = "full"; then
-  PACKAGES="apps base devel gnome kde lib locale-extra multimedia network x11 xapps xfce4 xlib xmultimedia"
+  PACKAGES="apps base devel gnome kde lib multimedia network x11 xapps xfce4 xlib xmultimedia"
 elif test "$TYPE" = "net"; then
   PACKAGES=""
 fi
