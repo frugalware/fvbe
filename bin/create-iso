@@ -44,7 +44,7 @@ do_layouts()
 }
 
 # First, clean up.
-rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp1 tmp2
+rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp local sums
 
 # Create the skeleton directory.
 mkdir -p $FVBE_ROOT/{boot/grub/fonts,LiveOS}
@@ -58,44 +58,21 @@ cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 
 # Setup the pacman-g2 package cache.
 if [ -n "$FVBE_ISO_PACKAGES" ]; then
-  mkdir -p $FVBE_ROOT/packages
-  for i in $(pacman-g2 -b $(pwd) --config pacman-g2.conf -Sg $FVBE_ISO_PACKAGES); do
-    echo $i >> tmp1
-  done
-  for i in $FVBE_ISO_PACKAGES; do
-    sed -i "s|^$i\$||" tmp1
-  done
-  sort -u < tmp1 > tmp2
-  mv -f tmp2 tmp1
-  while read line; do
-    for i in $line; do
-      if [ "$i" != "None" ]; then
-        echo $i >> tmp2
-      fi
-    done
-  done << EOF
-$(pacman-g2 -b $(pwd) --config pacman-g2.conf -Si $(cat tmp1) | sed -n -r -e '/^Depends On/{:loop;N;/\nRemoves/!b loop;s/\nRemoves.*$//;s/^Depends On[^:]+://;s/[><=]+\S+//g;p}')
-EOF
-  cat tmp1 >> tmp2
-  sort -u < tmp2 > tmp1
-  rm -f tmp2
-  while read line; do
-    name=$(echo $line | cut -d ':' -f 1)
-    ver=$(echo $line | cut -d ':' -f 2)
-    sum=$(echo $line | cut -d ':' -f 3)
-    FPM=$name-$ver-$FVBE_ARCH.fpm
-    cp /var/cache/pacman-g2/pkg/$FPM $FVBE_ROOT/packages/$FPM
-    echo "$sum  $FVBE_ROOT/packages/$FPM" >> tmp2
-  done << EOF
-$(pacman-g2 -b $(pwd) --config pacman-g2.conf -Si $(cat tmp1) | sed -n -r '/^Name[^:]+:/{;s/Name[^:]+://;:ver;N;/\nVersion[^:]+:/!{s/\n.*//;b ver};s/\nVersion[^:]+//;:sum;N;/\nSHA1 Sum[^:]+/!{s/\n.*//;b sum};s/\nSHA1 Sum[^:]+//;s/\s+//g;p}')
-EOF
-  sha1sum -c tmp2
-  rm -f tmp1 tmp2
   if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
     FDB=frugalware-current.fdb
   elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
     FDB=frugalware.fdb
   fi
+  mkdir -p $FVBE_ROOT/packages
+  while read line; do
+    fpm=$(echo $line | cut -f 1 -d ':')
+    sum=$(echo $line | cut -f 2 -d ':')
+    cp /var/cache/pacman-g2/pkg/$fpm $FVBE_ROOT/packages/$fpm
+    echo "$sum  $FVBE_ROOT/packages/$fpm" >> sums
+  done << EOF
+$(bin/resolvegroups $FVBE_ISO_PACKAGES)
+EOF
+  sha1sum -c sums
   cp $FDB $FVBE_ROOT/packages/$FDB
   echo $FVBE_ISO_PACKAGES > $FVBE_ROOT/packages/groups
 fi
@@ -143,4 +120,4 @@ EOF
 grub-mkrescue -o fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso $FVBE_ROOT -- -boot_image any partition_offset=16 -volid FVBE
 
 # Delete the root directory.
-rm -rf $FVBE_ROOT tmp1 tmp2
+rm -rf $FVBE_ROOT tmp local sums
