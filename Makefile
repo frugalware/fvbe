@@ -34,22 +34,23 @@ OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 all:
 
 %.o: %.c src/text.h src/local.h
-	cc $(CFLAGS) -c $< -o $@
+	cd src; cc $(CFLAGS) -c $(subst src/,,$<) -o $(subst src/,,$@)
 
-vmlinuz initrd squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(FDB): bin/create-rootfs setup
+rootfs: bin/create-rootfs bin/fwsetup
 	bin/create-rootfs
+	touch rootfs
 
-rootfs: vmlinuz initrd squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(FDB)
-
-$(ISO): rootfs bin/create-iso
+iso: rootfs bin/create-iso bin/resolvegroups
 	bin/create-iso
+	touch iso
 
-iso: $(ISO)
-
-src/fwsetup: $(OBJECTS)
+bin/fwsetup: $(OBJECTS)
 	cc $(LDFLAGS) $^ -o $@
 
-setup: src/fwsetup
+bin/resolvegroups: src/resolvegroups.o
+	cc $(LDFLAGS) $^ -o $@
+
+setup: bin/fwsetup
 
 clean:
-	rm -rf $(OBJECTS) src/fwsetup vmlinuz initrd squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) root $(FDB)
+	rm -rf $(OBJECTS) src/fwsetup vmlinuz initrd rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) root $(FDB)
