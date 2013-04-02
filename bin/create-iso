@@ -60,14 +60,20 @@ cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
 if [ -n "$FVBE_ISO_PACKAGES" ]; then
   if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
     FDB=frugalware-current.fdb
+    MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-$FVBE_ARCH"
   elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
     FDB=frugalware.fdb
+    MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-stable/frugalware-$FVBE_ARCH"
   fi
   mkdir -p $FVBE_ROOT/packages
   while read line; do
     fpm=$(echo $line | cut -f 1 -d ':')
     sum=$(echo $line | cut -f 2 -d ':')
-    cp /var/cache/pacman-g2/pkg/$fpm $FVBE_ROOT/packages/$fpm
+    if [ -f "/var/cache/pacman-g2/pkg/$fpm" ]; then
+      cp /var/cache/pacman-g2/pkg/$fpm $FVBE_ROOT/packages/$fpm
+    else
+      wget $MIRROR/$fpm -O $FVBE_ROOT/packages/$fpm
+    fi
     echo "$sum  $FVBE_ROOT/packages/$fpm" >> sums
   done << EOF
 $(bin/resolvegroups $FVBE_ISO_PACKAGES)
