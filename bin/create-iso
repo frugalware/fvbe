@@ -44,7 +44,7 @@ do_layouts()
 }
 
 # First, clean up.
-rm -rf $FVBE_ROOT fvbe-$FVBE_ARCH.iso tmp1 tmp2
+rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp1 tmp2
 
 # Create the skeleton directory.
 mkdir -p $FVBE_ROOT/{boot/grub/fonts,LiveOS}
