@@ -9,6 +9,12 @@ if [ "$(id -u)" -ne 0 ]; then
 	exit 1
 fi
 
+if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
+  FDB=frugalware-current.fdb
+elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
+  FDB=frugalware.fdb
+fi
+
 # Cleanup from a previous run.
 cp /proc/mounts mounts
 while read line; do
@@ -21,7 +27,7 @@ while read line; do
 	fi
 done < mounts
 [ -d "$FVBE_ROOT" ] && umount $FVBE_ROOT
-rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2
+rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $FDB
 
 # Create the virtual disk and mount it.
 dd if=/dev/zero of=rootfs.img bs=$(( 128 * 1024 )) count=$(( ($FVBE_ROOTFS_SIZE * 1024 * 1024 * 1024) / (128 * 1024) ))
@@ -130,11 +136,6 @@ sed -i 's|Frugalware|Frugalware Versatile Bootable Environment|' $FVBE_ROOT/etc/
 # Cache files or data from the ROOTFS that we'll use in the ISO.
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
-if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
-  FDB=frugalware-current.fdb
-elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
-  FDB=frugalware.fdb
-fi
 cp $FVBE_ROOT/var/lib/pacman-g2/$FDB $FDB
 chroot $FVBE_ROOT sh -c "locale --all-locales | grep '\\.utf8$' | sort --unique" > locales
 tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
