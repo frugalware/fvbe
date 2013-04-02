@@ -44,7 +44,7 @@ do_layouts()
 }
 
 # First, clean up.
-rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp local sums
+rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp local local.lastupdate sums
 
 # Create the skeleton directory.
 mkdir -p $FVBE_ROOT/{boot/grub/fonts,LiveOS}
@@ -120,4 +120,4 @@ EOF
 grub-mkrescue -o fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso $FVBE_ROOT -- -boot_image any partition_offset=16 -volid FVBE
 
 # Delete the root directory.
-rm -rf $FVBE_ROOT tmp local sums
+rm -rf $FVBE_ROOT tmp local local.lastupdate sums
