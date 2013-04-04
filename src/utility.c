@@ -25,6 +25,14 @@ static int raid_compare(const void *A,const void *B)
   return strcmp(a,raid_get_path(b));
 }
 
+extern int charpp_qsort(const void *A,const void *B)
+{
+  const char *a = *(const char **) A;
+  const char *b = *(const char **) B;
+  
+  return strcmp(a,b);
+}
+
 extern void account_free(struct account *account)
 {
   if(account == 0)

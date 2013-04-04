@@ -21,14 +21,6 @@ static char **zones = 0;
 static char *zone = 0;
 static bool utc = true;
 
-static int qsort_callback(const void *A,const void *B)
-{
-  const char *a = *(const char **) A;
-  const char *b = *(const char **) B;
-  
-  return strcmp(a,b);
-}
-
 static bool timeconfig_setup(void)
 {
   FILE *file = 0;
@@ -65,7 +57,7 @@ static bool timeconfig_setup(void)
   
   zones = redim(zones,char *,i + 1);
 
-  qsort(zones,i,sizeof(char *),qsort_callback);
+  qsort(zones,i,sizeof(char *),charpp_qsort);
 
   return true;
 }

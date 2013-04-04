@@ -126,6 +126,7 @@ struct tool
   const char *name;
 };
 
+extern int charpp_qsort(const void *A,const void *B);
 extern void account_free(struct account *account);
 extern int get_number_padding(int n);
 extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n);
