@@ -2084,7 +2084,7 @@ extern bool ui_window_host(char **hostname,char **prettyhostname)
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
-      if(strlen(name1) == 0 || strlen(name2) == 0 || *(name1+strspn(name1,LOWER_CHARS "-")) != 0)
+      if(strlen(name1) == 0 || strlen(name2) == 0 || !ishostname(name1))
       {
         ui_dialog_text(HOST_ERROR_TITLE,HOST_ERROR_TEXT);
         continue;

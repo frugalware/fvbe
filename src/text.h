@@ -84,7 +84,7 @@
 #define HOSTNAME_ENTRY_TEXT _("Hostname")
 #define PRETTY_HOSTNAME_ENTRY_TEXT _("Pretty Hostname")
 #define HOST_ERROR_TITLE _("Invalid Machine Name Entry")
-#define HOST_ERROR_TEXT _("You have entered invalid data for machine names.\nBoth names must not be empty strings.\nThe hostname may only have contain lowercase letters and hyphens.\n")
+#define HOST_ERROR_TEXT _("You have entered invalid data for machine names.\nBoth names must not be empty strings.\nThe hostname may only contain ASCII letters, hyphens, and digits.\nIt cannot start or end with a hyphen.\nIt cannot contain all digits.\nIt cannot be greater than 64 characters long.\n")
 #define ROOT_TITLE _("Root Password Setup")
 #define ROOT_TEXT _("Enter a password for the root user.\nIt must be at least 6 characters long.\n")
 #define NAME_ENTRY_TEXT _("Real Name")
