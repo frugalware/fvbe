@@ -11,6 +11,7 @@ fwsetup:
 implement network setup
 implement network install (mirror and connection)
 
+implement length checks on user input if there's a technical limit
 replace my method of retrieving disk unique identifier with libblkid's API, should be in v2.23.
 if libfdisk can replace our writing needs, then use that instead of running fdisk/gdisk.
 see if unicode handling of GPT partition names can be fixed
