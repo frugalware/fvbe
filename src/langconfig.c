@@ -45,8 +45,9 @@ static bool langconfig_setup(void)
   size_t size = 4096;
   char line[LINE_MAX] = {0};
   char *locale = 0;
+  char *p = 0;
   
-  strfcpy(command,sizeof(command),"locale --all-locales | grep '\\.utf8$' | sort --unique");
+  strfcpy(command,sizeof(command),"locale --all-locales");
 
   if((pipe = popen(command,"r")) == 0)
   {
@@ -60,7 +61,9 @@ static bool langconfig_setup(void)
   {
     if(
       i == size - 1                            ||
-      (locale = strtok(line,SPACE_CHARS)) == 0
+      (locale = strtok(line,SPACE_CHARS)) == 0 ||
+      (p = strstr(locale,".utf8")) == 0        ||
+      *p != 0
     )
       continue;
   
@@ -76,6 +79,8 @@ static bool langconfig_setup(void)
     error(strerror(errno));
     return false;
   }
+
+  qsort(locales,i,sizeof(char *),charpp_qsort);
 
   return true;
 }
