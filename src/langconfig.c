@@ -166,6 +166,7 @@ static bool langconfig_start(void)
   const char *var = vars[0];
   char *locale = 0;
   size_t i = 1;
+  bool customizelocale = false;
 
   if(!langconfig_setup())
     return false;
@@ -187,6 +188,8 @@ static bool langconfig_start(void)
     return false;
   }
 
+  customizelocale = ui_dialog_yesno(_("Further Locale Customizations"),_("Do you wish to further customize your locale?\n"),true);
+
   for( ; vars[i] != 0 ; ++i )
   {
     var = vars[i];
@@ -196,6 +199,9 @@ static bool langconfig_start(void)
       error(strerror(errno));
       return false;
     }
+    
+    if(!customizelocale)
+      continue;
     
     strfcpy(text,sizeof(text),_("Do you wish to select a locale for '%s'?\n"),var);
   
