@@ -39,6 +39,8 @@
 #define GREETER_TEXT _("Welcome to the Frugalware Linux installer.\nWe have worked hard to provide this distribution to the public.\nWe hope to provide you with an enjoyable experience.\n")
 #define INFO_TITLE _("First Time User Information")
 #define INFO_TEXT _("Is this your first time using our installer?\nIf so, please select 'Yes' for important information.\n")
+#define INFO_MODULE_TITLE _("Installer Module Progression")
+#define INFO_MODULE_TEXT _("It is not possible to return to previous installer modules.\nSo, check that your data input is really what you want.\n")
 #define INFO_BYTES_TITLE _("Byte Unit Sizes")
 #define INFO_BYTES_TEXT _("You may be familiar with byte units that end in M, MB, MiB, or such.\nMost of them lack a universal definition of their exact size.\nSo, for the purposes of this program, we only use binary byte units.\nBelow is a list of all the binary byte unit suffixes we use.\n\nBiB = 1\nKiB = 1024\nMiB = 1024 * 1024\nGiB = 1024 * 1024 * 1024\nTiB = 1024 * 1024 * 1024 * 1024\n")
 #define PARTITION_TITLE _("Partition Setup")

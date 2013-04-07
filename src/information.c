@@ -22,6 +22,8 @@ static bool information_run(void)
   if(!ui_dialog_yesno(INFO_TITLE,INFO_TEXT,false))
     return true;
 
+  ui_window_text(INFO_MODULE_TITLE,INFO_MODULE_TEXT);
+
   ui_window_text(INFO_BYTES_TITLE,INFO_BYTES_TEXT);
 
   return true;
