@@ -259,6 +259,7 @@ extern struct global *g;
 extern struct module locale_module;
 extern struct module layout_module;
 extern struct module greeter_module;
+extern struct module information_module;
 extern struct module partition_module;
 extern struct module raid_module;
 extern struct module format_module;

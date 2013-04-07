@@ -124,6 +124,7 @@ struct module *modules[] =
   &locale_module,
   &layout_module,
   &greeter_module,
+  &information_module,
   &partition_module,
   &raid_module,
   &format_module,
