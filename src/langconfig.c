@@ -63,7 +63,7 @@ static bool langconfig_setup(void)
       i == size - 1                            ||
       (locale = strtok(line,SPACE_CHARS)) == 0 ||
       (p = strstr(locale,".utf8")) == 0        ||
-      *p != 0
+      p[5] != 0
     )
       continue;
   
