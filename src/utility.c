@@ -33,6 +33,31 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
+extern bool isipv4(const char *ip,char **end)
+{
+  int x[4] = {0};
+  int n = 0;
+
+  if(ip == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  if(sscanf(ip,"%d.%d.%d.%d%n",&x[0],&x[1],&x[2],&x[3],&n) != 4)
+    return false;
+
+  for( int i = 0 ; i < 4 ; ++i )
+    if(x[i] < 0 || x[i] > UCHAR_MAX)
+      return false;
+
+  if(end != 0)
+    *end = (char *) ip + n;
+
+  return true;
+}
+
 extern bool ishostname(const char *name)
 {
   size_t i = 0;
