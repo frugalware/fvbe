@@ -139,6 +139,7 @@ struct tool *tools[] =
 {
   &langconfig_tool,
   &kbconfig_tool,
+  &nmconfig_tool,
   &rootconfig_tool,
   &userconfig_tool,
   &hostconfig_tool,

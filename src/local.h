@@ -270,6 +270,7 @@ extern struct module finale_module;
 extern struct module *modules[];
 extern struct tool langconfig_tool;
 extern struct tool kbconfig_tool;
+extern struct tool nmconfig_tool;
 extern struct tool rootconfig_tool;
 extern struct tool userconfig_tool;
 extern struct tool hostconfig_tool;

@@ -28,7 +28,7 @@ endif
 
 CFLAGS  += $(shell pkg-config --cflags pacman blkid)
 LDFLAGS += $(shell pkg-config --libs pacman blkid)
-SOURCES += src/main.c src/utility.c src/block.c src/locale.c src/layout.c src/greeter.c src/partition.c src/raid.c src/format.c src/preconfig.c src/install.c src/postconfig.c src/finale.c src/grubconfig.c src/hostconfig.c src/rootconfig.c src/userconfig.c src/timeconfig.c src/modeconfig.c src/langconfig.c src/kbconfig.c src/information.c
+SOURCES += src/main.c src/utility.c src/block.c src/locale.c src/layout.c src/greeter.c src/partition.c src/raid.c src/format.c src/preconfig.c src/install.c src/postconfig.c src/finale.c src/grubconfig.c src/hostconfig.c src/rootconfig.c src/userconfig.c src/timeconfig.c src/modeconfig.c src/langconfig.c src/kbconfig.c src/information.c src/nmconfig.c
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 
 all:
