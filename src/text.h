@@ -28,6 +28,13 @@
 #define PASSWORD_ENTER_TEXT _("Enter Password")
 #define PASSWORD_CONFIRM_TEXT _("Confirm Password")
 #define PASSWORD_LENGTH 6
+#define DHCP_TEXT _("DHCP")
+#define DHCP_ID_TEXT _("DHCP ID")
+#define ADDRESS_TEXT _("Address")
+#define NETMASK_TEXT _("Netmask")
+#define GATEWAY_TEXT _("Gateway")
+#define DNS_SERVERS_TEXT _("DNS Servers")
+#define SEARCH_DOMAINS_TEXT _("Search Domains")
 #define PASSWORD_SHORT_TITLE _("Password Too Short")
 #define PASSWORD_SHORT_TEXT _("Your password must be at least 6 characters long.\n")
 #define PASSWORD_MISMATCH_TITLE _("Passwords Do Not Match")
