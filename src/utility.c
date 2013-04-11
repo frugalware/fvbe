@@ -33,10 +33,9 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
-extern bool isipv4(const char *ip,char **end)
+extern bool isipv4(const char *ip)
 {
-  int x[4] = {0};
-  int n = 0;
+  struct in_addr v4 = {0};
 
   if(ip == 0)
   {
@@ -45,17 +44,23 @@ extern bool isipv4(const char *ip,char **end)
     return false;
   }
 
-  if(sscanf(ip,"%d.%d.%d.%d%n",&x[0],&x[1],&x[2],&x[3],&n) != 4)
+  return (inet_pton(AF_INET,ip,&v4) == 1);
+}
+
+extern bool isipv6(const char *ip)
+{
+  struct in6_addr v6;
+
+  memset(&v6,0,sizeof(struct in6_addr));  
+
+  if(ip == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
     return false;
+  }
 
-  for( int i = 0 ; i < 4 ; ++i )
-    if(x[i] < 0 || x[i] > UCHAR_MAX)
-      return false;
-
-  if(end != 0)
-    *end = (char *) ip + n;
-
-  return true;
+  return (inet_pton(AF_INET6,ip,&v6) == 1);
 }
 
 extern bool ishostname(const char *name)

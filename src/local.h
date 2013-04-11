@@ -34,6 +34,7 @@
 #include <sys/wait.h>
 #include <sys/mount.h>
 #include <sys/klog.h>
+#include <arpa/inet.h>
 #include <wchar.h>
 #include <errno.h>
 #include <limits.h>
@@ -127,7 +128,8 @@ struct tool
 };
 
 extern int charpp_qsort(const void *A,const void *B);
-extern bool isipv4(const char *ip,char **end);
+extern bool isipv4(const char *ip);
+extern bool isipv6(const char *ip);
 extern bool ishostname(const char *name);
 extern void account_free(struct account *account);
 extern int get_number_padding(int n);
