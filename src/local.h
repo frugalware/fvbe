@@ -75,6 +75,7 @@ struct global
   bool insetup;
   const char *hostroot;
   const char *guestroot;
+  char *isodevice;
   char **fstabdata;
   char *groups;
 };

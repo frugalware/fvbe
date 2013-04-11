@@ -17,52 +17,6 @@
 
 #include "local.h"
 
-static inline bool preconfig_find_iso(char *path,size_t size)
-{
-  blkid_cache cache = 0;
-  blkid_dev_iterate iter = 0;
-  blkid_dev dev = 0;
-
-  *path = 0;
-
-  if(blkid_get_cache(&cache,"/dev/null") != 0)
-  {
-    error("failed to create blkid cache");
-    goto bail;
-  }
-  
-  if(blkid_probe_all(cache) != 0)
-  {
-    error("failed to probe blkid devices");
-    goto bail;
-  }
-  
-  if(blkid_probe_all_removable(cache) != 0)
-  {
-    error("failed to probe removable blkid devices");
-    goto bail;
-  }
-  
-  if((iter = blkid_dev_iterate_begin(cache)) == 0)
-  {
-    error("failed to create blkid dev iter");
-    goto bail;
-  }
-  
-  while(blkid_dev_next(iter,&dev) == 0)
-    if(blkid_dev_has_tag(dev,"TYPE","iso9660") && blkid_dev_has_tag(dev,"LABEL","FVBE"))
-      strfcpy(path,size,"%s",blkid_dev_devname(dev));
-  
-  blkid_dev_iterate_end(iter);
-  
-bail:
-
-  if(cache != 0)
-    blkid_put_cache(cache);
-  
-  return (*path != 0);
-}
-
 static inline bool preconfig_copy_fdb(const char *fdb)
 {
   char old[PATH_MAX] = {0};
@@ -155,18 +109,17 @@ extern bool preconfig_mount_extra(void)
 static bool preconfig_prepare_source(void)
 {
   bool fvbe = infvbe();
-  char iso[PATH_MAX] = {0};
   char path[PATH_MAX] = {0};
   struct stat st = {0};
   char groups[LINE_MAX] = {0};
   const char *source = "unknown";
 
-  if(fvbe && preconfig_find_iso(iso,sizeof(iso)))
+  if(fvbe && g->isodevice != 0)
   {
     if(!mkdir_recurse(ISO_ROOT))
       return false;
     
-    if(mount(iso,ISO_ROOT,"iso9660",MS_RDONLY,0) == -1)
+    if(mount(g->isodevice,ISO_ROOT,"iso9660",MS_RDONLY,0) == -1)
     {
       error(strerror(errno));
       return false;

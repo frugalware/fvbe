@@ -17,6 +17,52 @@
 
 #include "local.h"
 
+static void find_iso(void)
+{
+  blkid_cache cache = 0;
+  blkid_dev_iterate iter = 0;
+  blkid_dev dev = 0;
+  char path[PATH_MAX] = {0};
+
+  if(blkid_get_cache(&cache,"/dev/null") != 0)
+  {
+    error("failed to create blkid cache");
+    goto bail;
+  }
+  
+  if(blkid_probe_all(cache) != 0)
+  {
+    error("failed to probe blkid devices");
+    goto bail;
+  }
+  
+  if(blkid_probe_all_removable(cache) != 0)
+  {
+    error("failed to probe removable blkid devices");
+    goto bail;
+  }
+  
+  if((iter = blkid_dev_iterate_begin(cache)) == 0)
+  {
+    error("failed to create blkid dev iter");
+    goto bail;
+  }
+  
+  while(blkid_dev_next(iter,&dev) == 0)
+    if(blkid_dev_has_tag(dev,"TYPE","iso9660") && blkid_dev_has_tag(dev,"LABEL","FVBE"))
+      strfcpy(path,sizeof(path),"%s",blkid_dev_devname(dev));
+  
+  blkid_dev_iterate_end(iter);
+
+  if(strlen(path) != 0)
+    g->isodevice = strdup(path);
+
+bail:
+
+  if(cache != 0)
+    blkid_put_cache(cache);
+}
+
 static void global_cleanup(void)
 {
   char **p = 0;
@@ -25,6 +71,8 @@ static void global_cleanup(void)
 
   if(g->logfile)
     fclose(g->logfile);
+
+  free(g->isodevice);
 
   if(g->fstabdata != 0)
   {
@@ -89,6 +137,8 @@ extern int main(int argc,char **argv)
     g->hostroot = "/";
   
     g->guestroot = "/mnt/install";
+    
+    find_iso();
   }
   else
   {
