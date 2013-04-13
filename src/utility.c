@@ -25,6 +25,102 @@ static int raid_compare(const void *A,const void *B)
   return strcmp(a,raid_get_path(b));
 }
 
+static bool isdnslabel(const char *label)
+{
+  size_t i = 0;
+  size_t j = strlen(label);
+  size_t digits = 0;
+  bool badhyphen = false;
+  bool badchar = false;
+
+  if(j == 0 || j > HOST_NAME_MAX)
+    return false;
+
+  for( ; i < j ; ++i )
+  {
+    switch(label[i])
+    {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        ++digits;
+        break;
+      
+      case '-':
+        if(i == 0 || i == j - 1)
+          badhyphen = true;
+        break;
+
+      case 'a':
+      case 'b':
+      case 'c':
+      case 'd':
+      case 'e':
+      case 'f':
+      case 'g':
+      case 'h':
+      case 'i':
+      case 'j':
+      case 'k':
+      case 'l':
+      case 'm':
+      case 'n':
+      case 'o':
+      case 'p':
+      case 'q':
+      case 'r':
+      case 's':
+      case 't':
+      case 'u':
+      case 'v':
+      case 'w':
+      case 'x':
+      case 'y':
+      case 'z':
+      case 'A':
+      case 'B':
+      case 'C':
+      case 'D':
+      case 'E':
+      case 'F':
+      case 'G':
+      case 'H':
+      case 'I':
+      case 'J':
+      case 'K':
+      case 'L':
+      case 'M':
+      case 'N':
+      case 'O':
+      case 'P':
+      case 'Q':
+      case 'R':
+      case 'S':
+      case 'T':
+      case 'U':
+      case 'V':
+      case 'W':
+      case 'X':
+      case 'Y':
+      case 'Z':
+        break;
+      
+      default:
+        badchar = true;
+        break;
+    }
+  }
+
+  return (digits != j && !badhyphen && !badchar);
+}
+
 extern int charpp_qsort(const void *A,const void *B)
 {
   const char *a = *(const char **) A;
