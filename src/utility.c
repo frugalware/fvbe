@@ -25,7 +25,7 @@ static int raid_compare(const void *A,const void *B)
   return strcmp(a,raid_get_path(b));
 }
 
-static bool isdnslabel(const char *label)
+static inline bool isdnslabel(const char *label)
 {
   size_t i = 0;
   size_t j = strlen(label);
@@ -159,8 +159,43 @@ extern bool isipv6(const char *ip)
   return (inet_pton(AF_INET6,ip,&v6) == 1);
 }
 
+extern bool isdomainname(const char *name)
+{
+  size_t n = 0;
+  char buf[256] = {0};
+  char *p = 0;
+  char *label = 0;
+
+  if(name == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  n = strlen(name);
+
+  if(n == 0 || n > 253)
+    return false;
+
+  strfcpy(buf,sizeof(buf),"%s",name);
+
+  for( p = buf ; (label = strtok(p,".")) != 0 ; p = 0 )
+    if(!isdnslabel(label))
+      return false;
+
+  return true;
+}
+
 extern bool ishostname(const char *name)
 {
+  if(name == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
   return isdnslabel(name);
 }
 
