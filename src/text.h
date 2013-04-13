@@ -29,7 +29,6 @@
 #define PASSWORD_CONFIRM_TEXT _("Confirm Password")
 #define PASSWORD_LENGTH 6
 #define DHCP_TEXT _("DHCP")
-#define DHCP_ID_TEXT _("DHCP ID")
 #define ADDRESS_TEXT _("Address")
 #define NETMASK_TEXT _("Netmask")
 #define GATEWAY_TEXT _("Gateway")
