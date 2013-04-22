@@ -93,7 +93,9 @@ menuentry 'Frugalware Versatile Bootable Environment (RAM)' {
   linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video rd.live.ram=1
   initrd /boot/initrd
 }
+if [ \$mode = video ]; then
 $(do_video)
+fi
 $(do_locales)
 $(do_layouts)
 EOF
@@ -101,6 +103,7 @@ EOF
 # Setup grub2 config.
 cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
 set mode=$FVBE_ISO_IO_MODE
+export mode
 set locale=$FVBE_LOCALE
 export locale
 set layout=$FVBE_LAYOUT
@@ -116,6 +119,8 @@ elif [ \$mode = serial ]; then
   terminal_input serial
   terminal_output serial
   terminfo -u vt100-color
+  set video=$FVBE_ISO_IO_SERIAL_LINUX
+  export video
 fi
 
 configfile /boot/grub/menu.cfg
