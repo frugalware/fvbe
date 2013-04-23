@@ -11,6 +11,8 @@ fwsetup:
 implement network setup
 implement network install (mirror and connection)
 add config tool for selecting the default VISUAL/EDITOR
+add config tool for selecting the display manager
+add config tool for configuring DPI/PPI and other font options for freetype
 
 implement length checks on user input if there's a technical limit
 make default selection of config tools match the default, if it is available.
