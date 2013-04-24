@@ -1,11 +1,18 @@
 #pragma once
 
-#define YYPREFIX  static inline bool
-#define YYCTYPE   unsigned char
-#define YYCTYPE2  const char
-#define YYCURSOR  p
-#define YYSTART   s
-#define YYMARKER  m
+#define YYCTYPE          unsigned char
+#define YYCTYPE2         const char
+#define YYCURSOR         p
+#define YYSTART          s
+#define YYMARKER         m
+#define YYDECLARE(A,B,C)                 \
+static inline bool A(YYCTYPE2 *YYCURSOR) \
+{                                        \
+  YYCTYPE2 *YYSTART = YYCURSOR;          \
+  YYCTYPE2 *YYMARKER = YYCURSOR;         \
+  B                                      \
+  C                                      \
+}
 
 /*!re2c
   re2c:yyfill:enable   = 0;
@@ -19,19 +26,19 @@
   any                  = [^];
 */
 
-YYPREFIX is_root_path(YYCTYPE2 *YYCURSOR)
-{
-  YYCTYPE2 *YYSTART = YYCURSOR;
-  YYCTYPE2 *YYMARKER = YYCURSOR;
-
+YYDECLARE(
+is_root_path
+,
 /*!re2c
   "/" lower* null { return true;  }
   any             { return false; }
 */
-}
+,
+)
 
-#undef YYPREFIX
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
+#undef YYSTART
 #undef YYMARKER
+#undef YYDECLARE
