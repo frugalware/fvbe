@@ -36,6 +36,26 @@ is_root_path
 ,
 )
 
+YYDECLARE(
+is_raid_device
+,
+/*!re2c
+  "md" digit+ null { return true;  }
+  any              { return false; }
+*/
+,
+)
+
+YYDECLARE(
+is_disk_device
+,
+/*!re2c
+  [hsv] "d" lower null { return true;  }
+  any                  { return false; }
+*/
+,
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
