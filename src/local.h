@@ -47,6 +47,7 @@
 #include <search.h>
 #include <blkid.h>
 #include "text.h"
+#include "scanner.h"
 
 #ifdef UI_NEWT
 #define NEWT_WIDTH 70
