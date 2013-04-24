@@ -325,8 +325,6 @@ static int device_compare(const void *A,const void *B)
 extern struct device **device_probe_all(bool disk,bool raid)
 {
   DIR *dir = 0;
-  regex_t disk_re = {0};
-  regex_t raid_re = {0};
   size_t i = 0;
   size_t size = 4096;
   struct device **devices = 0;
@@ -347,18 +345,6 @@ extern struct device **device_probe_all(bool disk,bool raid)
     goto bail;
   }
 
-  if(regcomp(&disk_re,"^[hsv]d[a-z]$",REG_EXTENDED|REG_NOSUB) != 0)
-  {
-    error("invalid regular expression");
-    goto bail;
-  }
-
-  if(regcomp(&raid_re,"^md[0-9]+$",REG_EXTENDED|REG_NOSUB) != 0)
-  {
-    error("invalid regular expression");
-    goto bail;
-  }
-
   devices = alloc(struct device *,size);
 
   while(readdir_r(dir,&entry,&p) == 0 && p != 0)
@@ -373,9 +359,9 @@ extern struct device **device_probe_all(bool disk,bool raid)
     )
       continue;
     
-    if(disk && regexec(&disk_re,name,0,0,0) == 0)
+    if(disk && is_disk_device(name))
       strfcpy(path,sizeof(path),"/dev/%s",name);
-    else if(raid && regexec(&raid_re,name,0,0,0) == 0)
+    else if(raid && is_raid_device(name))
       strfcpy(path,sizeof(path),"/dev/%s",name);
     else
       continue;
@@ -402,10 +388,6 @@ bail:
 
   if(dir != 0)
     closedir(dir);
-
-  regfree(&disk_re);
-  
-  regfree(&raid_re);
 
   return devices;
 }
