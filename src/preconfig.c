@@ -117,11 +117,15 @@ static bool preconfig_prepare_source(void)
   if(fvbe && g->isodevice != 0)
   {
     if(!mkdir_recurse(ISO_ROOT))
+    {
+      error("failed to create iso root");
       return false;
+    }
     
     if(mount(g->isodevice,ISO_ROOT,"iso9660",MS_RDONLY,0) == -1)
     {
       error(strerror(errno));
+      error("failed to mount iso");
       return false;
     }
     
@@ -142,6 +146,7 @@ static bool preconfig_prepare_source(void)
       if(mount(ISO_ROOT "/packages",path,"",MS_BIND,0) == -1)
       {
         error(strerror(errno));
+        error("failed to mount iso package cache");
         return false;
       }
       
@@ -166,6 +171,7 @@ static bool preconfig_prepare_source(void)
     if(mount("/var/cache/pacman-g2/pkg",path,"",MS_BIND,0) == -1)
     {
       error(strerror(errno));
+      error("failed to mount host package cache");
       return false;
     }
     
