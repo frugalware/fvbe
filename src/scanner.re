@@ -3,7 +3,8 @@
 #define YYPREFIX  static inline bool
 #define YYCTYPE   unsigned char
 #define YYCTYPE2  const char
-#define YYCURSOR  s
+#define YYCURSOR  p
+#define YYSTART   s
 #define YYMARKER  m
 
 /*!re2c
@@ -20,6 +21,7 @@
 
 YYPREFIX is_root_path(YYCTYPE2 *YYCURSOR)
 {
+  YYCTYPE2 *YYSTART = YYCURSOR;
   YYCTYPE2 *YYMARKER = YYCURSOR;
 
 /*!re2c
