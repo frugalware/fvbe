@@ -234,6 +234,25 @@ static bool get_checkbox_screen_size(const char *text,int *width,int *height)
   return true;
 }
 
+static inline bool isglyphkey(int key)
+{
+  return ((key >= 0x20 && key <= 0x7E) || (key >= 0x80 && key <= 0xFF));
+}
+
+static int root_path_filter(newtComponent entry,void *data,int key,int pos)
+{
+  if(!isglyphkey(key))
+    return key;
+
+  if(key >= 'a' && key <= 'z')
+    return (pos != 0) ? key : 0;
+
+  if(key == '/' && newtEntryGetValue(entry)[0] != '/')
+    return (pos == 0) ? key : 0;
+
+  return 0;
+}
+
 static void ui_dialog_text(const char *title,const char *text)
 {
   int textbox_width = 0;
@@ -378,6 +397,8 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry1_width,&path,0);
 
+  newtEntrySetFilter(entry1,root_path_filter,0);
+
   label2 = newtLabel(0,textbox_height+label1_height+2,FORMAT_PARAMETERS_ENTRY_TEXT);
 
   entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(target->options),entry2_width,&parameters,0);
@@ -430,8 +451,8 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
       const char *filesystem = newtListboxGetCurrent(listbox);
 
       if(
-        (strcmp(filesystem,"noformat") == 0 && strcmp(target->filesystem,"unknown") == 0)        ||
-        (strcmp(filesystem,"swap") != 0 && (!isrootpath(path) || findpath(targets,target,path)))
+        (strcmp(filesystem,"noformat") == 0 && strcmp(target->filesystem,"unknown") == 0) ||
+        (strcmp(filesystem,"swap") != 0 && findpath(targets,target,path))
       )
       {
         ui_dialog_text(FORMAT_PATH_TITLE,FORMAT_PATH_TEXT);
