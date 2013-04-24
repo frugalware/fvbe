@@ -431,7 +431,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
       if(
         (strcmp(filesystem,"noformat") == 0 && strcmp(target->filesystem,"unknown") == 0)        ||
-        (strcmp(filesystem,"swap") != 0 && (!isrootpath(path) || findpath(targets,target,path)))
+        (strcmp(filesystem,"swap") != 0 && (!is_root_path(path) || findpath(targets,target,path)))
       )
       {
         ui_dialog_text(FORMAT_PATH_TITLE,FORMAT_PATH_TEXT);

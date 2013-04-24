@@ -578,31 +578,6 @@ bail:
   }
 }
 
-extern bool isrootpath(const char *path)
-{
-  regex_t re = {0};
-  bool match = false;
-
-  if(path == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  if(regcomp(&re,"^/[a-z]*$",REG_EXTENDED|REG_NOSUB) != 0)
-  {
-    error("invalid regular expression");
-    return false;
-  }
-
-  match = (regexec(&re,path,0,0,0) == 0);
-
-  regfree(&re);
-
-  return match;
-}
-
 extern bool isasciistring(const char *s)
 {
   const unsigned char *p = (unsigned char *) s;
