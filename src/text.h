@@ -80,7 +80,7 @@
 #define FORMAT_DIALOG_TITLE _("Filesystem Setup")
 #define FORMAT_DIALOG_TEXT _("Select mount path, parameters, and filesystem.\nMount path is optional if 'swap' is the selected filesystem.\nParameters are custom arguments passed to the format program.\nSelect 'noformat' if you wish to reuse the existing filesystem.\n")
 #define FORMAT_PATH_TITLE _("Invalid Filesystem Parameters")
-#define FORMAT_PATH_TEXT _("You have specified invalid parameters.\nPlease check that they meet the following requirements:\n\nMount path must begin with a '/'.\nMount path may only contain one directory.\nMount path must not already be in use.\n'noformat' cannot be chosen if there is no existing filesystem.\n")
+#define FORMAT_PATH_TEXT _("You have specified invalid parameters.\nPlease check that they meet the following requirements:\n\nMount path must not be empty.\nMount path must not already be in use.\n'noformat' cannot be chosen if there is no existing filesystem.\n")
 #define FORMAT_MOUNT_ENTRY_TEXT _("Mount Path")
 #define FORMAT_PARAMETERS_ENTRY_TEXT _("Format Parameters")
 #define INSTALL_TITLE _("Package Group Selection")
