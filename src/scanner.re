@@ -5,6 +5,7 @@
 #define YYCURSOR         p
 #define YYSTART          s
 #define YYMARKER         m
+#define YYSILENCE        YYSTART = YYSTART;
 #define YYDECLARE(A,B,C)                 \
 static inline bool A(YYCTYPE2 *YYCURSOR) \
 {                                        \
@@ -34,6 +35,7 @@ is_root_path
   any             { return false; }
 */
 ,
+YYSILENCE
 )
 
 YYDECLARE(
@@ -44,6 +46,7 @@ is_raid_device
   any              { return false; }
 */
 ,
+YYSILENCE
 )
 
 YYDECLARE(
@@ -54,6 +57,7 @@ is_disk_device
   any                  { return false; }
 */
 ,
+YYSILENCE
 )
 
 #undef YYCTYPE
@@ -61,4 +65,5 @@ is_disk_device
 #undef YYCURSOR
 #undef YYSTART
 #undef YYMARKER
+#undef YYSILENCE
 #undef YYDECLARE
