@@ -451,8 +451,8 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
       const char *filesystem = newtListboxGetCurrent(listbox);
 
       if(
-        (strcmp(filesystem,"noformat") == 0 && strcmp(target->filesystem,"unknown") == 0)        ||
-        (strcmp(filesystem,"swap") != 0 && (strlen(path) == 0 || findpath(targets,target,path)))
+        (strcmp(filesystem,"noformat") == 0 && strcmp(target->filesystem,"unknown") == 0) ||
+        (strcmp(filesystem,"swap") != 0 && findpath(targets,target,path))
       )
       {
         ui_dialog_text(FORMAT_PATH_TITLE,FORMAT_PATH_TEXT);
