@@ -39,7 +39,6 @@
 #include <errno.h>
 #include <limits.h>
 #include <glob.h>
-#include <regex.h>
 #include <locale.h>
 #include <time.h>
 #include <dirent.h>
@@ -147,7 +146,6 @@ extern void file2str(const char *path,char *s,size_t n);
 extern void strfcpy(char *s,size_t n,const char *fmt,...) __attribute__((format(printf,3,4)));
 extern void strfcat(char *s,size_t n,const char *fmt,...) __attribute__((format(printf,3,4)));
 extern void umount_all(void);
-extern bool isasciistring(const char *s);
 extern bool mkdir_recurse(const char *path);
 extern bool size_to_string(char *s,size_t n,long long size,bool pad);
 extern long long string_to_size(const char *s);

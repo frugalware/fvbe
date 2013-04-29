@@ -682,7 +682,7 @@ static bool ui_dialog_partition_modify_partition(struct disk *disk,int n)
     {
       purpose = newtListboxGetCurrent(listbox);
 
-      if(!isasciistring(name) || strlen(name) > 36 || (strcmp(disk_get_type(disk),"gpt") != 0 && strcmp(purpose,"bios") == 0))
+      if(!is_partition_name(name) || (strcmp(disk_get_type(disk),"gpt") != 0 && strcmp(purpose,"bios") == 0))
       {
         ui_dialog_text(PARTITION_DIALOG_MODIFY_PARTITION_ERROR_TITLE,PARTITION_DIALOG_MODIFY_PARTITION_ERROR_TEXT);
         continue;
