@@ -1,11 +1,18 @@
 #pragma once
 
+// All regular expression engines must include a check for null or value 0.
+// If you need to check size limits, then the number you require is as follows:
+// SIZE_MAX + 1 (null terminator) + 1 (pointer is incremented prior to the code block)
+
 #define YYCTYPE          unsigned char
 #define YYCTYPE2         const char
 #define YYCURSOR         p
 #define YYSTART          s
 #define YYMARKER         m
 #define YYSILENCE        YYSTART = YYSTART;
+#define YYLEN            (YYCURSOR - YYSTART)
+#define YYMAX(S)         ((S) + 1 + 1)
+#define YYLENCHECK(S)    (YYLEN < YYMAX(S))
 #define YYDECLARE(A,B,C)                 \
 static inline bool A(YYCTYPE2 *YYCURSOR) \
 {                                        \
@@ -58,6 +65,16 @@ is_disk_device
 */
 ,
 YYSILENCE
+)
+
+YYDECLARE(
+is_partition_name
+,
+/*!re2c
+  ascii+ null { return YYLENCHECK(36);  }
+  any         { return false;           }
+*/
+,
 )
 
 #undef YYCTYPE
