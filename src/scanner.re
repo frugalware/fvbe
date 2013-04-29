@@ -83,4 +83,7 @@ is_partition_name
 #undef YYSTART
 #undef YYMARKER
 #undef YYSILENCE
+#undef YYLEN
+#undef YYMAX
+#undef YYLENCHECK
 #undef YYDECLARE
