@@ -85,8 +85,8 @@ YYDECLARE(
 is_user_name
 ,
 /*!re2c
-  (lower|[_]) (lower|digit|[_-])* [$]? null { return YYLENCHECK(USER_NAME_MAX); }
-  any                                       { return false;                     }
+  (lower|[_]) (lowerdigit|[_-])* [$]? null { return YYLENCHECK((ssize_t) USER_NAME_MAX); }
+  any                                      { return false;                               }
 */
 ,
 )
