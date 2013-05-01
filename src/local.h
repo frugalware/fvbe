@@ -59,6 +59,7 @@
 #define LOWER_CHARS "abcdefghijklmnopqrstuvwxyz"
 #define TEXT_MAX 8192
 #define USER_NAME_MAX (sizeof(((struct utmpx *)NULL)->ut_user))
+#define PARTITION_NAME_MAX 36
 #define KIBIBYTE (1LL << 10LL)
 #define MEBIBYTE (1LL << 20LL)
 #define GIBIBYTE (1LL << 30LL)
