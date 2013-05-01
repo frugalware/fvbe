@@ -91,6 +91,17 @@ is_user_name
 ,
 )
 
+YYDECLARE(
+is_dns_label
+,
+/*!re2c
+  digit+ null                                                 { return false;                     }
+  (alphadigit | alphadigit (alphadigit|[-])* alphadigit) null { return YYLENCHECK(HOST_NAME_MAX); }
+  any                                                         { return false;                     }
+*/
+,
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
