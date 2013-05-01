@@ -30,6 +30,10 @@ static inline bool A(YYCTYPE2 *YYCURSOR) \
   lower                = [a-z];
   upper                = [A-Z];
   digit                = [0-9];
+  lowerdigit           = [a-z0-9];
+  upperdigit           = [A-Z0-9];
+  alpha                = [a-zA-Z];
+  alphadigit           = [a-zA-Z0-9];
   null                 = [\000];
   any                  = [^];
 */
