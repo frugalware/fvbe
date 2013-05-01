@@ -71,8 +71,18 @@ YYDECLARE(
 is_partition_name
 ,
 /*!re2c
-  ascii+ null { return YYLENCHECK(36);  }
-  any         { return false;           }
+  ascii+ null { return YYLENCHECK(PARTITION_NAME_MAX); }
+  any         { return false;                          }
+*/
+,
+)
+
+YYDECLARE(
+is_user_name
+,
+/*!re2c
+  (lower|[_]) (lower|digit|[_-])* [$]? null { return YYLENCHECK(USER_NAME_MAX); }
+  any                                       { return false;                     }
 */
 ,
 )
