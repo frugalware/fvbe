@@ -45,6 +45,7 @@
 #include <libgen.h>
 #include <search.h>
 #include <blkid.h>
+#include <utmpx.h>
 #include "text.h"
 #include "scanner.h"
 
@@ -57,6 +58,7 @@
 #define SPACE_CHARS " \t\r\n\v\f"
 #define LOWER_CHARS "abcdefghijklmnopqrstuvwxyz"
 #define TEXT_MAX 8192
+#define USER_NAME_MAX (sizeof(((struct utmpx *)NULL)->ut_user))
 #define KIBIBYTE (1LL << 10LL)
 #define MEBIBYTE (1LL << 20LL)
 #define GIBIBYTE (1LL << 30LL)
