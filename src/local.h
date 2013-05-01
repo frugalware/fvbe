@@ -46,8 +46,6 @@
 #include <search.h>
 #include <blkid.h>
 #include <utmpx.h>
-#include "text.h"
-#include "scanner.h"
 
 #ifdef UI_NEWT
 #define NEWT_WIDTH 70
@@ -68,6 +66,9 @@
 #define eprintf(...) fprintf(g->logfile,__VA_ARGS__)
 #define alloc(T,N) ((T*)malloc0(sizeof(T)*(N)))
 #define redim(P,T,N) ((T*)realloc(P,sizeof(T)*(N)))
+
+#include "text.h"
+#include "scanner.h"
 
 struct global
 {
