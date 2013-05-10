@@ -1,4 +1,7 @@
-#include "local.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "scanner.h"
 
 struct re2ctest
 {
@@ -69,7 +72,7 @@ if(!re2ctest(A,B))                       \
   return EXIT_FAILURE;                   \
 }
 
-extern int main(int argc,char **argv)
+extern int main(void)
 {
   RE2CTEST(root,is_root_path);
 
