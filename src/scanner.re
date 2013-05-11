@@ -9,17 +9,16 @@
 #define YYCURSOR         p
 #define YYSTART          s
 #define YYMARKER         m
-#define YYSILENCE        YYSTART = YYSTART;
 #define YYLEN            (YYCURSOR - YYSTART)
 #define YYMAX(S)         ((S) + 1 + 1)
 #define YYLENCHECK(S)    (YYLEN < YYMAX(S))
-#define YYDECLARE(A,B,C)                 \
+#define YYDECLARE(A,B)                   \
 static inline bool A(YYCTYPE2 *YYCURSOR) \
 {                                        \
   YYCTYPE2 *YYSTART = YYCURSOR;          \
   YYCTYPE2 *YYMARKER = YYCURSOR;         \
   B                                      \
-  C                                      \
+  YYSTART = YYSTART;                     \
 }
 
 /*!re2c
@@ -45,8 +44,6 @@ is_root_path
   "/" lower* null { return true;  }
   any             { return false; }
 */
-,
-YYSILENCE
 )
 
 YYDECLARE(
@@ -56,8 +53,6 @@ is_raid_device
   "md" digit {1,3} null { return true;  }
   any                   { return false; }
 */
-,
-YYSILENCE
 )
 
 YYDECLARE(
@@ -67,8 +62,6 @@ is_disk_device
   [hsv] "d" lower null { return true;  }
   any                  { return false; }
 */
-,
-YYSILENCE
 )
 
 YYDECLARE(
@@ -78,7 +71,6 @@ is_partition_name
   ascii {0,36} null { return true;  }
   any               { return false; }
 */
-,
 )
 
 YYDECLARE(
@@ -88,7 +80,6 @@ is_user_name
   (lower|[_]) ((lowerdigit|[_-]) {0,31} | (lowerdigit|[_-]) {0,30} [$]) null { return true;  }
   any                                                                        { return false; }
 */
-,
 )
 
 YYDECLARE(
@@ -98,7 +89,6 @@ is_dns_label
   (alphadigit | alphadigit (alphadigit|[-]) {0,62} alphadigit) null { return true;  }
   any                                                               { return false; }
 */
-,
 )
 
 #undef YYCTYPE
@@ -106,7 +96,6 @@ is_dns_label
 #undef YYCURSOR
 #undef YYSTART
 #undef YYMARKER
-#undef YYSILENCE
 #undef YYLEN
 #undef YYMAX
 #undef YYLENCHECK
