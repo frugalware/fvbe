@@ -53,8 +53,8 @@ YYDECLARE(
 is_raid_device
 ,
 /*!re2c
-  "md" digit+ null { return true;  }
-  any              { return false; }
+  "md" digit {1,3} null { return true;  }
+  any                   { return false; }
 */
 ,
 YYSILENCE
@@ -75,8 +75,8 @@ YYDECLARE(
 is_partition_name
 ,
 /*!re2c
-  ascii+ null { return YYLENCHECK(PARTITION_NAME_MAX); }
-  any         { return false;                          }
+  ascii {0,36} null { return true;  }
+  any               { return false; }
 */
 ,
 )
@@ -85,8 +85,8 @@ YYDECLARE(
 is_user_name
 ,
 /*!re2c
-  (lower|[_]) (lowerdigit|[_-])* [$]? null { return YYLENCHECK((ssize_t) USER_NAME_MAX); }
-  any                                      { return false;                               }
+  (lower|[_]) ((lowerdigit|[_-]) {0,31} | (lowerdigit|[_-]) {0,30} [$]) null { return true;  }
+  any                                                                        { return false; }
 */
 ,
 )
@@ -95,9 +95,8 @@ YYDECLARE(
 is_dns_label
 ,
 /*!re2c
-  digit+ null                                                 { return false;                     }
-  (alphadigit | alphadigit (alphadigit|[-])* alphadigit) null { return YYLENCHECK(HOST_NAME_MAX); }
-  any                                                         { return false;                     }
+  (alphadigit | alphadigit (alphadigit|[-]) {0,62} alphadigit) null { return true;  }
+  any                                                               { return false; }
 */
 ,
 )
