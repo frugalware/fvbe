@@ -617,7 +617,12 @@ extern struct disk *disk_open(struct device *device)
       if(disk.type == DISKTYPE_GPT)
       {
         if(blkid_partition_get_name(partition) != 0)
+        {
           strfcpy(part->gptname,sizeof(part->gptname),"%s",blkid_partition_get_name(partition));
+          
+          if(!is_partition_name(part->gptname))
+            part->gptname[0] = 0;
+        }
 
         strfcpy(part->gptuuid,sizeof(part->gptuuid),"%s",blkid_partition_get_uuid(partition));
 
