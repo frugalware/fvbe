@@ -24,6 +24,19 @@ static struct re2ctest root[] =
   {       0, false }
 };
 
+static struct re2ctest utf8[] =
+{
+  { "en_US.utf8", true  },
+  {      "en_US", false },
+  { "fr_FR.utf8", true  },
+  {      "fr_FR", false },
+  {      "wa_BE", false },
+  { "wa_BE.utf8", true  },
+  {           "", false },
+  {     "fggfdf", false },
+  {            0, false }
+};
+
 static struct re2ctest raid[] =
 {
   {   "md0", true  },
@@ -76,6 +89,8 @@ if(!re2ctest(A,B))                       \
 extern int main(void)
 {
   RE2CTEST(root,is_root_path);
+
+  RE2CTEST(utf8,is_utf8_locale);
 
   RE2CTEST(raid,is_raid_device);
 
