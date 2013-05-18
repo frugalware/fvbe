@@ -64,6 +64,20 @@ static struct re2ctest disk[] =
   {       0, false }
 };
 
+static struct re2ctest gpt[] =
+{
+  {                "GFBY%YT%$^&**&*^^^%^@$", true  },
+  {  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true  },
+  { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false },
+  {                           "Shut Me Up!", true  },
+  {                                  "\x80", false },
+  {                                  "\x19", false },
+  {                                  "\x15", false },
+  {                                  "\x90", false },
+  {                                      "", true  },
+  {                                       0, false }
+};
+
 static struct re2ctest user[] =
 {
   {                              "ryuo", true  },
@@ -131,6 +145,8 @@ extern int main(void)
   RE2CTEST(raid,is_raid_device);
 
   RE2CTEST(disk,is_disk_device);
+
+  RE2CTEST(gpt,is_partition_name);
 
   RE2CTEST(user,is_user_name);
 
