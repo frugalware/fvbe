@@ -34,10 +34,13 @@ OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 all:
 
 src/scanner.h: src/scanner.re
-	re2c -o $@ $<
+	cd src; re2c -o $(subst src/,,$@) $(subst src/,,$<)
 
 %.o: %.c src/text.h src/local.h src/scanner.h
 	cd src; cc $(CFLAGS) -c $(subst src/,,$<) -o $(subst src/,,$@)
+
+src/re2ctest: src/re2ctest.o
+	cc $(LDFLAGS) $^ -o $@
 
 rootfs: bin/create-rootfs bin/fwsetup
 	bin/create-rootfs
