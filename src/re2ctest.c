@@ -83,6 +83,22 @@ static struct re2ctest user[] =
   {                                   0, false }
 };
 
+static struct re2ctest dnslabel[] =
+{
+  {  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true  },
+  { "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false },
+  {                                                          "0foobar0", true  },
+  {                                                          "afoobara", true  },
+  {                                                         "0foo-bar0", true  },
+  {                                                         "afoo-bara", true  },
+  {                                                            "foobar", true  },
+  {                                                           "-foobar", false },
+  {                                                           "foobar-", false },
+  {                                                          "-foobar-", false },
+  {                                                                  "", false },
+  {                                                                   0, false }
+};
+
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
 {
   for( ; p->pattern != 0 ; ++p )
@@ -117,6 +133,8 @@ extern int main(void)
   RE2CTEST(disk,is_disk_device);
 
   RE2CTEST(user,is_user_name);
+
+  RE2CTEST(dnslabel,is_dns_label);
 
   printf("re2c has passed all tests\n");
   
