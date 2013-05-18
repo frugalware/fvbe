@@ -45,7 +45,6 @@ static bool langconfig_setup(void)
   size_t size = 4096;
   char line[LINE_MAX] = {0};
   char *locale = 0;
-  char *p = 0;
   
   strfcpy(command,sizeof(command),"locale --all-locales");
 
@@ -62,8 +61,7 @@ static bool langconfig_setup(void)
     if(
       i == size - 1                            ||
       (locale = strtok(line,SPACE_CHARS)) == 0 ||
-      (p = strstr(locale,".utf8")) == 0        ||
-      p[5] != 0
+      !is_utf8_locale(locale)
     )
       continue;
   

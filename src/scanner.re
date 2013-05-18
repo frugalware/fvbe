@@ -47,6 +47,15 @@ is_root_path
 )
 
 YYDECLARE(
+is_utf8_locale
+,
+/*!re2c
+  lower+ [_] upper+ ".utf8" null { return true;  }
+  any                            { return false; }
+*/
+)
+
+YYDECLARE(
 is_raid_device
 ,
 /*!re2c
