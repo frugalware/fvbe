@@ -41,8 +41,8 @@ YYDECLARE(
 is_root_path
 ,
 /*!re2c
-  "/" lower* null { return true;  }
-  any             { return false; }
+  "/" lower {0,254} null { return true;  }
+  any                    { return false; }
 */
 )
 
@@ -50,8 +50,8 @@ YYDECLARE(
 is_raid_device
 ,
 /*!re2c
-  "md" digit {1,3} null { return true;  }
-  any                   { return false; }
+  "md" digit {1,3} null { int n = atoi(YYSTART+2); return (n >= 0 && n <= 255); }
+  any                   { return false;                                         }
 */
 )
 

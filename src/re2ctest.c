@@ -29,6 +29,7 @@ static struct re2ctest raid[] =
   {   "md0", true  },
   {  "md60", true  },
   { "md200", true  },
+  { "md300", false },
   {   "hda", false },
   {   "vdb", false },
   {   "sda", false },
