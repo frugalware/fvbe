@@ -2186,9 +2186,13 @@ extern bool ui_window_root(struct account *data)
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
-      if(strcmp(password1,password2) != 0)
+      if(
+        strlen(password1) == 0           ||
+        strlen(password2) == 0           ||
+        strcmp(password1,password2) != 0
+      )
       {
-        ui_dialog_text(PASSWORD_MISMATCH_TITLE,PASSWORD_MISMATCH_TEXT);
+        ui_dialog_text(USER_ERROR_TITLE,USER_ERROR_TEXT);
         continue;
       }
 
@@ -2323,15 +2327,14 @@ extern bool ui_window_user(struct account *data)
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
-      if(get_text_length(user) < 1)
+      if(
+        !is_user_name(user)              ||
+        strlen(password1) == 0           ||
+        strlen(password2) == 0           ||
+        strcmp(password1,password2) != 0
+      )
       {
-        ui_dialog_text(NO_USER_TITLE,NO_USER_TEXT);
-        continue;
-      }
-
-      if(strcmp(password1,password2) != 0)
-      {
-        ui_dialog_text(PASSWORD_MISMATCH_TITLE,PASSWORD_MISMATCH_TEXT);
+        ui_dialog_text(USER_ERROR_TITLE,USER_ERROR_TEXT);
         continue;
       }
 
