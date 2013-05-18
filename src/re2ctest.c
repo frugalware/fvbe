@@ -60,7 +60,27 @@ static struct re2ctest disk[] =
   {   "md0", false },
   {  "md60", false },
   { "md200", false },
+  { "md300", false },
   {       0, false }
+};
+
+static struct re2ctest user[] =
+{
+  {                              "ryuo", true  },
+  {                             "ryuo$", true  },
+  {                          "fun_user", true  },
+  {                          "fun-user", true  },
+  {                         "fun_user$", true  },
+  {                         "fun-user$", true  },
+  {                   "_4544-_--dfds-$", true  },
+  {                    "_4544-_--dfds-", true  },
+  {                   "a4544-_--dfds-$", true  },
+  {                    "a4544-_--dfds-", true  },
+  {  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true  },
+  { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false },
+  {                                  "", false },
+  {                          "extreme!", false },
+  {                                   0, false }
 };
 
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
@@ -95,6 +115,8 @@ extern int main(void)
   RE2CTEST(raid,is_raid_device);
 
   RE2CTEST(disk,is_disk_device);
+
+  RE2CTEST(user,is_user_name);
 
   printf("re2c has passed all tests\n");
   
