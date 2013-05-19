@@ -113,6 +113,25 @@ static struct re2ctest dnslabel[] =
   {                                                                   0, false }
 };
 
+static struct re2ctest v4[] =
+{
+  {       "127.0.0.1", true  },
+  { "255.255.255.255", true  },
+  { "256.255.255.255", false },
+  { "255.256.255.255", false },
+  { "255.255.256.255", false },
+  { "255.255.255.256", false },
+  {         "0.0.0.0", true  },
+  {     "192.168.0.1", true  },
+  {     "-1.-1.-1.-1", false },
+  {               "0", false },
+  {             "0.0", false },
+  {           "0.0.0", false },
+  {      "Whats up!?", false },
+  {                "", false },
+  {                 0, false }
+};
+
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
 {
   for( ; p->pattern != 0 ; ++p )
@@ -151,6 +170,8 @@ extern int main(void)
   RE2CTEST(user,is_user_name);
 
   RE2CTEST(dnslabel,is_dns_label);
+
+  RE2CTEST(v4,is_ip_v4);
 
   printf("re2c has passed all tests\n");
   
