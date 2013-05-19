@@ -29,6 +29,7 @@ static inline bool A(YYCTYPE2 *YYCURSOR) \
   lower                = [a-z];
   upper                = [A-Z];
   digit                = [0-9];
+  hex                  = [0-9a-fA-F];
   lowerdigit           = [a-z0-9];
   upperdigit           = [A-Z0-9];
   alpha                = [a-zA-Z];
@@ -104,8 +105,8 @@ YYDECLARE(
 is_ip_v4
 ,
 /*!re2c
-  digit+ [.] digit+ [.] digit+ [.] digit+ null { const char *x = YYSTART; while(true) { long n = strtol(x,(char **) &x,10); if(n < 0 || n > 255) return false; if(*x == 0) break; ++x; } return true; }
-  any                                          { return false;                                                                                                                                        }
+  (digit+ [.]) {3} digit+ null { const char *x = YYSTART; while(true) { long n = strtol(x,(char **) &x,10); if(n < 0 || n > 255) return false; if(*x == 0) break; ++x; } return true; }
+  any                          { return false;                                                                                                                                        }
 */
 )
 
