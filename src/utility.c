@@ -33,20 +33,6 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
-extern bool isipv4(const char *ip)
-{
-  struct in_addr v4 = {0};
-
-  if(ip == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  return (inet_pton(AF_INET,ip,&v4) == 1);
-}
-
 extern bool isipv6(const char *ip)
 {
   struct in6_addr v6;
