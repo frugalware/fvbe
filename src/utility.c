@@ -33,22 +33,6 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
-extern bool isipv6(const char *ip)
-{
-  struct in6_addr v6;
-
-  memset(&v6,0,sizeof(struct in6_addr));  
-
-  if(ip == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  return (inet_pton(AF_INET6,ip,&v6) == 1);
-}
-
 extern bool isdomainname(const char *name)
 {
   size_t n = 0;

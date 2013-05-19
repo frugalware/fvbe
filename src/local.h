@@ -133,7 +133,6 @@ struct tool
 };
 
 extern int charpp_qsort(const void *A,const void *B);
-extern bool isipv6(const char *ip);
 extern bool isdomainname(const char *name);
 extern void account_free(struct account *account);
 extern int get_number_padding(int n);
