@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "scanner.h"
 
 struct re2ctest
@@ -166,11 +167,32 @@ static struct re2ctest v6[] =
   {     "ffff:ffff:ffff:ffff:ffff:ffff:ffff::ffff", false },
   { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", false },
   {                                          "::x", false },
+  {                                           "::", false },
   {                                 "::ffff::ffff", false },
   {                                  "192.168.0.1", false },
   {                                   "What's up?", false },
   {                                             "", false },
   {                                              0, false }
+};
+
+static struct re2ctest dnsdomain[] =
+{
+  {   "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a", true  },
+  {   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", true  },
+  {                                                                                                                                                                                                                                                    "www.google.com", true  },
+  {                                                                                                                                                                                                                                                        "google.com", true  },
+  {                                                                                                                                                                                                                                                     "www.yahoo.com", true  },
+  {                                                                                                                                                                                                                                                         "yahoo.com", true  },
+  {                                                                                                                                                                                                                                                "www.frugalware.org", true  },
+  {                                                                                                                                                                                                                                                    "frugalware.org", true  },
+  {  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.", false },
+  { "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a", false },
+  {                                                               "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", false },
+  {                                                               "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", false },
+  {                                                               "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", false },
+  {                                                                                                                                                                                                                                                       "What's up!?", false },
+  {                                                                                                                                                                                                                                                                  "", false },
+  {                                                                                                                                                                                                                                                                   0, false }
 };
 
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
@@ -181,7 +203,7 @@ static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
     
     if(result != p->result)
     {
-      printf("pattern '%s' does not match as it should\n",p->pattern);
+      printf("pattern '%s' does not match as it should (len: %zu)\n",p->pattern,strlen(p->pattern));
       return false;
     }
   }
@@ -215,6 +237,8 @@ extern int main(void)
   RE2CTEST(v4,is_ip_v4);
 
   RE2CTEST(v6,is_ip_v6);
+
+  RE2CTEST(dnsdomain,is_dns_domain);
 
   printf("re2c has passed all tests\n");
   
