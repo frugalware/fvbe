@@ -126,6 +126,15 @@ is_ip_v6
 */
 )
 
+YYDECLARE(
+is_dns_domain
+,
+/*!re2c
+  ((alphadigit | alphadigit (alphadigit|[-]) {0,62} alphadigit) [.])* (alphadigit | alphadigit (alphadigit|[-]) {0,62} alphadigit) null { return YYLENCHECK(255); }
+  any                                                                                                                                   { return false;           }
+*/
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
