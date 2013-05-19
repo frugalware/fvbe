@@ -33,34 +33,6 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
-extern bool isdomainname(const char *name)
-{
-  size_t n = 0;
-  char buf[256] = {0};
-  char *p = 0;
-  char *label = 0;
-
-  if(name == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  n = strlen(name);
-
-  if(n == 0 || n > 253)
-    return false;
-
-  strfcpy(buf,sizeof(buf),"%s",name);
-
-  for( p = buf ; (label = strtok(p,".")) != 0 ; p = 0 )
-    if(!is_dns_label(label))
-      return false;
-
-  return true;
-}
-
 extern void account_free(struct account *account)
 {
   if(account == 0)
