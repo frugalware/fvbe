@@ -132,6 +132,31 @@ static struct re2ctest v4[] =
   {                 0, false }
 };
 
+static struct re2ctest v6[] =
+{
+  {                                  "::ffff", true  },
+  {                             "::ffff:ffff", true  },
+  {                        "::ffff:ffff:ffff", true  },
+  {                   "::ffff:ffff:ffff:ffff", true  },
+  {              "::ffff:ffff:ffff:ffff:ffff", true  },
+  {         "::ffff:ffff:ffff:ffff:ffff:ffff", true  },
+  {    "::ffff:ffff:ffff:ffff:ffff:ffff:ffff", true  },
+  {     "ffff::ffff:ffff:ffff:ffff:ffff:ffff", true  },
+  {     "ffff:ffff::ffff:ffff:ffff:ffff:ffff", true  },
+  {     "ffff:ffff:ffff::ffff:ffff:ffff:ffff", true  },
+  {     "ffff:ffff:ffff:ffff::ffff:ffff:ffff", true  },
+  {     "ffff:ffff:ffff:ffff:ffff::ffff:ffff", true  },
+  {     "ffff:ffff:ffff:ffff:ffff:ffff::ffff", true  },
+  { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", true  },
+  {                                      "::", true  },
+  {                                     "::x", false },
+  {                            "::ffff::ffff", false },
+  {                             "192.168.0.1", false },
+  {                              "What's up?", false },
+  {                                        "", false },
+  {                                         0, false }
+};
+
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
 {
   for( ; p->pattern != 0 ; ++p )
@@ -172,6 +197,8 @@ extern int main(void)
   RE2CTEST(dnslabel,is_dns_label);
 
   RE2CTEST(v4,is_ip_v4);
+
+  RE2CTEST(v6,is_ip_v6);
 
   printf("re2c has passed all tests\n");
   
