@@ -39,16 +39,13 @@ static bool action = false;
 
 static bool langconfig_setup(void)
 {
-  char command[_POSIX_ARG_MAX] = {0};
   FILE *pipe = 0;
   size_t i = 0;
   size_t size = 4096;
   char line[LINE_MAX] = {0};
   char *locale = 0;
-  
-  strfcpy(command,sizeof(command),"locale --all-locales");
 
-  if((pipe = popen(command,"r")) == 0)
+  if((pipe = popen("locale --all-locales","r")) == 0)
   {
     error(strerror(errno));
     return false;
@@ -132,7 +129,11 @@ static bool update_via_new(void)
     return false;
   }
 
-  strfcpy(command,sizeof(command),"localectl set-locale '%s=%s'",var,locale);
+  strfcpy(command,sizeof(command),"localectl set-locale");
+
+  strfcat(command,sizeof(command)," '%s=",shell_escape(var));
+
+  strfcat(command,sizeof(command),"%s'",shell_escape(locale));
 
   for( ; vars[i] != 0 ; ++i )
   {
@@ -140,8 +141,10 @@ static bool update_via_new(void)
     
     if((locale = getenv(var)) == 0 || strlen(locale) == 0)
       continue;
-    
-    strfcat(command,sizeof(command)," '%s=%s'",var,locale);
+
+    strfcat(command,sizeof(command)," '%s=",shell_escape(var));
+
+    strfcat(command,sizeof(command),"%s'",shell_escape(locale));
   }
 
   if(!execute(command,g->guestroot,0))
