@@ -268,7 +268,7 @@ static bool format_process_devices(void)
       else if(strcmp(target->newfilesystem,"swap") == 0)
         program = "mkswap";
 
-      strfcpy(command,sizeof(command),"%s %s '%s'",program,target->options,shell_escape(target->devicepath));
+      strfcpy(command,sizeof(command),"%s %s '%s'",program,target->options,shell_escape(target->devicepath,true));
 
       if(!execute(command,g->hostroot,0))
       {
@@ -279,7 +279,7 @@ static bool format_process_devices(void)
 
     if(strcmp(target->newfilesystem,"swap") == 0)
     {
-      strfcpy(command,sizeof(command),"swapon '%s'",shell_escape(target->devicepath));
+      strfcpy(command,sizeof(command),"swapon '%s'",shell_escape(target->devicepath,true));
 
       if(!execute(command,g->hostroot,0))
       {

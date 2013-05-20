@@ -129,7 +129,7 @@ static bool grubconfig_action(void)
 
   for( p = devices ; (s = strtok(p,":")) != 0 ; p = 0, ++i )
   {
-    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%.8s'",shell_escape(s));
+    strfcpy(command,sizeof(command),"grub-install --recheck --no-floppy --boot-directory=/boot '%.8s'",shell_escape(s,true));
    
     strfcpy(path,sizeof(path),"(%*d/%d) - %.8s",padding,i+1,count,s);
    
