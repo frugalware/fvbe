@@ -51,12 +51,12 @@ static bool update_via_new(const char *hostname,const char *prettyhostname)
 {  
   char command[_POSIX_ARG_MAX] = {0};
   
-  strfcpy(command,sizeof(command),"hostnamectl --static set-hostname '%s'",hostname);
+  strfcpy(command,sizeof(command),"hostnamectl --static set-hostname '%s'",shell_escape(hostname));
 
   if(!execute(command,g->guestroot,0))
     return false;
   
-  strfcpy(command,sizeof(command),"hostnamectl --pretty set-hostname '%s'",prettyhostname);
+  strfcpy(command,sizeof(command),"hostnamectl --pretty set-hostname '%s'",shell_escape(prettyhostname));
 
   if(!execute(command,g->guestroot,0))
     return false;
