@@ -206,19 +206,22 @@ static bool kbconfig_update(const struct layout *layout)
 {
   char command[_POSIX_ARG_MAX] = {0};
   
-  strfcpy(command,sizeof(command),"loadkeys '%s'",layout->kbdlayout);
+  strfcpy(command,sizeof(command),"loadkeys '%s'",shell_escape(layout->kbdlayout));
   
   if(!execute(command,g->hostroot,0))
     return false;
 
   if(inx11())
   {
-    strfcpy(command,sizeof(command),"setxkbmap -layout '%s' -model '%s' -variant '%s' -option '' -option '%s'",
-      strng(layout->xkblayout),
-      strng(layout->xkbmodel),
-      strng(layout->xkbvariant),
-      strng(layout->xkboptions)
-    );
+    strfcpy(command,sizeof(command),"setxkbmap -option ''");
+    
+    strfcat(command,sizeof(command)," -layout '%s'",shell_escape(layout->xkblayout));
+    
+    strfcat(command,sizeof(command)," -model '%s'",shell_escape(layout->xkbmodel));
+
+    strfcat(command,sizeof(command)," -variant '%s'",shell_escape(layout->xkbvariant));
+    
+    strfcat(command,sizeof(command)," -option '%s'",shell_escape(layout->xkboptions));
     
     if(!execute(command,g->hostroot,0))
       return false;
@@ -242,17 +245,20 @@ static bool update_via_new(const struct layout *layout)
 {
   char command[_POSIX_ARG_MAX] = {0};
 
-  strfcpy(command,sizeof(command),"localectl --no-convert set-keymap '%s'",layout->kbdlayout);
+  strfcpy(command,sizeof(command),"localectl --no-convert set-keymap '%s'",shell_escape(layout->kbdlayout));
 
   if(!execute(command,g->guestroot,0))
     return false;
 
-  strfcpy(command,sizeof(command),"localectl --no-convert set-x11-keymap '%s' '%s' '%s' '%s'",
-    strng(layout->xkblayout),
-    strng(layout->xkbmodel),
-    strng(layout->xkbvariant),
-    strng(layout->xkboptions)
-  );
+  strfcpy(command,sizeof(command),"localectl --no-convert set-x11-keymap");
+
+  strfcat(command,sizeof(command)," '%s'",shell_escape(layout->xkblayout));
+
+  strfcat(command,sizeof(command)," '%s'",shell_escape(layout->xkbmodel));
+
+  strfcat(command,sizeof(command)," '%s'",shell_escape(layout->xkbvariant));
+
+  strfcat(command,sizeof(command)," '%s'",shell_escape(layout->xkboptions));
 
   if(!execute(command,g->guestroot,0))
     return false;
