@@ -32,24 +32,24 @@ static bool userconfig_action(const struct account *account)
 
   strfcpy(command,sizeof(command),"useradd -m");
 
-  strfcat(command,sizeof(command)," -c '%s'",shell_escape(account->name,true));
+  strfcat(command,sizeof(command)," -c '%s'",shell_escape(account->name));
   
-  strfcat(command,sizeof(command)," -g '%s'",shell_escape(account->group,true));
+  strfcat(command,sizeof(command)," -g '%s'",shell_escape(account->group));
 
-  strfcat(command,sizeof(command)," -G '%s'",shell_escape(account->groups,true));
+  strfcat(command,sizeof(command)," -G '%s'",shell_escape(account->groups));
 
-  strfcat(command,sizeof(command)," -d '%s'",shell_escape(account->home,true));
+  strfcat(command,sizeof(command)," -d '%s'",shell_escape(account->home));
 
-  strfcat(command,sizeof(command)," -s '%s'",shell_escape(account->shell,true));
+  strfcat(command,sizeof(command)," -s '%s'",shell_escape(account->shell));
 
-  strfcat(command,sizeof(command)," '%s'",shell_escape(account->user,true));
+  strfcat(command,sizeof(command)," '%s'",shell_escape(account->user));
 
   if(!execute(command,g->guestroot,0))
     return false;
 
-  strfcpy(command,sizeof(command),"echo '%s:",shell_escape(account->user,true));
+  strfcpy(command,sizeof(command),"echo '%s:",shell_escape(account->user));
 
-  strfcat(command,sizeof(command),"%s' | chpasswd",shell_escape(account->password,true));
+  strfcat(command,sizeof(command),"%s' | chpasswd",shell_escape(account->password));
 
   if(!execute(command,g->guestroot,0))
     return false;

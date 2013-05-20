@@ -93,7 +93,7 @@ static bool update_via_new(const char *zone,bool utc)
   char command[_POSIX_ARG_MAX] = {0};
   struct stat st = {0};
   
-  strfcpy(command,sizeof(command),"timedatectl set-timezone '%s'",shell_escape(zone,true));
+  strfcpy(command,sizeof(command),"timedatectl set-timezone '%s'",shell_escape(zone));
   
   if(!execute(command,g->guestroot,0))
     return false;

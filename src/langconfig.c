@@ -131,9 +131,9 @@ static bool update_via_new(void)
 
   strfcpy(command,sizeof(command),"localectl set-locale");
 
-  strfcat(command,sizeof(command)," '%s=",shell_escape(var,true));
+  strfcat(command,sizeof(command)," '%s=",shell_escape(var));
 
-  strfcat(command,sizeof(command),"%s'",shell_escape(locale,true));
+  strfcat(command,sizeof(command),"%s'",shell_escape(locale));
 
   for( ; vars[i] != 0 ; ++i )
   {
@@ -142,9 +142,9 @@ static bool update_via_new(void)
     if((locale = getenv(var)) == 0 || strlen(locale) == 0)
       continue;
 
-    strfcat(command,sizeof(command)," '%s=",shell_escape(var,true));
+    strfcat(command,sizeof(command)," '%s=",shell_escape(var));
 
-    strfcat(command,sizeof(command),"%s'",shell_escape(locale,true));
+    strfcat(command,sizeof(command),"%s'",shell_escape(locale));
   }
 
   if(!execute(command,g->guestroot,0))
