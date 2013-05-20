@@ -48,10 +48,17 @@ extern char *shell_escape(const char *in)
 
   for( ; *in != 0 ; ++in )
   {
-    if(*in == '\'' && s < e)
-      *s++ = '\\';
+    if(*in == '\'')
+    {
+      for( const char *p = "'\\''" ; *p != 0 ; ++p )
+        if(s < e)
+          *s++ = *p;
     
-    *s++ = *in;
+      continue;
+    }
+    
+    if(s < e)
+      *s++ = *in;
   }
   
   *s = 0;
