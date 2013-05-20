@@ -40,7 +40,7 @@ static bool update_via_old(const char *hostname,const char *prettyhostname)
     return false;
   }
   
-  fprintf(file,"PRETTY_HOSTNAME='%s'\n",prettyhostname);
+  fprintf(file,"PRETTY_HOSTNAME=\"%s\"\n",systemd_escape(prettyhostname));
   
   fclose(file);
   

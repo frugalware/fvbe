@@ -33,6 +33,34 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
+extern char *systemd_escape(const char *in)
+{
+  static char out[LINE_MAX] = {0};
+  char *s = out;
+  char *e = out + sizeof(out) - 1;
+  
+  if(in == 0 || strlen(in) == 0)
+  {
+    *out = 0;
+
+    return out;
+  }
+
+  for( ; *in != 0 ; ++in )
+  {
+    if(s < e && strchr("'\"\\`$",*in) != 0)
+      *s++ = '\\';
+    
+    if(s < e)
+      *s++ = *in;
+  }
+  
+  *s = 0;
+  
+  return out;
+
+}
+
 extern char *shell_escape(const char *in)
 {
   static char out[_POSIX_ARG_MAX] = {0};

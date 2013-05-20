@@ -99,7 +99,7 @@ static bool update_via_old(void)
     return false;
   }
   
-  fprintf(file,"%s=%s\n",var,locale);
+  fprintf(file,"%s=\"%s\"\n",var,systemd_escape(locale));
 
   for( ; vars[i] != 0 ; ++i )
   {
@@ -108,7 +108,7 @@ static bool update_via_old(void)
     if((locale = getenv(var)) == 0 || strlen(locale) == 0)
       continue;
     
-    fprintf(file,"%s=%s\n",var,locale);
+    fprintf(file,"%s=\"%s\"\n",var,systemd_escape(locale));
   }
 
   fclose(file);

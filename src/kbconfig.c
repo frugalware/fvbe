@@ -82,12 +82,9 @@ static bool write_vconsole_conf(const struct layout *layout)
     return false;
   }
   
-  fprintf(file,
-    "KEYMAP=%s\n"
-    "FONT=%s\n",
-    layout->kbdlayout,
-    "ter-v16b"
-  );
+  fprintf(file,"KEYMAP=\"%s\"\n",systemd_escape(layout->kbdlayout));
+  
+  fprintf(file,"FONT=\"%s\"\n",systemd_escape("ter-v16b"));
   
   fclose(file);
   
