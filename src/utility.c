@@ -33,7 +33,7 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
-extern char *shell_escape(const char *in)
+extern char *shell_escape(const char *in,bool two)
 {
   static char out[_POSIX_ARG_MAX] = {0};
   char *s = out;
@@ -48,10 +48,17 @@ extern char *shell_escape(const char *in)
 
   for( ; *in != 0 ; ++in )
   {
-    if(*in == '\'' && s < e)
-      *s++ = '\\';
+    if(*in == '\'')
+    {
+      if(s < e)
+        *s++ = '\\';
+      
+      if(s < e && two)
+        *s++ = '\\';
+    }
     
-    *s++ = *in;
+    if(s < e)
+      *s++ = *in;
   }
   
   *s = 0;

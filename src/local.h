@@ -134,7 +134,7 @@ struct tool
 
 extern int charpp_qsort(const void *A,const void *B);
 extern void account_free(struct account *account);
-extern char *shell_escape(const char *in);
+extern char *shell_escape(const char *in,bool two);
 extern int get_number_padding(int n);
 extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n);
 extern void update_raid_add(struct device ***unused,struct raid ***used,struct raid *raid);
