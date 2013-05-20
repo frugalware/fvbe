@@ -14,6 +14,7 @@ add config tool for selecting the default VISUAL/EDITOR
 add config tool for selecting the display manager
 add config tool for configuring DPI/PPI and other font options for freetype
 
+systemd escapes ' in /etc/machine-info which shells do not. look into a fix.
 implement length checks on user input if there's a technical limit
 make default selection of config tools match the default, if it is available.
 replace my method of retrieving disk unique identifier with libblkid's API, should be in v2.23.
