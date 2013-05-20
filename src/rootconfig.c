@@ -30,7 +30,9 @@ static bool rootconfig_action(const struct account *account)
     return false;
   }
 
-  strfcpy(command,sizeof(command),"echo '%s:%s' | chpasswd",account->user,account->password);
+  strfcpy(command,sizeof(command),"echo '%s:",shell_escape(account->user));
+
+  strfcat(command,sizeof(command),"%s' | chpasswd",shell_escape(account->password));
 
   return execute(command,g->guestroot,0);
 }
