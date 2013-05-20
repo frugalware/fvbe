@@ -216,7 +216,7 @@ static bool zapdisk(const char *path)
 {
   char command[_POSIX_ARG_MAX] = {0};
 
-  strfcpy(command,sizeof(command),"sgdisk --zap-all '%s'",path);
+  strfcpy(command,sizeof(command),"sgdisk --zap-all '%s'",shell_escape(path));
 
   return execute(command,g->hostroot,0);
 }
@@ -1232,36 +1232,36 @@ extern bool disk_flush(struct disk *disk)
       );
 
     strfcat(command,sizeof(command),"' | sfdisk --unit S --Linux --no-reread '%s';",
-      disk->device->path
+      shell_escape(disk->device->path)
     );
   }
   else if(disk->type == DISKTYPE_GPT)
   {
     strfcpy(command,sizeof(command),"set -e;sgdisk --clear --disk-guid='%s'",
-      (strlen(disk->gptuuid) == 0) ? "R" : disk->gptuuid
+      (strlen(disk->gptuuid) == 0) ? "R" : shell_escape(disk->gptuuid)
     );
 
     for( ; i < disk->size ; ++i )
     {
       part = &disk->table[i];
 
-      strfcat(command,sizeof(command)," --new='%d:%lld:%lld' --change-name='%d:%s' --partition-guid='%d:%s' --typecode='%d:%s' --attributes='%d:=:0x%.16llx'",
+      strfcat(command,sizeof(command)," --new='%d:%lld:%lld' --attributes='%d:=:0x%.16llx'",
         part->number,
         part->start,
         part->end,
         part->number,
-        part->gptname,
-        part->number,
-        (strlen(part->gptuuid) == 0) ? "R" : part->gptuuid,
-        part->number,
-        part->gpttype,
-        part->number,
         part->gptflags
       );
+      
+      strfcat(command,sizeof(command)," --change-name='%d:%s'",part->number,shell_escape(part->gptname));
+      
+      strfcat(command,sizeof(command)," --partition-guid='%d:%s'",part->number,(strlen(part->gptuuid) == 0) ? "R" : shell_escape(part->gptuuid));
+    
+      strfcat(command,sizeof(command)," --typecode='%d:%s'",part->number,shell_escape(part->gpttype)); 
     }
 
     strfcat(command,sizeof(command)," '%s';",
-      disk->device->path
+      shell_escape(disk->device->path)
     );
   }
 
@@ -1530,10 +1530,10 @@ extern bool raid_start(struct raid *raid)
     return false;
   }
 
-  strfcpy(command,sizeof(command),"yes 'y' | mdadm --create --level='%d' --raid-devices='%d' '%s'",raid->level,raid->disks,raid->path);
+  strfcpy(command,sizeof(command),"yes 'y' | mdadm --create --level='%d' --raid-devices='%d' '%s'",raid->level,raid->disks,shell_escape(raid->path));
 
   for( int i = 0 ; i < raid->disks ; ++i )
-    strfcat(command,sizeof(command)," '%s'",raid->devices[i]->path);
+    strfcat(command,sizeof(command)," '%s'",shell_escape(raid->devices[i]->path));
 
   if(!execute(command,g->hostroot,0))
     return false;
@@ -1554,7 +1554,7 @@ extern bool raid_stop(struct raid *raid)
     return false;
   }
 
-  strfcpy(command,sizeof(command),"mdadm --stop '%s'",raid->path);
+  strfcpy(command,sizeof(command),"mdadm --stop '%s'",shell_escape(raid->path));
 
   if(!execute(command,g->hostroot,0))
     return false;
