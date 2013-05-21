@@ -834,6 +834,9 @@ extern int disk_create_partition(struct disk *disk,long long size)
     return -1;
   }
 
+  if(size < MEBIBYTE)
+    size = MEBIBYTE;
+
   if(!newpartition(disk,size,&part))
     return -1;
 
@@ -903,6 +906,9 @@ extern int disk_create_logical_partition(struct disk *disk,long long size)
     error(strerror(errno));
     return -1;
   }
+
+  if(size < MEBIBYTE)
+    size = MEBIBYTE;
 
   for( ; i < disk->size ; ++i )
   {
