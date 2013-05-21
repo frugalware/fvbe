@@ -29,8 +29,6 @@ static inline void free_target(struct format *p)
 
   free(p->newfilesystem);
 
-  free(p->options);
-
   free(p->mountpath);
 
   free(p);
@@ -183,7 +181,7 @@ static void format_filter_devices(void)
   {
     struct format *p = targets[i];
 
-    if(p->newfilesystem == 0 && p->options == 0 && p->mountpath == 0)
+    if(p->newfilesystem == 0 && p->mountpath == 0)
     {
       free_target(p);
       continue;
@@ -271,7 +269,7 @@ static bool format_process_devices(void)
       else if(strcmp(target->newfilesystem,"swap") == 0)
         program = "mkswap";
 
-      strfcpy(command,sizeof(command),"%s %s '%s'",program,target->options,shell_escape(target->devicepath));
+      strfcpy(command,sizeof(command),"%s '%s'",program,shell_escape(target->devicepath));
 
       if(!execute(command,g->hostroot,0))
       {
