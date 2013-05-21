@@ -55,7 +55,7 @@ static inline bool findpath(struct format **targets,struct format *target,const 
     if(t == target)
       continue;
 
-    if(t->newfilesystem == 0 && t->options == 0 && t->mountpath == 0)
+    if(t->newfilesystem == 0 && t->mountpath == 0)
       continue;
 
     if(strcmp(t->newfilesystem,"swap") == 0)
@@ -297,10 +297,6 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
   int entry1_height = 0;
   int label1_width = 0;
   int label1_height = 0;
-  int entry2_width = 0;
-  int entry2_height = 0;
-  int label2_width = 0;
-  int label2_height = 0;
   int listbox_width = 0;
   int listbox_height = 0;
   int cancel_width = 0;
@@ -310,14 +306,11 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
   int entry_left = 0;
   newtComponent textbox = 0;
   newtComponent label1 = 0;
-  newtComponent label2 = 0;
   newtComponent entry1 = 0;
-  newtComponent entry2 = 0;
   newtComponent listbox = 0;
   newtComponent cancel = 0;
   newtComponent ok = 0;
   const char *path = 0;
-  const char *parameters = 0;
   static const char *filesystems[] =
   {
     "noformat",
@@ -341,28 +334,21 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
   if(!get_label_screen_size(FORMAT_MOUNT_ENTRY_TEXT,&label1_width,&label1_height))
     return false;
 
-  if(!get_label_screen_size(FORMAT_PARAMETERS_ENTRY_TEXT,&label2_width,&label2_height))
-    return false;
-
   if(!get_button_screen_size(CANCEL_BUTTON_TEXT,&cancel_width,&cancel_height))
     return false;
 
   if(!get_button_screen_size(OK_BUTTON_TEXT,&ok_width,&ok_height))
     return false;
 
-  entry_left = max(label1_width,label2_width) + 1;
+  entry_left = label1_width + 1;
 
   entry1_width = NEWT_WIDTH - entry_left;
 
   entry1_height = 1;
 
-  entry2_width = NEWT_WIDTH - entry_left;
-
-  entry2_height = 1;
-
   listbox_width = NEWT_WIDTH;
 
-  listbox_height = NEWT_HEIGHT - textbox_height - entry1_height - entry2_height - ok_height - 4;
+  listbox_height = NEWT_HEIGHT - textbox_height - entry1_height - ok_height - 3;
 
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,FORMAT_TITLE) != 0)
   {
@@ -378,11 +364,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry1_width,&path,0);
 
-  label2 = newtLabel(0,textbox_height+label1_height+2,FORMAT_PARAMETERS_ENTRY_TEXT);
-
-  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(target->options),entry2_width,&parameters,0);
-
-  listbox = newtListbox(0,textbox_height+label1_height+label2_height+3,listbox_height,NEWT_FLAG_SCROLL);
+  listbox = newtListbox(0,textbox_height+label1_height+2,listbox_height,NEWT_FLAG_SCROLL);
 
   newtListboxSetWidth(listbox,listbox_width);
 
@@ -413,7 +395,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   form = newtForm(0,0,NEWT_FLAG_NOF12);
 
-  newtFormAddComponents(form,textbox,label1,entry1,label2,entry2,listbox,cancel,ok,(void *) 0);
+  newtFormAddComponents(form,textbox,label1,entry1,listbox,cancel,ok,(void *) 0);
 
   newtFormSetCurrent(form,entry1);
 
@@ -440,15 +422,11 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
       free(target->newfilesystem);
 
-      free(target->options);
-
       free(target->mountpath);
 
       target->format = (strcmp(filesystem,"noformat") != 0);
 
       target->newfilesystem = strdup( (target->format) ? filesystem : target->filesystem );
-
-      target->options = strdup(parameters);
 
       target->mountpath = strdup(path);
 
@@ -1945,7 +1923,7 @@ extern bool ui_window_format(struct format **targets)
 
       ui_dialog_format(targets,target);
 
-      if(target->newfilesystem != 0 && target->options != 0 && target->mountpath != 0)
+      if(target->newfilesystem != 0 && target->mountpath != 0)
       {
         strfcpy(text,sizeof(text),"%-11s %-11s %-11s %-11s",target->devicepath,target->size,target->newfilesystem,(strcmp(target->newfilesystem,"swap") == 0) ? "active" : target->mountpath);
 
@@ -1967,7 +1945,7 @@ extern bool ui_window_format(struct format **targets)
       {
         struct format *target = *p;
 
-        if(target->newfilesystem == 0 && target->options == 0 && target->mountpath == 0)
+        if(target->newfilesystem == 0 && target->mountpath == 0)
           continue;
 
         if(strcmp(target->newfilesystem,"swap") == 0)
