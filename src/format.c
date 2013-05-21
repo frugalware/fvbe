@@ -245,7 +245,10 @@ static bool format_process_devices(void)
   {
     struct format *target = targets[i];
 
-    strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->devicepath,target->newfilesystem);
+    if(strcmp(target->newfilesystem,"swap") == 0)
+      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s",padding,i+1,j,target->newfilesystem);
+    else
+      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->newfilesystem,target->devicepath);
 
     ui_dialog_progress(_("Formatting"),text,get_percent(i+1,j));
 
