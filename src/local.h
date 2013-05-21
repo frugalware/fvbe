@@ -97,7 +97,6 @@ struct format
   char *filesystem;
   bool format;
   char *newfilesystem;
-  char *options;
   char *mountpath;
 };
 
