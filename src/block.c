@@ -366,7 +366,7 @@ extern struct device **device_probe_all(bool disk,bool raid)
     else
       continue;
     
-    if((device = device_open(path)) == 0)
+    if(strncmp(path,g->isodevice,8) == 0 || (device = device_open(path)) == 0)
       continue;
     
     devices[i++] = device;
