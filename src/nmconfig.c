@@ -62,6 +62,19 @@ static inline const char *nm_unescape_token(const char *s1,size_t n)
   return buf;
 }
 
+static inline bool nm_parse_line(const char *line,bool (*cb) (int,const char *,void *),void *data)
+{
+  const char *a = line;
+  const char *b = 0;
+  int token = 1;
+
+  for( ; (b = nm_next_token(a)) != 0 ; a = b + ((*a == 0) ? 0 : 1), ++token )
+    if(!cb(token,nm_unescape_token(a,b-a),data))
+      return false;    
+
+  return true;
+}
+
 static bool nmconfig_start(void)
 {
   return true;
