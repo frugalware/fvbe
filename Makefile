@@ -16,7 +16,7 @@ CFLAGS  += -DRELEASE_STABLE
 LDFLAGS += -s
 FDB     := frugalware.fdb
 else ifeq ($(BRANCH),current)
-CFLAGS  += -Wall -Wextra -DRELEASE_CURRENT -ggdb3
+CFLAGS  += -Wall -Wextra -Winline -DRELEASE_CURRENT -ggdb3
 FDB     := frugalware-current.fdb
 endif
 
