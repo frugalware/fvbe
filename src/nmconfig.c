@@ -38,7 +38,7 @@ static inline const char *nm_next_token(const char *p)
   return p;
 }
 
-static const char *nm_unescape_token(const char *s1,size_t n)
+static inline const char *nm_unescape_token(const char *s1,size_t n)
 {
   const char *e1 = s1 + n;
   static char buf[LINE_MAX] = {0};
