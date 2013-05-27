@@ -17,6 +17,27 @@
 
 #include "local.h"
 
+static inline const char *nm_next_token(const char *p)
+{
+  char c1 = 0;
+  char c2 = 0;
+
+  if(*p == 0)
+    return 0;
+
+  for( ; (c2 = *p) != 0 ; ++p )
+  {
+    if(c1 != '\\' && c2 == ':')
+      break;
+    else if(c2 == '\n')
+      break;
+  
+    c1 = (c1 == '\\' && c2 == '\\') ? 0 : c2;
+  }
+
+  return p;
+}
+
 static bool nmconfig_start(void)
 {
   return true;
