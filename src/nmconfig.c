@@ -75,6 +75,99 @@ static inline bool nm_parse_line(const char *line,bool (*cb) (int,const char *,v
   return true;
 }
 
+static bool nm_parse_device(int token,const char *value,void *data)
+{
+  struct nmdevice *p = data;
+  bool rv = true;
+
+  switch(token)
+  {
+    case 1:
+      rv = (strcmp(value,"GENERAL") == 0);
+      break;
+    
+    case 2:
+      p->device = strdup(value);
+      break;
+    
+    case 3:
+      p->type = strdup(value);
+      break;
+    
+    case 4:
+      p->vendor = strdup(value);
+      break;
+    
+    case 5:
+      p->product = strdup(value);
+      break;
+    
+    case 6:
+      p->driver = strdup(value);
+      break;
+    
+    case 7:
+      p->driverversion = strdup(value);
+      break;
+    
+    case 8:
+      p->firmwareversion = strdup(value);
+      break;
+    
+    case 9:
+      p->hwaddr = strdup(value);
+      break;
+    
+    case 10:
+      p->state = atoi(value);
+      break;
+    
+    case 11:
+      p->reason = atoi(value);
+      break;
+    
+    case 12:
+      p->udi = strdup(value);
+      break;  
+    
+    case 13:
+      p->ipiface = strdup(value);
+      break;
+    
+    case 14:
+      if(strcmp(value,"yes") == 0)
+        p->nmmanaged = true;
+      else if(strcmp(value,"no") == 0)
+        p->nmmanaged = false;
+      break;
+    
+    case 15:
+      if(strcmp(value,"yes") == 0)
+        p->autoconnect = true;
+      else if(strcmp(value,"no") == 0)
+        p->autoconnect = false;
+      break;
+    
+    case 16:
+      if(strcmp(value,"yes") == 0)
+        p->firmwaremissing = true;
+      else if(strcmp(value,"no") == 0)
+        p->firmwaremissing = false;
+      break;
+    
+    case 17:
+      p->connection = strdup(value);
+      break;
+    
+    default:
+      eprintf("%s: unknown token value of %d\n",__func__,token);
+      rv = false;
+      break;
+  }
+
+  return rv;
+}
+
 static bool nmconfig_start(void)
 {
   return true;

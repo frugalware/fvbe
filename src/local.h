@@ -90,6 +90,26 @@ struct disk;
 
 struct raid;
 
+struct nmdevice
+{
+  char *device;
+  char *type;
+  char *vendor;
+  char *product;
+  char *driver;
+  char *driverversion;
+  char *firmwareversion;
+  char *hwaddr;
+  int state;
+  int reason;
+  char *udi;
+  char *ipiface;
+  bool nmmanaged;
+  bool autoconnect;
+  bool firmwaremissing;
+  char *connection;
+};
+
 struct format
 {
   char *devicepath;
