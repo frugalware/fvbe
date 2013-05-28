@@ -168,6 +168,36 @@ static bool nm_parse_device(int token,const char *value,void *data)
   return rv;
 }
 
+static void nmdevice_free(struct nmdevice *p)
+{
+  if(p == 0)
+    return;
+
+  free(p->device);
+  
+  free(p->type);
+  
+  free(p->vendor);
+  
+  free(p->product);
+  
+  free(p->driver);
+  
+  free(p->driverversion);
+  
+  free(p->firmwareversion);
+  
+  free(p->hwaddr);
+  
+  free(p->udi);
+  
+  free(p->ipiface);
+  
+  free(p->connection);
+  
+  free(p);
+}
+
 static bool nmconfig_start(void)
 {
   return true;
