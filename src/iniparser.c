@@ -569,7 +569,7 @@ static line_status iniparser_line(
     if (len<1) {
         /* Empty line */
         sta = LINE_EMPTY ;
-    } else if (line[0]=='#' || line[0]==';') {
+    } else if (line[0]=='#') {
         /* Comment line */
         sta = LINE_COMMENT ; 
     } else if (line[0]=='[' && line[len-1]==']') {
@@ -580,7 +580,7 @@ static line_status iniparser_line(
         sta = LINE_SECTION ;
     } else if (sscanf (line, "%[^=] = \"%[^\"]\"", key, value) == 2
            ||  sscanf (line, "%[^=] = '%[^\']'",   key, value) == 2
-           ||  sscanf (line, "%[^=] = %[^;#]",     key, value) == 2) {
+           ||  sscanf (line, "%[^=] = %[^#]",     key, value) == 2) {
         /* Usual key=value, with or without comments */
         strcpy(key, strstrip(key));
         strcpy(key, strlwc(key));
@@ -593,7 +593,7 @@ static line_status iniparser_line(
             value[0]=0 ;
         }
         sta = LINE_VALUE ;
-    } else if (sscanf(line, "%[^=] = %[;#]", key, value)==2
+    } else if (sscanf(line, "%[^=] = %[#]", key, value)==2
            ||  sscanf(line, "%[^=] %[=]", key, value) == 2) {
         /*
          * Special cases:
