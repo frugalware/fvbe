@@ -2053,7 +2053,6 @@ extern bool ui_window_host(char **hostname,char **prettyhostname)
   int label2_height = 0;
   int entry_left = 0;
   int entry_width = 0;
-  int entry_height = 0;
   int next_width = 0;
   int next_height = 0;
   newtComponent textbox = 0;
@@ -2086,8 +2085,6 @@ extern bool ui_window_host(char **hostname,char **prettyhostname)
   entry_left = max(label1_width,label2_width) + 1;
 
   entry_width = NEWT_WIDTH - entry_left;
-
-  entry_height = 1;
 
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
@@ -2155,7 +2152,6 @@ extern bool ui_window_root(struct account *data)
   int label2_height = 0;
   int entry_left = 0;
   int entry_width = 0;
-  int entry_height = 0;
   int next_width = 0;
   int next_height = 0;
   newtComponent textbox = 0;
@@ -2188,8 +2184,6 @@ extern bool ui_window_root(struct account *data)
   entry_left = max(label1_width,label2_width) + 1;
 
   entry_width = NEWT_WIDTH - entry_left;
-
-  entry_height = 1;
 
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
@@ -2275,7 +2269,6 @@ extern bool ui_window_user(struct account *data)
   int label4_height = 0;
   int entry_left = 0;
   int entry_width = 0;
-  int entry_height = 0;
   int next_width = 0;
   int next_height = 0;
   newtComponent textbox = 0;
@@ -2321,8 +2314,6 @@ extern bool ui_window_user(struct account *data)
   entry_left = maxv( (long long []) { label1_width, label2_width, label3_width, label4_width }, 4) + 1;
 
   entry_width = NEWT_WIDTH - entry_left;
-
-  entry_height = 0;
 
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
