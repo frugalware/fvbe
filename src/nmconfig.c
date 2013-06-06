@@ -19,6 +19,8 @@
 
 static struct nmdevice **nmdevices = 0;
 
+static struct nmprofile **nmprofiles = 0;
+
 static inline const char *nm_next_token(const char *p)
 {
   char c1 = 0;
@@ -246,9 +248,70 @@ static bool nmconfig_setup_devices(void)
   return true;
 }
 
+static bool nmconfig_setup_profiles(void)
+{
+  DIR *dir = 0;
+  size_t i = 0;
+  size_t size = 4096;
+  struct dirent entry = {0};
+  struct dirent *p = 0;
+  char path[PATH_MAX] = {0};
+  struct stat st = {0};
+  dictionary *data = 0;
+  struct nmprofile *profile = 0;
+  
+  if((dir = opendir("/etc/NetworkManager/system-connections")) == 0)
+  {
+    error(strerror(errno));
+    return 0;
+  }
+  
+  nmprofiles = alloc(struct nmprofile *,size);
+  
+  while(readdir_r(dir,&entry,&p) == 0 && p != 0)
+  {
+    const char *name = p->d_name;
+    
+    strfcpy(path,sizeof(path),"/etc/NetworkManager/system-connections/%s",name);
+    
+    if(
+      i == size - 1            ||
+      strcmp(name,".") == 0    ||
+      strcmp(name,"..") == 0   ||
+      stat(path,&st) == -1     ||
+      st.st_uid != 0           ||
+      st.st_gid != 0           ||
+      (st.st_mode & 0077) != 0
+    )
+      continue;
+    
+    if((data = iniparser_load(path)) == 0)
+      continue;
+    
+    profile = alloc(struct nmprofile,1);
+    
+    profile->path = strdup(path);
+    
+    profile->data = data;
+    
+    nmprofiles[i++] = profile;
+  }
+
+  nmprofiles[i] = 0;
+  
+  nmprofiles = redim(nmprofiles,struct nmprofile *,i + 1);
+
+  closedir(dir);
+
+  return true;
+}
+
 static bool nmconfig_start(void)
 {
   if(!nmconfig_setup_devices())
+    return false;
+
+  if(!nmconfig_setup_profiles())
     return false;
 
   return true;
