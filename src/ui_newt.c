@@ -289,6 +289,51 @@ static void ui_dialog_text(const char *title,const char *text)
   newtPopWindow();
 }
 
+static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int entry1_width = 0;
+  int entry1_height = 0;
+  int label1_width = 0;
+  int label1_height = 0;
+  int entry2_width = 0;
+  int entry2_height = 0;
+  int label2_width = 0;
+  int label2_height = 0;
+  int entry3_width = 0;
+  int entry3_height = 0;
+  int label3_width = 0;
+  int label3_height = 0;
+  int entry4_width = 0;
+  int entry4_height = 0;
+  int label4_width = 0;
+  int label4_height = 0;
+  int entry5_width = 0;
+  int entry5_height = 0;
+  int label5_width = 0;
+  int label5_height = 0;
+  int cancel_width = 0;
+  int cancel_height = 0;
+  int ok_width = 0;
+  int ok_height = 0;
+  newtComponent textbox = 0;
+  newtComponent entry1 = 0;
+  newtComponent label1 = 0;
+  newtComponent entry2 = 0;
+  newtComponent label2 = 0;
+  newtComponent entry3 = 0;
+  newtComponent label3 = 0;
+  newtComponent entry4 = 0;
+  newtComponent label4 = 0;
+  newtComponent entry5 = 0;
+  newtComponent label5 = 0;
+  newtComponent cancel = 0;
+  newtComponent ok = 0;
+
+  return true;
+}
+
 static bool ui_dialog_format(struct format **targets,struct format *target)
 {
   int textbox_width = 0;
