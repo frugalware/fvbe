@@ -46,6 +46,7 @@
 #include <search.h>
 #include <blkid.h>
 #include <utmpx.h>
+#include "iniparser.h"
 
 #ifdef UI_NEWT
 #define NEWT_WIDTH 70
@@ -108,6 +109,12 @@ struct nmdevice
   bool autoconnect;
   bool firmwaremissing;
   char *connection;
+};
+
+struct nmprofile
+{
+  char *path;
+  dictionary *data;
 };
 
 struct format
