@@ -17,6 +17,8 @@
 
 #include "local.h"
 
+static struct nmdevice **nmdevices = 0;
+
 static inline const char *nm_next_token(const char *p)
 {
   char c1 = 0;
@@ -198,8 +200,57 @@ static void nmdevice_free(struct nmdevice *p)
   free(p);
 }
 
+static bool nmconfig_setup_devices(void)
+{
+  FILE *pipe = 0;
+  char line[LINE_MAX] = {0};
+  size_t i = 0;
+  size_t size = 4096;
+  struct nmdevice *device = 0;
+  
+  if((pipe = popen("LC_ALL=C nmcli -t -m tabular -f GENERAL -e yes device list 2>&1","r")) == 0)
+  {
+    error(strerror(errno));
+    return false;
+  }
+  
+  nmdevices = alloc(struct nmdevice *,size);
+  
+  while(fgets(line,sizeof(line),pipe) != 0)
+  {
+    if(i == size - 1)
+      continue;
+  
+    device = alloc(struct nmdevice,1);
+  
+    if(!nm_parse_line(line,nm_parse_device,device))
+    {
+      pclose(pipe);
+      nmdevice_free(device);
+      return false;
+    }
+  
+    nmdevices[i++] = device;
+  }
+  
+  nmdevices[i] = 0;
+
+  nmdevices = redim(nmdevices,struct nmdevice *,i + 1);
+  
+  if(pclose(pipe) == -1)
+  {
+    error(strerror(errno));
+    return false;
+  }
+  
+  return true;
+}
+
 static bool nmconfig_start(void)
 {
+  if(!nmconfig_setup_devices())
+    return false;
+
   return true;
 }
 
