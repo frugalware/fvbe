@@ -293,26 +293,18 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 {
   int textbox_width = 0;
   int textbox_height = 0;
-  int entry1_width = 0;
-  int entry1_height = 0;
   int label1_width = 0;
   int label1_height = 0;
-  int entry2_width = 0;
-  int entry2_height = 0;
   int label2_width = 0;
   int label2_height = 0;
-  int entry3_width = 0;
-  int entry3_height = 0;
   int label3_width = 0;
   int label3_height = 0;
-  int entry4_width = 0;
-  int entry4_height = 0;
   int label4_width = 0;
   int label4_height = 0;
-  int entry5_width = 0;
-  int entry5_height = 0;
   int label5_width = 0;
   int label5_height = 0;
+  int entry_left = 0;
+  int entry_width = 0;
   int cancel_width = 0;
   int cancel_height = 0;
   int ok_width = 0;
@@ -330,6 +322,31 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   newtComponent label5 = 0;
   newtComponent cancel = 0;
   newtComponent ok = 0;
+
+  if(!get_label_screen_size(ADDRESS_TEXT,&label1_width,&label1_height))
+    return false;
+  
+  if(!get_label_screen_size(NETMASK_TEXT,&label2_width,&label2_height))
+    return false;
+  
+  if(!get_label_screen_size(GATEWAY_TEXT,&label3_width,&label3_height))
+    return false;
+  
+  if(!get_label_screen_size(DNS_SERVERS_TEXT,&label4_width,&label4_height))
+    return false;
+  
+  if(!get_label_screen_size(SEARCH_DOMAINS_TEXT,&label5_width,&label5_height))
+    return false;
+
+  entry_left = maxv( (long long []) { label1_width, label2_width, label3_width, label4_width, label5_width }, 5 ) + 1;
+
+  entry_width = NEWT_WIDTH - entry_left;
+
+  if(!get_button_screen_size(CANCEL_BUTTON_TEXT,&cancel_width,&cancel_height))
+    return false;
+  
+  if(!get_button_screen_size(OK_BUTTON_TEXT,&ok_width,&ok_height))
+    return false;
 
   return true;
 }
