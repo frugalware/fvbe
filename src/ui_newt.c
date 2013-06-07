@@ -613,8 +613,8 @@ static bool ui_dialog_partition_modify_partition(struct disk *disk,int n)
   int checkbox_height = 0;
   int label_width = 0;
   int label_height = 0;
+  int entry_left = 0;
   int entry_width = 0;
-  int entry_height = 0;
   int listbox_width = 0;
   int listbox_height = 0;
   newtComponent textbox = 0;
@@ -658,9 +658,9 @@ static bool ui_dialog_partition_modify_partition(struct disk *disk,int n)
   if(!get_label_screen_size(PARTITION_DIALOG_MODIFY_PARTITION_NAME_TEXT,&label_width,&label_height))
     return false;
 
-  entry_width = NEWT_WIDTH - label_width - 1;
+  entry_left = label_width + 1;
 
-  entry_height = 1;
+  entry_width = NEWT_WIDTH - entry_left;
 
   listbox_width = NEWT_WIDTH;
 
@@ -688,7 +688,7 @@ static bool ui_dialog_partition_modify_partition(struct disk *disk,int n)
 
   name = (strcmp(disk_get_type(disk),"gpt") == 0) ? disk_partition_get_name(disk,n) : "";
 
-  entry = newtEntry(label_width+1,textbox_height+1,name,entry_width,&name,0);
+  entry = newtEntry(entry_left,textbox_height+1,name,entry_width,&name,0);
 
   listbox = newtListbox(0,textbox_height+label_height+checkbox_height+3,listbox_height,NEWT_FLAG_SCROLL);
 
