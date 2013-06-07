@@ -758,8 +758,8 @@ static bool ui_dialog_partition_new_partition(struct disk *disk)
   int cancel_height = 0;
   int label_width = 0;
   int label_height = 0;
+  int entry_left = 0;
   int entry_width = 0;
-  int entry_height = 0;
   int listbox_width = 0;
   int listbox_height = 0;
   newtComponent textbox = 0;
@@ -786,9 +786,9 @@ static bool ui_dialog_partition_new_partition(struct disk *disk)
   if(!get_label_screen_size(PARTITION_DIALOG_NEW_SIZE_TEXT,&label_width,&label_height))
     return false;
 
-  entry_width = NEWT_WIDTH - label_width - 1;
+  entry_left = label_width + 1;
 
-  entry_height = 1;
+  entry_width = NEWT_WIDTH - entry_left;
 
   listbox_width = NEWT_WIDTH;
 
@@ -812,7 +812,7 @@ static bool ui_dialog_partition_new_partition(struct disk *disk)
 
   size_to_string(text,sizeof(text),disk_get_free_size(disk),false);
 
-  entry = newtEntry(label_width+1,textbox_height+1,text,entry_width,&result,0);
+  entry = newtEntry(entry_left,textbox_height+1,text,entry_width,&result,0);
 
   listbox = newtListbox(0,textbox_height+label_height+2,listbox_height,NEWT_FLAG_SCROLL);
 
