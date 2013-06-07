@@ -355,8 +355,6 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 {
   int textbox_width = 0;
   int textbox_height = 0;
-  int entry1_width = 0;
-  int entry1_height = 0;
   int label1_width = 0;
   int label1_height = 0;
   int listbox_width = 0;
@@ -366,6 +364,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
   int ok_width = 0;
   int ok_height = 0;
   int entry_left = 0;
+  int entry_width = 0;
   newtComponent textbox = 0;
   newtComponent label1 = 0;
   newtComponent entry1 = 0;
@@ -404,13 +403,11 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   entry_left = label1_width + 1;
 
-  entry1_width = NEWT_WIDTH - entry_left;
-
-  entry1_height = 1;
+  entry_width = NEWT_WIDTH - entry_left;
 
   listbox_width = NEWT_WIDTH;
 
-  listbox_height = NEWT_HEIGHT - textbox_height - entry1_height - ok_height - 3;
+  listbox_height = NEWT_HEIGHT - textbox_height - label1_height - ok_height - 3;
 
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,FORMAT_TITLE) != 0)
   {
@@ -424,7 +421,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   label1 = newtLabel(0,textbox_height+1,FORMAT_MOUNT_ENTRY_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry1_width,&path,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry_width,&path,0);
 
   listbox = newtListbox(0,textbox_height+label1_height+2,listbox_height,NEWT_FLAG_SCROLL);
 
