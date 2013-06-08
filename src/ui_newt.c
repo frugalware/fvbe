@@ -305,10 +305,8 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   int label5_height = 0;
   int entry_left = 0;
   int entry_width = 0;
-  int cancel_width = 0;
-  int cancel_height = 0;
-  int ok_width = 0;
-  int ok_height = 0;
+  int next_width = 0;
+  int next_height = 0;
   newtComponent textbox = 0;
   newtComponent entry1 = 0;
   newtComponent label1 = 0;
@@ -320,8 +318,7 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   newtComponent label4 = 0;
   newtComponent entry5 = 0;
   newtComponent label5 = 0;
-  newtComponent cancel = 0;
-  newtComponent ok = 0;
+  newtComponent next = 0;
 
   if(!get_label_screen_size(ADDRESS_TEXT,&label1_width,&label1_height))
     return false;
@@ -342,10 +339,7 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 
   entry_width = NEWT_WIDTH - entry_left;
 
-  if(!get_button_screen_size(CANCEL_BUTTON_TEXT,&cancel_width,&cancel_height))
-    return false;
-  
-  if(!get_button_screen_size(OK_BUTTON_TEXT,&ok_width,&ok_height))
+  if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
 
   return true;
