@@ -293,7 +293,8 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 {
   const char *iptype = 0;
   int prefixbits = 0;
-  bool (*fun) (const char *);
+  int prefixbitsmax = 0;
+  bool (*vfun) (const char *);
   const char *ipkey = 0;
   const char *methodkey = 0;
   const char *addresskey = 0;
@@ -317,6 +318,14 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   int entry_width = 0;
   int next_width = 0;
   int next_height = 0;
+  char *p = 0;
+  char *s = 0;
+  char *e = 0;
+  const char *address = 0;
+  const char *prefix = 0;
+  const char *gateway = 0;
+  const char *servers = 0;
+  const char *domains = 0;
   newtComponent textbox = 0;
   newtComponent label1 = 0;
   newtComponent entry1 = 0;
@@ -335,7 +344,8 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
     case 4:
       iptype = "IPv4";
       prefixbits = 24;
-      fun = is_ip_v4;
+      prefixbitsmax = 32;
+      vfun = is_ip_v4;
       ipkey = "ipv4";
       methodkey = "ipv4:method";
       addresskey = "ipv4:address1";
@@ -346,7 +356,8 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
     case 6:
       iptype = "IPv6";
       prefixbits = 64;
-      fun = is_ip_v6;
+      prefixbitsmax = 128;
+      vfun = is_ip_v6;
       ipkey = "ipv6";
       methodkey = "ipv6:method";
       addresskey = "ipv6:address1";
@@ -388,10 +399,63 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
 
+  p = iniparser_getstring(profile->data,addresskey,"");
+  
+  if(strlen(p) > 0)
+  {
+    long n = 0;
+  
+    s = p;
+    
+    if((e = strchr(s,'/')) == 0)
+    {
+      eprintf("%s: invalid %s address\n",__func__,ipkey);
+      return false;
+    }
+    
+    address = strndupa(s,e-s);
+    
+    if(!vfun(address))
+    {
+      eprintf("%s: invalid %s address '%s'\n",__func__,ipkey,address);
+      return false;
+    }
+    
+    s = e + 1;
+    
+    if((e = strchr(s,',')) == 0)
+    {
+      eprintf("%s: invalid %s address\n",__func__,ipkey);
+      return false;
+    }
+
+    prefix = strndupa(s,e-s);
+    
+    errno = 0;
+    
+    n = strtol(prefix,0,10);
+    
+    if(errno != 0 || n < 0 || n > prefixbitsmax)
+    {
+      eprintf("%s: invalid %s prefix '%s'\n",__func__,ipkey,prefix);
+      return false;
+    }
+
+    s = e + 1;
+
+    gateway = strdupa(s);
+    
+    if(!vfun(gateway))
+    {
+      eprintf("%s: invalid %s gateway '%s'\n",__func__,ipkey,gateway);
+      return false;
+    }    
+  }
+
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,title) != 0)
   {
     eprintf("Failed to open a NEWT window.\n");
-    return;
+    return false;
   }
 
   return true;
