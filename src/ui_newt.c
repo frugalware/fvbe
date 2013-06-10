@@ -293,9 +293,14 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 {
   const char *iptype = 0;
   int prefixbits = 0;
+  bool (*fun) (const char *);
+  const char *ipkey = 0;
+  const char *methodkey = 0;
+  const char *addresskey = 0;
+  const char *serverkey = 0;
+  const char *searchkey = 0;
   char title[TEXT_MAX] = {0};
   char text[TEXT_MAX] = {0};
-  bool (*fun) (const char *);
   int textbox_width = 0;
   int textbox_height = 0;
   int label1_width = 0;
@@ -331,12 +336,22 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
       iptype = "IPv4";
       prefixbits = 24;
       fun = is_ip_v4;
+      ipkey = "ipv4";
+      methodkey = "ipv4:method";
+      addresskey = "ipv4:address1";
+      serverkey = "ipv4:dns";
+      searchkey = "ipv4:dns-search";
       break;
     
     case 6:
       iptype = "IPv6";
       prefixbits = 64;
       fun = is_ip_v6;
+      ipkey = "ipv6";
+      methodkey = "ipv6:method";
+      addresskey = "ipv6:address1";
+      serverkey = "ipv6:dns";
+      searchkey = "ipv6:dns-search";
       break;
     
     default:
