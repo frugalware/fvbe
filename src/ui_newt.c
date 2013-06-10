@@ -373,6 +373,12 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
 
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,title) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return;
+  }
+
   return true;
 }
 
