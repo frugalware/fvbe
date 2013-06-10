@@ -291,6 +291,11 @@ static void ui_dialog_text(const char *title,const char *text)
 
 static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 {
+  const char *iptype = 0;
+  int prefixbits = 0;
+  char title[TEXT_MAX] = {0};
+  char text[TEXT_MAX] = {0};
+  bool (*fun) (const char *);
   int textbox_width = 0;
   int textbox_height = 0;
   int label1_width = 0;
@@ -320,10 +325,36 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   newtComponent label5 = 0;
   newtComponent next = 0;
 
+  switch(type)
+  {
+    case 4:
+      iptype = "IPv4";
+      prefixbits = 24;
+      fun = is_ip_v4;
+      break;
+    
+    case 6:
+      iptype = "IPv6";
+      prefixbits = 64;
+      fun = is_ip_v6;
+      break;
+    
+    default:
+      eprintf("%s: unknown ip type %d\n",__func__,type);
+      break;
+  }
+
+  strfcpy(title,sizeof(title),STATIC_IP_TITLE,iptype);  
+
+  strfcpy(text,sizeof(text),STATIC_IP_TEXT,iptype,iptype,prefixbits,iptype,iptype,iptype);
+
+  if(!get_text_screen_size(text,&textbox_width,&textbox_height))
+    return false;
+
   if(!get_label_screen_size(ADDRESS_TEXT,&label1_width,&label1_height))
     return false;
   
-  if(!get_label_screen_size(NETMASK_TEXT,&label2_width,&label2_height))
+  if(!get_label_screen_size(PREFIX_TEXT,&label2_width,&label2_height))
     return false;
   
   if(!get_label_screen_size(GATEWAY_TEXT,&label3_width,&label3_height))
