@@ -318,16 +318,16 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   int next_width = 0;
   int next_height = 0;
   newtComponent textbox = 0;
-  newtComponent entry1 = 0;
   newtComponent label1 = 0;
-  newtComponent entry2 = 0;
+  newtComponent entry1 = 0;
   newtComponent label2 = 0;
-  newtComponent entry3 = 0;
+  newtComponent entry2 = 0;
   newtComponent label3 = 0;
-  newtComponent entry4 = 0;
+  newtComponent entry3 = 0;
   newtComponent label4 = 0;
-  newtComponent entry5 = 0;
+  newtComponent entry4 = 0;
   newtComponent label5 = 0;
+  newtComponent entry5 = 0;
   newtComponent next = 0;
 
   switch(type)
