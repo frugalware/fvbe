@@ -520,6 +520,12 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
     return false;
   }
 
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,text);
+
+  next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
   return true;
 }
 
