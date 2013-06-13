@@ -338,6 +338,8 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   newtComponent label5 = 0;
   newtComponent entry5 = 0;
   newtComponent next = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
 
   switch(type)
   {
@@ -545,6 +547,26 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   entry5 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+label4_height+5,strng(domains),entry_width,&domains,0);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
+
+  newtFormAddComponents(form,textbox,label1,entry1,label2,entry2,label3,entry3,label4,entry4,label5,entry5,next,(void *) 0);
+
+  newtFormSetCurrent(form,entry1);
+
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    {
+      break;
+    }
+  }
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
 
   return true;
 }
