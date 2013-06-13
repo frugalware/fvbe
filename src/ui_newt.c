@@ -524,6 +524,26 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 
   newtTextboxSetText(textbox,text);
 
+  label1 = newtLabel(0,textbox_height+1,ADDRESS_TEXT);
+
+  entry1 = newtEntry(entry_left,textbox_height+1,strng(address),entry_width,&address,0);
+
+  label2 = newtLabel(0,textbox_height+label1_height+2,PREFIX_TEXT);
+
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(prefix),entry_width,&prefix,0);
+
+  label3 = newtLabel(0,textbox_height+label1_height+label2_height+3,GATEWAY_TEXT);
+
+  entry3 = newtEntry(entry_left,textbox_height+label1_height+label2_height+3,strng(gateway),entry_width,&gateway,0);
+
+  label4 = newtLabel(0,textbox_height+label1_height+label2_height+label3_height+4,DNS_SERVERS_TEXT);
+
+  entry4 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+4,strng(servers),entry_width,&servers,0);
+
+  label5 = newtLabel(0,textbox_height+label1_height+label2_height+label3_height+label4_height+5,SEARCH_DOMAINS_TEXT);
+
+  entry5 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+label4_height+5,strng(domains),entry_width,&domains,0);
+
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
   return true;
