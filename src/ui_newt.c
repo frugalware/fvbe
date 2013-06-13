@@ -452,6 +452,37 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
     }    
   }
 
+  p = iniparser_getstring(profile->data,serverkey,"");
+
+  if(strlen(p) > 0)
+  {
+    servers = s = strdupa(p);
+    
+    while((e = strchr(s,';')) != 0)
+    {
+      *e = 0;
+    
+      if(!vfun(s))
+      {
+        eprintf("%s: invalid %s dns server '%s'\n",__func__,ipkey,s);
+        return false;
+      }
+      
+      if(e[1] == 0)
+        break;
+      
+      *e = ',';
+      
+      s = e + 1;
+    }
+    
+    if(!vfun(s))
+    {
+      eprintf("%s: invalid %s dns server '%s'\n",__func__,ipkey,s);
+      return false;
+    }
+  }
+
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,title) != 0)
   {
     eprintf("Failed to open a NEWT window.\n");
