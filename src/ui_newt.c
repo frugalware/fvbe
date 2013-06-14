@@ -542,6 +542,41 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
+      bool pass = false;
+      char servers2[TEXT_MAX] = {0};
+      char domains2[TEXT_MAX] = {0};
+      
+      if(!vfun(address))
+        goto fail;
+      
+      if(!is_positive_integer(prefix) || atoi(prefix) > prefixbitsmax)
+        goto fail;
+      
+      if(!vfun(gateway))
+        goto fail;
+    
+      strfcpy(servers2,sizeof(servers2),"%s",servers);
+    
+      if(!process_ini_list(servers2,vfun,',',';'))
+        goto fail;
+      
+      strfcpy(domains2,sizeof(domains2),"%s",domains);
+      
+      if(!process_ini_list(domains2,is_dns_domain,',',';'))
+        goto fail;
+    
+      pass = true;
+      
+      fail:
+      
+      if(!pass)
+      {
+        strfcpy(title,sizeof(title),STATIC_IP_ERROR_TITLE,iptype);
+        strfcpy(text,sizeof(text),STATIC_IP_ERROR_TEXT,iptype,prefixbitsmax,iptype,iptype);
+        ui_dialog_text(title,text);
+        continue;
+      }
+    
       break;
     }
   }
