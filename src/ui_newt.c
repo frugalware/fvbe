@@ -234,6 +234,36 @@ static bool get_checkbox_screen_size(const char *text,int *width,int *height)
   return true;
 }
 
+static inline bool process_ini_list(char *list,bool (*f) (const char *),int m,int r)
+{
+  char *s = list;
+  char *e = 0;
+  
+  for( ; (e = strchr(s,m)) != 0 ; s = e + 1 )
+  {
+    *e = 0;
+    
+    if(!f(s))
+    {
+      eprintf("%s: invalid data '%s'\n",__func__,s);
+      return false;
+    }
+    
+    if(e[1] == 0)
+      break;
+    
+    *e = r;
+  }
+
+  if(!f(s))
+  {
+    eprintf("%s: invalid data '%s'\n",__func__,s);
+    return false;
+  }
+
+  return true;
+}
+
 static void ui_dialog_text(const char *title,const char *text)
 {
   int textbox_width = 0;
@@ -452,62 +482,20 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 
   if(strlen(p) > 0)
   {
-    servers = s = strdupa(p);
+    servers = p = strdupa(p);
     
-    while((e = strchr(s,';')) != 0)
-    {
-      *e = 0;
-    
-      if(!vfun(s))
-      {
-        eprintf("%s: invalid %s dns server '%s'\n",__func__,ipkey,s);
-        return false;
-      }
-      
-      if(e[1] == 0)
-        break;
-      
-      *e = ',';
-      
-      s = e + 1;
-    }
-    
-    if(!vfun(s))
-    {
-      eprintf("%s: invalid %s dns server '%s'\n",__func__,ipkey,s);
+    if(!process_ini_list(p,vfun,';',','))
       return false;
-    }
   }
 
   p = iniparser_getstring(profile->data,searchkey,"");
 
   if(strlen(p) > 0)
   {
-    domains = s = strdupa(p);
+    domains = p = strdupa(p);
     
-    while((e = strchr(s,';')) != 0)
-    {
-      *e = 0;
-    
-      if(!is_dns_domain(s))
-      {
-        eprintf("%s: invalid %s search domain '%s'\n",__func__,ipkey,s);
-        return false;
-      }
-      
-      if(e[1] == 0)
-        break;
-      
-      *e = ',';
-      
-      s = e + 1;
-    }
-    
-    if(!is_dns_domain(s))
-    {
-      eprintf("%s: invalid %s search domain '%s'\n",__func__,ipkey,s);
+    if(!process_ini_list(p,is_dns_domain,';',','))
       return false;
-    }
   }
 
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,title) != 0)
