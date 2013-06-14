@@ -47,6 +47,8 @@
 #define INFO_BYTES_TEXT _("You may be familiar with byte units that end in M, MB, MiB, or such.\nMost of them lack a universal definition of their exact size.\nSo, for the purposes of this program, we only use binary byte units.\nBelow is a list of all the binary byte unit suffixes we use.\n\nBiB = 1\nKiB = 1024\nMiB = 1024 * 1024\nGiB = 1024 * 1024 * 1024\nTiB = 1024 * 1024 * 1024 * 1024\n")
 #define STATIC_IP_TITLE _("Static %s Setup")
 #define STATIC_IP_TEXT _("Enter the %s information in the boxes below.\nAddress is this machine's %s address.\nPrefix is the CIDR length in bits. %d is the most common for %s.\nGateway is the %s address of the internet gateway machine.\nDNS Servers is the list of %s addresses to use for DNS lookup.\nSearch Domains is the list of domains to use for hostname resolution.\nThe lists must have their individual entries separated by a ','.\n")
+#define STATIC_IP_ERROR_TITLE _("Invalid %s Parameters")
+#define STATIC_IP_ERROR_TEXT _("You have specified invalid parameters.\nPlease check that they meet the following requirements:\n\nAddress must be a valid %s address.\nPrefix must be a number between 0 and %d.\nGateway must be a valid %s address.\nDNS Servers must contain valid %s addresses.\nSearch Domains must contain valid domain names.\nDNS Servers and Search Domains must be delimited by ','.\n")
 #define PARTITION_TITLE _("Partition Setup")
 #define PARTITION_TEXT _("Select a disk device to setup a new partition table.\nSelect a partition to modify its parameters.\nSelect a disk device's free space to setup a new partition.\nSelect a disk device's deletion entry to delete the last partition.\n")
 #define PARTITION_DIALOG_NEW_TABLE_TITLE _("New Partition Table")
