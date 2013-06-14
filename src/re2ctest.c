@@ -195,6 +195,17 @@ static struct re2ctest dnsdomain[] =
   {                                                                                                                                                                                                                                                                   0, false }
 };
 
+static struct re2ctest positive[] =
+{
+  {  "130", true  },
+  { "4545", true  },
+  { "-300", false },
+  {   "-1", false },
+  { "0xff", false },
+  {     "", false },
+  {      0, false }
+};
+
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
 {
   for( ; p->pattern != 0 ; ++p )
@@ -239,6 +250,8 @@ extern int main(void)
   RE2CTEST(v6,is_ip_v6);
 
   RE2CTEST(dnsdomain,is_dns_domain);
+
+  RE2CTEST(positive,is_positive_integer);
 
   printf("re2c has passed all tests\n");
   

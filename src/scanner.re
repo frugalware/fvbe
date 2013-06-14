@@ -135,6 +135,15 @@ is_dns_domain
 */
 )
 
+YYDECLARE(
+is_positive_integer
+,
+/*!re2c
+  digit+ null { return true;  }
+  any         { return false; }
+*/
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
