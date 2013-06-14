@@ -318,6 +318,7 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   int entry_width = 0;
   int next_width = 0;
   int next_height = 0;
+  int n = 0;
   char *p = 0;
   char *s = 0;
   char *e = 0;
@@ -405,8 +406,6 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
   
   if(strlen(p) > 0)
   {
-    long n = 0;
-  
     s = p;
     
     if((e = strchr(s,'/')) == 0)
@@ -433,11 +432,7 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
 
     prefix = strndupa(s,e-s);
     
-    errno = 0;
-    
-    n = strtol(prefix,0,10);
-    
-    if(errno != 0 || n < 0 || n > prefixbitsmax)
+    if(!is_positive_integer(prefix) || (n = atoi(prefix)) > prefixbitsmax)
     {
       eprintf("%s: invalid %s prefix '%s'\n",__func__,ipkey,prefix);
       return false;
