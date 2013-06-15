@@ -319,7 +319,7 @@ static void ui_dialog_text(const char *title,const char *text)
   newtPopWindow();
 }
 
-static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
+static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
 {
   const char *iptype = 0;
   int prefixbits = 0;
@@ -543,6 +543,7 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
       bool pass = false;
+      char address2[TEXT_MAX] = {0};
       char servers2[TEXT_MAX] = {0};
       char domains2[TEXT_MAX] = {0};
       
@@ -554,6 +555,8 @@ static bool ui_dialog_static_ip(struct nmprofile *profile,int type)
       
       if(!vfun(gateway))
         goto fail;
+    
+      strfcpy(address2,sizeof(address2),"%s/%s,%s",address,prefix,gateway);
     
       strfcpy(servers2,sizeof(servers2),"%s",servers);
     
