@@ -332,8 +332,10 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   int next_width = 0;
   int next_height = 0;
   char *p = 0;
+  char buf[TEXT_MAX] = {0};
   const char *name = 0;
   const char *uuid = 0;
+  const char *mac = 0;
   
   if(!get_text_screen_size(NM_PROFILE_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -361,6 +363,18 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   
   if(is_uuid(p))
     uuid = strdupa(p);
+  
+  p = iniparser_getstring(profile->data,PROFILE_TYPE_KEY,"");
+  
+  if(strcmp(p,WIRED_KEY) == 0 || strcmp(p,WIFI_KEY) == 0)
+  {
+    strfcpy(buf,sizeof(buf),"%s:mac-address",p);
+    
+    p = iniparser_getstring(profile->data,buf,"");
+    
+    if(is_mac_address(p))
+      mac = strdupa(p);
+  }
   
   return true;
 }
