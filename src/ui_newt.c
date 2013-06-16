@@ -321,6 +321,8 @@ static void ui_dialog_text(const char *title,const char *text)
 
 static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **devices)
 {
+  const char *namekey = "connection:id";
+  const char *uuidkey = "connection:uuid";
   int textbox_width = 0;
   int textbox_height = 0;
   int label_width = 0;
@@ -331,6 +333,9 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   int listbox_height = 0;
   int next_width = 0;
   int next_height = 0;
+  char *p = 0;
+  const char *name = 0;
+  const char *uuid = 0;
   
   if(!get_text_screen_size(NM_PROFILE_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -348,6 +353,16 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   listbox_width = NEWT_WIDTH;
   
   listbox_height = NEWT_HEIGHT - textbox_height - label_height - next_height - 3;
+  
+  p = iniparser_getstring(profile->data,namekey,"");
+  
+  if(strlen(p) > 0)
+    name = strdupa(p);
+  
+  p = iniparser_getstring(profile->data,uuidkey,"");
+  
+  if(is_uuid(p))
+    uuid = strdupa(p);
   
   return true;
 }
