@@ -341,6 +341,8 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   newtComponent entry = 0;
   newtComponent listbox = 0;
   newtComponent next = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
   
   if(!get_text_screen_size(NM_PROFILE_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -380,6 +382,12 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
     if(is_mac_address(p))
       mac = strdupa(p);
   }
+
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,NM_PROFILE_TITLE) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return false;
+  }
   
   textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
 
@@ -409,6 +417,26 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   }
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+  
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
+
+  newtFormAddComponents(form,textbox,label,entry,listbox,next,(void *) 0);
+
+  newtFormSetCurrent(form,entry);
+
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    {
+      break;
+    }
+  }
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
   
   return true;
 }
