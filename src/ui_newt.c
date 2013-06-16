@@ -441,6 +441,25 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
+      struct nmdevice *device = newtListboxGetCurrent(listbox);
+      
+      iniparser_unset(profile->data,PROFILE_KEY);
+      
+      if(type != 0)
+        iniparser_unset(profile->data,type);
+      
+      iniparser_unset(profile->data,device->type);
+      
+      iniparser_set(profile->data,PROFILE_NAME_KEY,name);
+      
+      iniparser_set(profile->data,PROFILE_UUID_KEY,(uuid != 0) ? uuid : uuidgen());
+      
+      iniparser_set(profile->data,PROFILE_TYPE_KEY,device->type);
+
+      strfcpy(buf,sizeof(buf),"%s:mac-address",device->type);
+      
+      iniparser_set(profile->data,buf,device->hwaddr);
+
       break;
     }
   }
