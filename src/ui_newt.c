@@ -460,6 +460,12 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       
       iniparser_set(profile->data,buf,device->hwaddr);
 
+      strfcpy(buf,sizeof(buf),"/etc/NetworkManager/system-connections/%s",name);
+
+      free(profile->newpath);
+      
+      profile->newpath = strdup(buf);
+
       break;
     }
   }
