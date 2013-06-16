@@ -319,6 +319,39 @@ static void ui_dialog_text(const char *title,const char *text)
   newtPopWindow();
 }
 
+static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **devices)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int label_width = 0;
+  int label_height = 0;
+  int entry_left = 0;
+  int entry_width = 0;
+  int listbox_width = 0;
+  int listbox_height = 0;
+  int next_width = 0;
+  int next_height = 0;
+  
+  if(!get_text_screen_size(NM_PROFILE_TEXT,&textbox_width,&textbox_height))
+    return false;
+  
+  if(!get_label_screen_size(PROFILE_NAME_TEXT,&label_width,&label_height))
+    return false;
+
+  entry_left = label_width + 1;
+  
+  entry_width = NEWT_WIDTH - entry_left;
+  
+  if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
+    return false;
+  
+  listbox_width = NEWT_WIDTH;
+  
+  listbox_height = NEWT_HEIGHT - textbox_height - label_height - next_height - 3;
+  
+  return true;
+}
+
 static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
 {
   const char *iptype = 0;
