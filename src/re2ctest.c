@@ -206,6 +206,22 @@ static struct re2ctest positive[] =
   {      0, false }
 };
 
+static struct re2ctest uuid[] =
+{
+  {  "89e3bd47-4964-4e45-88a1-e99b67e860c5", true  },
+  {  "2084ef46-b532-407b-b4a1-e697d55d1c85", true  },
+  {  "9f30e963-d0c8-4a25-b025-a7588bcbcee1", true  },
+  {  "00000000-0000-0000-0000-000000000000", true  },
+  { "00000000-0000-0000-0000-000000000000a", false },
+  {   "0000000-0000-0000-0000-000000000000", false },
+  {   "00000000-000-0000-0000-000000000000", false },
+  {   "00000000-0000-000-0000-000000000000", false },
+  {   "00000000-0000-0000-000-000000000000", false },
+  {   "00000000-0000-0000-0000-00000000000", false },
+  {                                      "", false },
+  {                                      0, false }
+};
+
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
 {
   for( ; p->pattern != 0 ; ++p )
@@ -252,6 +268,8 @@ extern int main(void)
   RE2CTEST(dnsdomain,is_dns_domain);
 
   RE2CTEST(positive,is_positive_integer);
+
+  RE2CTEST(uuid,is_uuid);
 
   printf("re2c has passed all tests\n");
   

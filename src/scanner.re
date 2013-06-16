@@ -144,6 +144,15 @@ is_positive_integer
 */
 )
 
+YYDECLARE(
+is_uuid
+,
+/*!re2c
+  hex {8} [-] hex {4} [-] hex {4} [-] hex {4} [-] hex {12} null { return true;  }
+  any                                                           { return false; }
+*/
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
