@@ -333,6 +333,7 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   int next_height = 0;
   char *p = 0;
   char buf[TEXT_MAX] = {0};
+  bool found = false;
   const char *name = 0;
   const char *uuid = 0;
   const char *mac = 0;
@@ -411,10 +412,17 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
     
       newtListboxAppendEntry(listbox,buf,device);
       
-      if(strcmp(device->hwaddr,strng(mac)) == 0)
+      if(!found && strcmp(device->hwaddr,strng(mac)) == 0)
+      {
         newtListboxSetCurrentByKey(listbox,device);
+        
+        found = true;
+      }
     }
   }
+
+  if(!found)
+    newtListboxSetCurrent(listbox,0);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
   
