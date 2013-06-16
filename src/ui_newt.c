@@ -584,6 +584,16 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
         continue;
       }
     
+      iniparser_unset(profile->data,ipkey);
+      
+      iniparser_set(profile->data,methodkey,"manual");
+      
+      iniparser_set(profile->data,addresskey,address2);
+      
+      iniparser_set(profile->data,serverkey,servers2);
+      
+      iniparser_set(profile->data,searchkey,domains2);
+    
       break;
     }
   }
