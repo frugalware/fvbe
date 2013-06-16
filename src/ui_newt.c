@@ -336,6 +336,11 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   const char *name = 0;
   const char *uuid = 0;
   const char *mac = 0;
+  newtComponent textbox = 0;
+  newtComponent label = 0;
+  newtComponent entry = 0;
+  newtComponent listbox = 0;
+  newtComponent next = 0;
   
   if(!get_text_screen_size(NM_PROFILE_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -375,6 +380,35 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
     if(is_mac_address(p))
       mac = strdupa(p);
   }
+  
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,NM_PROFILE_TEXT);
+  
+  label = newtLabel(0,textbox_height+1,PROFILE_NAME_TEXT);
+
+  entry = newtEntry(entry_left,textbox_height+1,strng(name),entry_width,&name,0);
+
+  listbox = newtListbox(0,textbox_height+label_height+2,listbox_height,NEWT_FLAG_SCROLL);
+
+  newtListboxSetWidth(listbox,listbox_width);
+
+  for( int i = 0 ; devices[i] != 0 ; ++i )
+  {
+    struct nmdevice *device = devices[i];
+  
+    if(strcmp(device->type,WIRED_KEY) == 0 || strcmp(device->type,WIFI_KEY) == 0)
+    {
+      strfcpy(buf,sizeof(buf),"%-16.16s %.*s",device->device,NEWT_WIDTH-18,device->product);
+    
+      newtListboxAppendEntry(listbox,buf,device);
+      
+      if(strcmp(device->hwaddr,strng(mac)) == 0)
+        newtListboxSetCurrentByKey(listbox,device);
+    }
+  }
+
+  next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
   
   return true;
 }
