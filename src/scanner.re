@@ -153,6 +153,15 @@ is_uuid
 */
 )
 
+YYDECLARE(
+is_mac_address
+,
+/*!re2c
+  hex {2} [:] hex {2} [:] hex {2} [:] hex {2} [:] hex {2} [:] hex {2} null { return true;  }
+  any                                                                      { return false; }
+*/
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
