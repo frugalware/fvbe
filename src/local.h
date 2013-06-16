@@ -63,6 +63,12 @@
 #define MEBIBYTE (1LL << 20LL)
 #define GIBIBYTE (1LL << 30LL)
 #define TEBIBYTE (1LL << 40LL)
+#define PROFILE_KEY "connection"
+#define PROFILE_NAME_KEY PROFILE_KEY ":id"
+#define PROFILE_UUID_KEY PROFILE_KEY ":uuid"
+#define PROFILE_TYPE_KEY PROFILE_KEY ":type"
+#define WIRED_KEY "802-3-ethernet"
+#define WIFI_KEY "802-11-wireless"
 #define error(S) fprintf(g->logfile,"%s: %s\n",__func__,S)
 #define eprintf(...) fprintf(g->logfile,__VA_ARGS__)
 #define alloc(T,N) ((T*)malloc0(sizeof(T)*(N)))
