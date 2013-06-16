@@ -562,12 +562,16 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
     
       if(!process_ini_list(servers2,vfun,',',';'))
         goto fail;
+
+      strfcat(servers2,sizeof(servers2),";");
       
       strfcpy(domains2,sizeof(domains2),"%s",domains);
       
       if(!process_ini_list(domains2,is_dns_domain,',',';'))
         goto fail;
-    
+
+      strfcat(domains2,sizeof(domains2),";");
+
       pass = true;
       
       fail:
