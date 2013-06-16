@@ -219,7 +219,22 @@ static struct re2ctest uuid[] =
   {   "00000000-0000-0000-000-000000000000", false },
   {   "00000000-0000-0000-0000-00000000000", false },
   {                                      "", false },
-  {                                      0, false }
+  {                                       0, false }
+};
+
+static struct re2ctest mac[] =
+{
+  {  "10:78:D2:DA:F8:54", true  },
+  {  "ff:ff:ff:ff:ff:ff", true  },
+  {  "00:00:00:00:00:00", true  },
+  { "000:00:00:00:00:00", false },
+  { "00:000:00:00:00:00", false },
+  { "00:00:000:00:00:00", false },
+  { "00:00:00:000:00:00", false },
+  { "00:00:00:00:000:00", false },
+  { "00:00:00:00:00:000", false },
+  {                   "", false },
+  {                    0, false }
 };
 
 static inline bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
@@ -270,6 +285,8 @@ extern int main(void)
   RE2CTEST(positive,is_positive_integer);
 
   RE2CTEST(uuid,is_uuid);
+
+  RE2CTEST(mac,is_mac_address);
 
   printf("re2c has passed all tests\n");
   
