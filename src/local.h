@@ -45,6 +45,7 @@
 #include <libgen.h>
 #include <search.h>
 #include <blkid.h>
+#include <uuid.h>
 #include <utmpx.h>
 #include "iniparser.h"
 
@@ -188,6 +189,7 @@ extern int get_text_length(const char *s);
 extern bool execute(const char *command,const char *root,pid_t *cpid);
 extern void *memdup(const void *mem,size_t size);
 extern void *malloc0(size_t size);
+extern const char *uuidgen(void);
 static inline long long min(long long a,long long b) { return (a < b) ? a : b; }
 static inline long long max(long long a,long long b) { return (a > b) ? a : b; }
 static inline long long minv(long long *v,size_t size)

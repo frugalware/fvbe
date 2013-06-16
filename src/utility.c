@@ -710,3 +710,15 @@ extern void *malloc0(size_t size)
 
   return memset(malloc(size),0,size);
 }
+
+extern const char *uuidgen(void)
+{
+  static char uuid[37] = {0};
+  uuid_t x = {0};
+  
+  uuid_generate(x);
+  
+  uuid_unparse_lower(x,uuid);
+  
+  return uuid;
+}
