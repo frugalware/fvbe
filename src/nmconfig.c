@@ -290,7 +290,7 @@ static bool nmconfig_setup_profiles(void)
     
     profile = alloc(struct nmprofile,1);
     
-    profile->path = strdup(path);
+    profile->oldpath = strdup(path);
     
     profile->data = data;
     

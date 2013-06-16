@@ -113,7 +113,8 @@ struct nmdevice
 
 struct nmprofile
 {
-  char *path;
+  char *oldpath;
+  char *newpath;
   dictionary *data;
 };
 
