@@ -336,6 +336,7 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   bool found = false;
   const char *name = 0;
   const char *uuid = 0;
+  const char *type = 0;
   const char *mac = 0;
   newtComponent textbox = 0;
   newtComponent label = 0;
@@ -376,7 +377,9 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   
   if(strcmp(p,WIRED_KEY) == 0 || strcmp(p,WIFI_KEY) == 0)
   {
-    strfcpy(buf,sizeof(buf),"%s:mac-address",p);
+    type = strdupa(p);
+  
+    strfcpy(buf,sizeof(buf),"%s:mac-address",type);
     
     p = iniparser_getstring(profile->data,buf,"");
     
