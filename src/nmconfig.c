@@ -172,6 +172,33 @@ static bool nm_parse_device(int token,const char *value,void *data)
   return rv;
 }
 
+static bool nm_parse_wired(int token,const char *value,void *data)
+{
+  struct nmdevice *p = data;
+  bool rv = true;
+
+  switch(token)
+  {
+    case 1:
+      rv = (strcmp(value,"WIRED-PROPERTIES") == 0);
+      break;
+    
+    case 2:
+      if(strcmp(value,"on") == 0)
+        p->carrier = true;
+      else if(strcmp(value,"off") == 0)
+        p->carrier = false;
+      break;
+    
+    default:
+      eprintf("%s: unknown token value of %d\n",__func__,token);
+      rv = false;
+      break;
+  }
+
+  return rv;
+}
+
 static void nmdevice_free(struct nmdevice *p)
 {
   if(p == 0)
