@@ -507,7 +507,7 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
   const char *iptype = 0;
   int prefixbits = 0;
   int prefixbitsmax = 0;
-  bool (*vfun) (const char *);
+  bool (*vfun) (const char *) = 0;
   const char *ipkey = 0;
   const char *methodkey = 0;
   const char *addresskey = 0;
