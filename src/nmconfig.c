@@ -344,6 +344,49 @@ static bool nmconfig_setup_devices(void)
   return true;
 }
 
+static bool nmconfig_setup_devices_extras(void)
+{
+  for( struct nmdevice **p = nmdevices ; *p != 0 ; ++p )
+  {
+    struct nmdevice *device = *p;
+    const char *field = 0;
+    bool (*fun) (int,const char *,void *) = 0;
+    char command[_POSIX_ARG_MAX] = {0};
+    FILE *pipe = 0;
+    char line[LINE_MAX] = {0};
+    
+    if(strcmp(device->type,WIRED_KEY) == 0)
+    {
+      field = "WIRED-PROPERTIES";
+      fun = nm_parse_wired;
+    }
+    else if(strcmp(device->type,WIFI_KEY) == 0)
+    {
+      field = "WIFI-PROPERTIES";
+      fun = nm_parse_wifi;
+    }
+    else
+      continue;
+    
+    strfcpy(command,sizeof(command),"LC_ALL=C nmcli -t -m tabular -f %s -e yes device list iface %s 2>&1",field,device->device);
+    
+    if(
+      (pipe = popen(command,"r")) == 0   ||
+      fgets(line,sizeof(line),pipe) == 0 ||
+      !nm_parse_line(line,fun,device)
+    )
+    {
+      pclose(pipe);
+      error("failed to probe for extra device information");
+      return false;
+    }
+    
+    pclose(pipe);
+  }
+
+  return true;
+}
+
 static bool nmconfig_setup_profiles(void)
 {
   DIR *dir = 0;
@@ -405,6 +448,9 @@ static bool nmconfig_setup_profiles(void)
 static bool nmconfig_start(void)
 {
   if(!nmconfig_setup_devices())
+    return false;
+
+  if(!nmconfig_setup_devices_extras())
     return false;
 
   if(!nmconfig_setup_profiles())
