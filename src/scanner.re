@@ -114,15 +114,15 @@ YYDECLARE(
 is_ip_v6
 ,
 /*!re2c
-                                      "::" (hex {1,4} [:]) {0,6} (hex {1,4}) {1} null { return true;  }
-                      (hex {1,4}) {1} "::" (hex {1,4} [:]) {0,5} (hex {1,4}) {1} null { return true;  }
-  (hex {1,4} [:]) {1} (hex {1,4}) {1} "::" (hex {1,4} [:]) {0,4} (hex {1,4}) {1} null { return true;  }
-  (hex {1,4} [:]) {2} (hex {1,4}) {1} "::" (hex {1,4} [:]) {0,3} (hex {1,4}) {1} null { return true;  }
-  (hex {1,4} [:]) {3} (hex {1,4}) {1} "::" (hex {1,4} [:]) {0,2} (hex {1,4}) {1} null { return true;  }
-  (hex {1,4} [:]) {4} (hex {1,4}) {1} "::" (hex {1,4} [:]) {0,1} (hex {1,4}) {1} null { return true;  }
-  (hex {1,4} [:]) {5} (hex {1,4}) {1} "::"                       (hex {1,4}) {1} null { return true;  }
-  (hex {1,4} [:]) {7}                                            (hex {1,4}) {1} null { return true;  }
-  any                                                                                 { return false; }
+                       [:]   ([:] hex {1,4}) {1,7}  null { return true;  }
+  (hex {1,4} [:]) {1} ([:] | ([:] hex {1,4}) {1,6}) null { return true;  }
+  (hex {1,4} [:]) {2} ([:] | ([:] hex {1,4}) {1,5}) null { return true;  }
+  (hex {1,4} [:]) {3} ([:] | ([:] hex {1,4}) {1,4}) null { return true;  }
+  (hex {1,4} [:]) {4} ([:] | ([:] hex {1,4}) {1,3}) null { return true;  }
+  (hex {1,4} [:]) {5} ([:] | ([:] hex {1,4}) {1,2}) null { return true;  }
+  (hex {1,4} [:]) {6} ([:] | ([:] hex {1,4}) {1,1}) null { return true;  }
+  (hex {1,4} [:]) {7} ([:] | (    hex {1,4}) {1,1}) null { return true;  }
+  any                                                    { return false; }
 */
 )
 
