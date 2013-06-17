@@ -319,7 +319,7 @@ static void ui_dialog_text(const char *title,const char *text)
   newtPopWindow();
 }
 
-static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **devices)
+static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles)
 {
   int textbox_width = 0;
   int textbox_height = 0;
@@ -442,6 +442,31 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
       struct nmdevice *device = newtListboxGetCurrent(listbox);
+      
+      found = false;
+      
+      for( int i = 0 ; profiles[i] != 0 ; ++i )
+      {
+        struct nmprofile *p = profiles[i];
+        const char *name2 = iniparser_getstring(p->data,PROFILE_NAME_KEY,"");
+        
+        if(p != profile && strcmp(name,name2) == 0)
+        {
+          found = true;
+        
+          break;
+        }
+      }
+      
+      if(
+        strlen(name) == 0     ||
+        strchr(name,'/') != 0 ||
+        found
+      )
+      {
+        ui_dialog_text(NM_PROFILE_ERROR_TITLE,NM_PROFILE_ERROR_TEXT);
+        continue;
+      }
       
       iniparser_unset(profile->data,PROFILE_KEY);
       
