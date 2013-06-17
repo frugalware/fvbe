@@ -100,6 +100,7 @@ struct raid;
 
 struct nmdevice
 {
+  // GENERAL
   char *device;
   char *type;
   char *vendor;
@@ -116,6 +117,18 @@ struct nmdevice
   bool autoconnect;
   bool firmwaremissing;
   char *connection;
+  
+  // WIRED-PROPERTIES
+  bool carrier;
+  
+  // WIFI-PROPERTIES
+  bool wep;
+  bool wpa;
+  bool wpa2;
+  bool tkip;
+  bool ccmp;
+  bool ap;
+  bool adhoc;
 };
 
 struct nmprofile
