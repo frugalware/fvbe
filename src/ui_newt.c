@@ -1855,6 +1855,18 @@ extern void ui_window_text(const char *title,const char *text)
   newtPopWindow();
 }
 
+extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile **profiles)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int listbox_width = 0;
+  int listbox_height = 0;
+  int next_width = 0;
+  int next_height = 0;
+
+  return true;
+}
+
 extern bool ui_window_partition(struct device **devices,struct disk **disks)
 {
   int textbox_width = 0;
