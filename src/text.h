@@ -48,6 +48,8 @@
 #define INFO_BYTES_TEXT _("You may be familiar with byte units that end in M, MB, MiB, or such.\nMost of them lack a universal definition of their exact size.\nSo, for the purposes of this program, we only use binary byte units.\nBelow is a list of all the binary byte unit suffixes we use.\n\nBiB = 1\nKiB = 1024\nMiB = 1024 * 1024\nGiB = 1024 * 1024 * 1024\nTiB = 1024 * 1024 * 1024 * 1024\n")
 #define NM_PROFILE_TITLE _("Network Profile Setup")
 #define NM_PROFILE_TEXT _("Enter a name for this profile in the box below.\nSelect a device to use for this profile from the list below.\n")
+#define NM_PROFILE_ERROR_TITLE _("Invalid Profile Parameters")
+#define NM_PROFILE_ERROR_TEXT _("You have specified invalid parameters.\nPlease check that they meet the following requirements:\n\nProfile Name must not be empty.\nProfile Name must not contain a '/'.\nProfile Name must not be used by another profile.\n")
 #define STATIC_IP_TITLE _("Static %s Setup")
 #define STATIC_IP_TEXT _("Enter the %s information in the boxes below.\nAddress is this machine's %s address.\nPrefix is the CIDR length in bits. %d is the most common for %s.\nGateway is the %s address of the internet gateway machine.\nDNS Servers is the list of %s addresses to use for DNS lookup.\nSearch Domains is the list of domains to use for hostname resolution.\nThe lists must have their individual entries separated by a ','.\n")
 #define STATIC_IP_ERROR_TITLE _("Invalid %s Parameters")
