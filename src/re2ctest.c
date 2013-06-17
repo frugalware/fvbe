@@ -156,6 +156,7 @@ static struct re2ctest v6[] =
   {          "ffff:ffff:ffff:ffff:ffff::ffff:ffff", true  },
   {          "ffff:ffff:ffff:ffff:ffff:ffff::ffff", true  },
   {      "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", true  },
+  {                              "ffff:ffff::ffff", true  },
   { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", false },
   {    "::ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", false },
   {     "ffff::ffff:ffff:ffff:ffff:ffff:ffff:ffff", false },
