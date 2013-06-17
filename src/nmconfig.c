@@ -199,6 +199,75 @@ static bool nm_parse_wired(int token,const char *value,void *data)
   return rv;
 }
 
+static bool nm_parse_wifi(int token,const char *value,void *data)
+{
+  struct nmdevice *p = data;
+  bool rv = true;
+
+  switch(token)
+  {
+    case 1:
+      rv = (strcmp(value,"WIFI-PROPERTIES") == 0);
+      break;
+
+    case 2:
+      if(strcmp(value,"yes") == 0)
+        p->wep = true;
+      else if(strcmp(value,"no") == 0)
+        p->wep = false;
+      break;
+
+    case 3:
+      if(strcmp(value,"yes") == 0)
+        p->wpa = true;
+      else if(strcmp(value,"no") == 0)
+        p->wpa = false;
+      break;
+
+    case 4:
+      if(strcmp(value,"yes") == 0)
+        p->wpa2 = true;
+      else if(strcmp(value,"no") == 0)
+        p->wpa2 = false;
+      break;
+
+    case 5:
+      if(strcmp(value,"yes") == 0)
+        p->tkip = true;
+      else if(strcmp(value,"no") == 0)
+        p->tkip = false;
+      break;
+
+    case 6:
+      if(strcmp(value,"yes") == 0)
+        p->ccmp = true;
+      else if(strcmp(value,"no") == 0)
+        p->ccmp = false;
+      break;
+
+    case 7:
+      if(strcmp(value,"yes") == 0)
+        p->ap = true;
+      else if(strcmp(value,"no") == 0)
+        p->ap = false;
+      break;
+
+    case 8:
+      if(strcmp(value,"yes") == 0)
+        p->adhoc = true;
+      else if(strcmp(value,"no") == 0)
+        p->adhoc = false;
+      break;
+    
+    default:
+      eprintf("%s: unknown token value of %d\n",__func__,token);
+      rv = false;
+      break;
+  }
+
+  return rv;
+}
+
 static void nmdevice_free(struct nmdevice *p)
 {
   if(p == 0)
