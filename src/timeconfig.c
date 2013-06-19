@@ -140,15 +140,9 @@ static bool timeconfig_finish(void)
   if(zone != 0)
     success = timeconfig_action(zone,utc);
 
-  if(zones != 0)
-  {
-    for( char **p = zones ; *p != 0 ; ++p )
-      free(*p);
-
-    free(zones);
-
-    zones = 0;
-  }
+  charpp_free(zones);
+  
+  zones = 0;
 
   zone = 0;
   

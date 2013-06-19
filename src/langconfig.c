@@ -237,15 +237,9 @@ static bool langconfig_finish(void)
     action = false;
   }
 
-  if(locales != 0)
-  {
-    for( size_t i = 0 ; locales[i] != 0 ; ++i )
-      free(locales[i]);
-    
-    free(locales);
-    
-    locales = 0;
-  }
+  charpp_free(locales);
+
+  locales = 0;
 
   return success;
 }
