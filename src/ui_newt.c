@@ -1863,6 +1863,16 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile **profiles)
   int listbox_height = 0;
   int next_width = 0;
   int next_height = 0;
+  
+  if(!get_text_screen_size(NM_CONFIG_TEXT,&textbox_width,&textbox_height))
+    return false;
+
+  if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
+    return false;
+
+  listbox_width = NEWT_WIDTH;
+  
+  listbox_height = 3;
 
   return true;
 }
