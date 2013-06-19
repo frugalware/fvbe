@@ -1855,7 +1855,7 @@ extern void ui_window_text(const char *title,const char *text)
   newtPopWindow();
 }
 
-extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile **profiles)
+extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
 {
   int textbox_width = 0;
   int textbox_height = 0;
@@ -1863,6 +1863,19 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile **profiles)
   int listbox_height = 0;
   int next_width = 0;
   int next_height = 0;
+  newtComponent textbox = 0;
+  newtComponent listbox = 0;
+  newtComponent next = 0;
+  const char *options[] =
+  {
+    "Create Profile",
+    "Edit Profile",
+    "Delete Profile",
+    0
+  };
+  const uintptr_t CREATE_PROFILE = 0;
+  const uintptr_t EDIT_PROFILE = 1;
+  const uintptr_t DELETE_PROFILE = 2;
   
   if(!get_text_screen_size(NM_CONFIG_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -1871,8 +1884,33 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile **profiles)
     return false;
 
   listbox_width = NEWT_WIDTH;
-  
+ 
   listbox_height = 3;
+
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,NM_CONFIG_TITLE) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return false;
+  }
+
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,NM_CONFIG_TEXT);
+
+  listbox = newtListbox(0,textbox_height+1,listbox_height,NEWT_FLAG_RETURNEXIT);
+
+  newtListboxSetWidth(listbox,listbox_width);
+
+  newtListboxAppendEntry(listbox,options[CREATE_PROFILE],(void *) CREATE_PROFILE);
+
+  if(profiles[0][0] != 0)
+  {
+    newtListboxAppendEntry(listbox,options[EDIT_PROFILE],(void *) EDIT_PROFILE);
+    
+    newtListboxAppendEntry(listbox,options[DELETE_PROFILE],(void *) DELETE_PROFILE);
+  }
+
+  next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
   return true;
 }
