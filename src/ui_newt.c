@@ -1866,6 +1866,8 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
   newtComponent textbox = 0;
   newtComponent listbox = 0;
   newtComponent next = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
   const char *options[] =
   {
     "Create Profile",
@@ -1911,6 +1913,27 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
   }
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
+  newtFormAddComponents(form,textbox,listbox,next,(void *) 0);
+
+  newtFormSetCurrent(form,listbox);
+
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == listbox)
+    {
+    }
+    else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    {
+      break;
+    }
+  }
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
 
   return true;
 }
