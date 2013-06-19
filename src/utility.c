@@ -33,6 +33,17 @@ extern int charpp_qsort(const void *A,const void *B)
   return strcmp(a,b);
 }
 
+extern void charpp_free(char **pp)
+{
+  if(pp == 0)
+    return;
+  
+  for( char **p = pp ; *p != 0 ; ++p )
+    free(*p);
+  
+  free(pp);
+}
+
 extern char *systemd_escape(const char *in)
 {
   static char out[LINE_MAX] = {0};

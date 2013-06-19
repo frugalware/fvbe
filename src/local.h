@@ -180,6 +180,7 @@ struct tool
 };
 
 extern int charpp_qsort(const void *A,const void *B);
+extern void charpp_free(char **pp);
 extern void account_free(struct account *account);
 extern char *systemd_escape(const char *in);
 extern char *shell_escape(const char *in);
