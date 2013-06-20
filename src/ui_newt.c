@@ -788,6 +788,43 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
   return true;
 }
 
+static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles)
+{
+  char title[TEXT_MAX] = {0};
+  char text[TEXT_MAX] = {0};
+
+  if(!ui_dialog_edit_profile(profile,devices,profiles))
+    return false;
+
+  strfcpy(title,sizeof(title),NM_DHCP_TITLE,"IPv4");
+  
+  strfcpy(text,sizeof(text),NM_DHCP_TEXT,"IPv4");
+
+  if(!ui_dialog_yesno(title,text,false) && !ui_dialog_static_ip(4,profile))
+    return false;
+  else
+  {
+    iniparser_unset(profile->data,"ipv4");
+    
+    iniparser_set(profile->data,"ipv4:method","auto");
+  }
+
+  strfcpy(title,sizeof(title),NM_DHCP_TITLE,"IPv6");
+  
+  strfcpy(text,sizeof(text),NM_DHCP_TEXT,"IPv6");
+
+  if(!ui_dialog_yesno(title,text,false) && !ui_dialog_static_ip(6,profile))
+    return false;
+  else
+  {
+    iniparser_unset(profile->data,"ipv6");
+    
+    iniparser_set(profile->data,"ipv6:method","auto");
+  }
+
+  return true;
+}
+
 static bool ui_dialog_format(struct format **targets,struct format *target)
 {
   int textbox_width = 0;
@@ -1868,6 +1905,7 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
   newtComponent next = 0;
   newtComponent form = 0;
   struct newtExitStruct es = {0};
+  bool rv = true;
   const char *options[] =
   {
     "Create Profile",
@@ -1905,12 +1943,9 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
 
   newtListboxAppendEntry(listbox,options[CREATE_PROFILE],(void *) CREATE_PROFILE);
 
-  if(profiles[0][0] != 0)
-  {
-    newtListboxAppendEntry(listbox,options[EDIT_PROFILE],(void *) EDIT_PROFILE);
+  newtListboxAppendEntry(listbox,options[EDIT_PROFILE],(void *) EDIT_PROFILE);
     
-    newtListboxAppendEntry(listbox,options[DELETE_PROFILE],(void *) DELETE_PROFILE);
-  }
+  newtListboxAppendEntry(listbox,options[DELETE_PROFILE],(void *) DELETE_PROFILE);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
@@ -1935,7 +1970,7 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
 
   newtPopWindow();
 
-  return true;
+  return rv;
 }
 
 extern bool ui_window_partition(struct device **devices,struct disk **disks)
