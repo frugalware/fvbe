@@ -48,6 +48,8 @@
 #define INFO_BYTES_TEXT _("You may be familiar with byte units that end in M, MB, MiB, or such.\nMost of them lack a universal definition of their exact size.\nSo, for the purposes of this program, we only use binary byte units.\nBelow is a list of all the binary byte unit suffixes we use.\n\nBiB = 1\nKiB = 1024\nMiB = 1024 * 1024\nGiB = 1024 * 1024 * 1024\nTiB = 1024 * 1024 * 1024 * 1024\n")
 #define NM_CONFIG_TITLE _("Network Setup")
 #define NM_CONFIG_TEXT _("Select 'Create Profile' to create a new network profile.\nSelect 'Edit Profile' to edit an old network profile.\nSelect 'Delete Profile' to delete an old network profile.\n")
+#define NM_DHCP_TITLE _("Dynamic %s Setup")
+#define NM_DHCP_TEXT _("Do you wish to use %s DHCP for this profile?\n")
 #define NM_PROFILE_TITLE _("Network Profile Setup")
 #define NM_PROFILE_TEXT _("Enter a name for this profile in the box below.\nSelect a device to use for this profile from the list below.\n")
 #define NM_PROFILE_ERROR_TITLE _("Invalid Profile Parameters")
