@@ -243,7 +243,7 @@ static bool get_checkbox_screen_size(const char *text,int *width,int *height)
   return true;
 }
 
-static inline bool process_ini_list(char *list,bool (*f) (const char *),int m,int r)
+static bool process_ini_list(char *list,bool (*f) (const char *),int m,int r)
 {
   char *s = list;
   char *e = 0;
