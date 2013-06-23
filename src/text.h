@@ -50,6 +50,8 @@
 #define NM_CONFIG_TEXT _("Select 'Create Profile' to create a new network profile.\nSelect 'Edit Profile' to edit an old network profile.\nSelect 'Delete Profile' to delete an old network profile.\n")
 #define NM_DHCP_TITLE _("Dynamic %s Setup")
 #define NM_DHCP_TEXT _("Do you wish to use %s DHCP for this profile?\n")
+#define NM_NO_PROFILE_TITLE _("No Profiles")
+#define NM_NO_PROFILE_TEXT _("There are no profiles to edit or delete.\nYou must create one first with 'Create Profile'.\n")
 #define NM_SELECTION_TITLE _("Network Profile Selection")
 #define NM_EDIT_TEXT _("Select a profile to edit from the list below.\n")
 #define NM_DELETE_TEXT _("Select a profile to delete from the list below.\n")
