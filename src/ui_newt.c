@@ -44,6 +44,15 @@ static int lfind_compare(const void *A,const void *B)
   return strncmp(a,b->name,n);
 }
 
+static int lfind_compare_nm(const void *A,const void *B)
+{
+  const char *a = (const char *) A;
+  const struct nmprofile *b = *(const struct nmprofile **) B;
+  const char *c = (b->data == 0) ? "" : iniparser_getstring(b->data,PROFILE_NAME_KEY,"");
+  
+  return strcmp(a,c);
+}
+
 static inline bool findpath(struct format **targets,struct format *target,const char *path)
 {
   struct format **p = targets;
@@ -1961,9 +1970,11 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
     {
       const uintptr_t action = (uintptr_t) newtListboxGetCurrent(listbox);
       char *entries[4096] = {0};
+      char *entry = 0;
       char title[TEXT_MAX] = {0};
       char text[TEXT_MAX] = {0};
       size_t i = 0;
+      size_t j = 0;
       size_t size = sizeof(entries) / sizeof(*entries);
       struct nmprofile *profile = 0;
       
@@ -1986,6 +1997,61 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
         {
           rv = false;
           break;
+        }
+      }
+      else if(action == EDIT_PROFILE || action == DELETE_PROFILE)
+      {
+        for( ; (profile = profiles[0][j]) != 0 ; ++j )
+        {
+          char *s = 0;
+        
+          if(profile->data == 0 || i == size - 1)
+            continue;
+          
+          s = iniparser_getstring(profile->data,PROFILE_NAME_KEY,"");
+          
+          if(strlen(s) == 0)
+            continue;
+          
+          entries[i++] = s;
+        }
+        
+        entries[i] = 0;
+        
+        strfcpy(title,sizeof(title),"%s",NM_SELECTION_TITLE);
+        
+        if(action == EDIT_PROFILE)
+          strfcpy(text,sizeof(text),"%s",NM_EDIT_TEXT);
+        else if(action == DELETE_PROFILE)
+          strfcpy(text,sizeof(text),"%s",NM_DELETE_TEXT);
+        
+        if(!ui_window_list(title,text,entries,&entry))
+        {
+          rv = false;
+          break;
+        }
+        
+        if(
+          (profile = lfind(entry,profiles[0],&j,sizeof(struct nmprofile *),lfind_compare_nm)) == 0 ||
+          (profile = *(struct nmprofile **) profile) == 0
+        )
+        {
+          error("could not find the profile");
+          rv = false;
+          break;
+        }
+        
+        if(action == EDIT_PROFILE && !process_nm_profile(profile,devices,profiles[0]))
+        {
+          rv = false;
+          break;
+        }
+        else if(action == DELETE_PROFILE)
+        {
+          if(profile->data != 0)
+            iniparser_freedict(profile->data);
+            
+          profile->data = 0;
         }
       }
     }
