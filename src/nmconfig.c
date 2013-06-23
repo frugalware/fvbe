@@ -298,6 +298,21 @@ static void nmdevice_free(struct nmdevice *p)
   free(p);
 }
 
+static void nmprofile_free(struct nmprofile *p)
+{
+  if(p == 0)
+    return;
+  
+  free(p->oldpath);
+  
+  free(p->newpath);
+  
+  if(p->data != 0)
+    iniparser_freedict(p->data);
+  
+  free(p);
+}
+
 static bool nmconfig_setup_devices(void)
 {
   FILE *pipe = 0;
