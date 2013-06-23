@@ -535,6 +535,8 @@ static bool nmconfig_finish(void)
       nmprofile_free(profile);
     }
 
+    ui_dialog_progress(0,0,-1);
+
     free(nmprofiles);
   
     nmprofiles = 0;
