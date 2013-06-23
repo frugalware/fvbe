@@ -495,14 +495,16 @@ static bool nmconfig_finish(void)
     
       if(profile->data != 0 && profile->newpath != 0)
       {
-        char path[] = "/tmp/nmconfig-XXXXXX";
         int fd = -1;
         FILE *file = 0;
       
+        if(profile->oldpath != 0)
+          remove(profile->oldpath);
+      
         if(
-          (fd = mkstemp(path)) == -1    ||
-          fchown(fd,0,0) == -1          ||
-          fchmod(fd,0600) == -1         ||
+          (fd = open(profile->newpath,O_CREAT|O_TRUNC|O_WRONLY,0600)) == -1 ||
+          fchown(fd,0,0) == -1                                              ||
+          fchmod(fd,0600) == -1                                             ||
           (file = fdopen(fd,"wb")) == 0
         )
         {
@@ -515,17 +517,7 @@ static bool nmconfig_finish(void)
       
         iniparser_dump_ini(profile->data,file);
       
-        fclose(file);
-      
-        if(profile->oldpath != 0)
-          remove(profile->oldpath);
-      
-        if(rename(path,profile->newpath) == -1)
-        {
-          error(strerror(errno));
-          ui_dialog_progress(0,0,-1);
-          return false;
-        }
+        fclose(file);      
       }
       else if(profile->data == 0 && profile->oldpath != 0)
       {
