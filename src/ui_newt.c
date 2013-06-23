@@ -1925,6 +1925,13 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
   const uintptr_t CREATE_PROFILE = 0;
   const uintptr_t EDIT_PROFILE = 1;
   const uintptr_t DELETE_PROFILE = 2;
+
+  if(devices == 0 || profiles == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
   
   if(!get_text_screen_size(NM_CONFIG_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -1957,6 +1964,8 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
   newtListboxAppendEntry(listbox,options[DELETE_PROFILE],(void *) DELETE_PROFILE);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
 
   newtFormAddComponents(form,textbox,listbox,next,(void *) 0);
 
