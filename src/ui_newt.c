@@ -484,6 +484,8 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       
       iniparser_unset(profile->data,device->type);
       
+      iniparser_set(profile->data,PROFILE_KEY,"");
+      
       iniparser_set(profile->data,PROFILE_NAME_KEY,name);
       
       iniparser_set(profile->data,PROFILE_UUID_KEY,(uuid != 0) ? uuid : uuidgen());
@@ -491,6 +493,8 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       iniparser_set(profile->data,PROFILE_TYPE_KEY,device->type);
 
       strfcpy(buf,sizeof(buf),"%s:mac-address",device->type);
+      
+      iniparser_set(profile->data,device->type,"");
       
       iniparser_set(profile->data,buf,device->hwaddr);
 
@@ -778,6 +782,8 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
     
       iniparser_unset(profile->data,ipkey);
       
+      iniparser_set(profile->data,ipkey,"");
+      
       iniparser_set(profile->data,methodkey,"manual");
       
       iniparser_set(profile->data,addresskey,address2);
@@ -815,6 +821,8 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
   {
     iniparser_unset(profile->data,"ipv4");
     
+    iniparser_set(profile->data,"ipv4","");
+    
     iniparser_set(profile->data,"ipv4:method","auto");
   }
 
@@ -827,6 +835,8 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
   else
   {
     iniparser_unset(profile->data,"ipv6");
+    
+    iniparser_set(profile->data,"ipv6","");
     
     iniparser_set(profile->data,"ipv6:method","auto");
   }
