@@ -482,67 +482,73 @@ static bool nmconfig_finish(void)
   int j = 0;
   int k = 0;
 
-  for( ; nmprofiles[j] != 0 ; ++j )
-    ;
-
-  for( ; nmprofiles[i] != 0 ; ++i )
+  if(nmprofiles != 0)
   {
-    struct nmprofile *profile = nmprofiles[i];
+    for( ; nmprofiles[j] != 0 ; ++j )
+      ;
 
-    ui_dialog_progress(_("Writing Network Profile Changes"),"",get_percent(i,j));
+    for( ; nmprofiles[i] != 0 ; ++i )
+    {
+      struct nmprofile *profile = nmprofiles[i];
+
+      ui_dialog_progress(_("Writing Network Profile Changes"),"",get_percent(i,j));
     
-    if(profile->data != 0 && profile->newpath != 0)
-    {
-      char path[] = "/tmp/nmconfig-XXXXXX";
-      int fd = -1;
-      FILE *file = 0;
-      
-      if(
-        (fd = mkstemp(path)) == -1    ||
-        fchown(fd,0,0) == -1          ||
-        fchmod(fd,0600) == -1         ||
-        (file = fdopen(fd,"wb")) == 0
-      )
+      if(profile->data != 0 && profile->newpath != 0)
       {
-        error(strerror(errno));
-        if(fd != -1)
-          close(fd);
-        ui_dialog_progress(0,0,-1);
-        return false;
+        char path[] = "/tmp/nmconfig-XXXXXX";
+        int fd = -1;
+        FILE *file = 0;
+      
+        if(
+          (fd = mkstemp(path)) == -1    ||
+          fchown(fd,0,0) == -1          ||
+          fchmod(fd,0600) == -1         ||
+          (file = fdopen(fd,"wb")) == 0
+        )
+        {
+          error(strerror(errno));
+          if(fd != -1)
+            close(fd);
+          ui_dialog_progress(0,0,-1);
+          return false;
+        }
+      
+        iniparser_dump_ini(profile->data,file);
+      
+        fclose(file);
+      
+        if(profile->oldpath != 0)
+          remove(profile->oldpath);
+      
+        if(rename(path,profile->newpath) == -1)
+        {
+          error(strerror(errno));
+          ui_dialog_progress(0,0,-1);
+          return false;
+        }
       }
-      
-      iniparser_dump_ini(profile->data,file);
-      
-      fclose(file);
-      
-      if(profile->oldpath != 0)
+      else if(profile->data == 0 && profile->oldpath != 0)
+      {
         remove(profile->oldpath);
-      
-      if(rename(path,profile->newpath) == -1)
-      {
-        error(strerror(errno));
-        ui_dialog_progress(0,0,-1);
-        return false;
       }
-    }
-    else if(profile->data == 0 && profile->oldpath != 0)
-    {
-      remove(profile->oldpath);
-    }
   
-    nmprofile_free(profile);
+      nmprofile_free(profile);
+    }
+
+    free(nmprofiles);
+  
+    nmprofiles = 0;
   }
 
-  free(nmprofiles);
-  
-  nmprofiles = 0;
+  if(nmdevices != 0)
+  {
+    for( ; nmdevices[k] != 0 ; ++k )
+      nmdevice_free(nmdevices[k]);
 
-  for( ; nmdevices[k] != 0 ; ++k )
-    nmdevice_free(nmdevices[k]);
+    free(nmdevices);
 
-  free(nmdevices);
-
-  nmdevices = 0;
+    nmdevices = 0;
+  }
 
   return true;
 }
