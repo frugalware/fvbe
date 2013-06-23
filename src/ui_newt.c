@@ -1959,6 +1959,35 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
 
     if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == listbox)
     {
+      const uintptr_t action = (uintptr_t) newtListboxGetCurrent(listbox);
+      char *entries[4096] = {0};
+      char title[TEXT_MAX] = {0};
+      char text[TEXT_MAX] = {0};
+      size_t i = 0;
+      size_t size = sizeof(entries) / sizeof(*entries);
+      struct nmprofile *profile = 0;
+      
+      if(action == CREATE_PROFILE)
+      {
+        profile = alloc(struct nmprofile,1);
+      
+        profile->data = dictionary_new(0);
+        
+        for( ; profiles[0][i] != 0 ; ++i )
+          ;
+        
+        profiles[0] = redim(profiles[0],struct nmprofile *,i + 2);
+        
+        profiles[0][i++] = profile;
+        
+        profiles[0][i] = 0;
+
+        if(!process_nm_profile(profile,devices,profiles[0]))
+        {
+          rv = false;
+          break;
+        }
+      }
     }
     else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
