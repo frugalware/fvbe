@@ -18,7 +18,6 @@
 #include "local.h"
 
 static struct nmdevice **nmdevices = 0;
-
 static struct nmprofile **nmprofiles = 0;
 
 static inline const char *nm_next_token(const char *p)
@@ -471,11 +470,80 @@ static bool nmconfig_start(void)
   if(!nmconfig_setup_profiles())
     return false;
 
+  if(!ui_window_nm(nmdevices,&nmprofiles))
+    return false;
+
   return true;
 }
 
 static bool nmconfig_finish(void)
 {
+  int i = 0;
+  int j = 0;
+  int k = 0;
+
+  for( ; nmprofiles[j] != 0 ; ++j )
+    ;
+
+  for( ; nmprofiles[i] != 0 ; ++i )
+  {
+    struct nmprofile *profile = nmprofiles[i];
+
+    ui_dialog_progress(_("Writing Network Profile Changes"),"",get_percent(i,j));
+    
+    if(profile->data != 0 && profile->newpath != 0)
+    {
+      char path[] = "/tmp/nmconfig-XXXXXX";
+      int fd = -1;
+      FILE *file = 0;
+      
+      if(
+        (fd = mkstemp(path)) == -1    ||
+        fchown(fd,0,0) == -1          ||
+        fchmod(fd,0600) == -1         ||
+        (file = fdopen(fd,"wb")) == 0
+      )
+      {
+        error(strerror(errno));
+        if(fd != -1)
+          close(fd);
+        ui_dialog_progress(0,0,-1);
+        return false;
+      }
+      
+      iniparser_dump_ini(profile->data,file);
+      
+      fclose(file);
+      
+      if(profile->oldpath != 0)
+        remove(profile->oldpath);
+      
+      if(rename(path,profile->newpath) == -1)
+      {
+        error(strerror(errno));
+        ui_dialog_progress(0,0,-1);
+        return false;
+      }
+    }
+    else if(profile->data == 0 && profile->oldpath != 0)
+    {
+      remove(profile->oldpath);
+    }
+  
+    nmprofile_free(profile);
+  }
+
+  free(nmprofiles);
+  
+  nmprofiles = 0;
+
+  for( ; nmdevices[k] != 0 ; ++k )
+    nmdevice_free(nmdevices[k]);
+
+  free(nmdevices);
+
+  nmdevices = 0;
+
   return true;
 }
 
