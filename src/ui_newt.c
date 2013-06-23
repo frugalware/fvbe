@@ -2018,6 +2018,12 @@ extern bool ui_window_nm(struct nmdevice **devices,struct nmprofile ***profiles)
         
         entries[i] = 0;
         
+        if(i == 0)
+        {
+          ui_dialog_text(NM_NO_PROFILE_TITLE,NM_NO_PROFILE_TEXT);
+          continue;
+        }
+        
         strfcpy(title,sizeof(title),"%s",NM_SELECTION_TITLE);
         
         if(action == EDIT_PROFILE)
