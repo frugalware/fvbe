@@ -163,6 +163,15 @@ is_mac_address
 )
 
 YYDECLARE(
+is_wifi_ssid
+,
+/*!re2c
+  ascii {1,32} null { return true;  }
+  any               { return false; }
+*/
+)
+
+YYDECLARE(
 is_wep_psk
 ,
 /*!re2c
