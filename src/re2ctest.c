@@ -247,14 +247,15 @@ static struct re2ctest mac[] =
 
 static struct re2ctest wpa[] =
 {
-  {                                                         "foobar!!", true  },
-  {                                                       "0123456789", true  },
-  { "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true  },
-  {  "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", true  },
-  { "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", false },
-  {                                                          "abcdefg", false },
-  {                                                                 "", false },
-  {                                                                  0, false }
+  {                                                          "foobar!!", true  },
+  {                                                        "0123456789", true  },
+  {  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true  },
+  {   "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", true  },
+  {  "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", false },
+  { "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false },
+  {                                                           "abcdefg", false },
+  {                                                                  "", false },
+  {                                                                   0, false }
 };
 
 static bool re2ctest(struct re2ctest *p,bool (*f) (const char *))
