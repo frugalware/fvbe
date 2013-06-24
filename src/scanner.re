@@ -163,6 +163,15 @@ is_mac_address
 )
 
 YYDECLARE(
+is_wep_psk
+,
+/*!re2c
+  (ascii {5} | hex {10} | ascii {13} | hex {26}) null { return true;  }
+  any                                                 { return false; }
+*/
+)
+
+YYDECLARE(
 is_wpa_psk
 ,
 /*!re2c

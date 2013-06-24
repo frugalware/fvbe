@@ -245,6 +245,24 @@ static struct re2ctest mac[] =
   {                    0, false }
 };
 
+static struct re2ctest wep[] =
+{
+  {                       "!!!!!", true  },
+  {                  "FFFFFFFFFF", true  },
+  {               "!!!!!!!!!!!!!", true  },
+  {  "FFFFFFFFFFFFFFFFFFFFFFFFFF", true  },
+  {                        "!!!!", false },
+  {                      "!!!!!!", false },
+  {                   "FFFFFFFFF", false },
+  {                 "FFFFFFFFFFF", false },
+  {                "!!!!!!!!!!!!", false },
+  {              "!!!!!!!!!!!!!!", false },
+  {   "FFFFFFFFFFFFFFFFFFFFFFFFF", false },
+  { "FFFFFFFFFFFFFFFFFFFFFFFFFFF", false },
+  {                            "", false },
+  {                             0, false }
+};
+
 static struct re2ctest wpa[] =
 {
   {                                                          "foobar!!", true  },
@@ -308,6 +326,8 @@ extern int main(void)
   RE2CTEST(uuid,is_uuid);
 
   RE2CTEST(mac,is_mac_address);
+
+  RE2CTEST(wep,is_wep_psk);
 
   RE2CTEST(wpa,is_wpa_psk);
 
