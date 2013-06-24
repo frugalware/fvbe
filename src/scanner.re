@@ -162,6 +162,15 @@ is_mac_address
 */
 )
 
+YYDECLARE(
+is_wpa_pp
+,
+/*!re2c
+  ascii {8,63} null { return true;  }
+  any               { return false; }
+*/
+)
+
 #undef YYCTYPE
 #undef YYCTYPE2
 #undef YYCURSOR
