@@ -245,12 +245,13 @@ static struct re2ctest mac[] =
   {                    0, false }
 };
 
-static struct re2ctest wpapp[] =
+static struct re2ctest wpa[] =
 {
   {                                                         "foobar!!", true  },
   {                                                       "0123456789", true  },
-  {  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true  },
-  { "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false },
+  { "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true  },
+  {  "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", true  },
+  { "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", false },
   {                                                          "abcdefg", false },
   {                                                                 "", false },
   {                                                                  0, false }
@@ -307,7 +308,7 @@ extern int main(void)
 
   RE2CTEST(mac,is_mac_address);
 
-  RE2CTEST(wpapp,is_wpa_pp);
+  RE2CTEST(wpa,is_wpa_psk);
 
   printf("re2c has passed all tests\n");
   

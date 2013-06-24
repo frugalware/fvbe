@@ -163,11 +163,11 @@ is_mac_address
 )
 
 YYDECLARE(
-is_wpa_pp
+is_wpa_psk
 ,
 /*!re2c
-  ascii {8,63} null { return true;  }
-  any               { return false; }
+  (ascii {8,63} | hex {64}) null { return true;  }
+  any                            { return false; }
 */
 )
 
