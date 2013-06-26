@@ -803,6 +803,38 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
   return true;
 }
 
+static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
+{
+  int textbox_width = 0;
+  int textbox_height = 0;
+  int label1_width = 0;
+  int label1_height = 0;
+  int label2_width = 0;
+  int label2_height = 0;
+  int entry_left = 0;
+  int entry_width = 0;
+  int next_width = 0;
+  int next_height = 0;
+  
+  if(!get_text_screen_size(NM_WIFI_TEXT,&textbox_width,&textbox_height))
+    return false;
+  
+  if(!get_label_screen_size(SSID_TEXT,&label1_width,&label1_height))
+    return false;
+
+  if(!get_label_screen_size(PSK_TEXT,&label2_width,&label2_height))
+    return false;
+
+  entry_left = max(label1_width,label2_width) + 1;
+  
+  entry_width = NEWT_WIDTH - entry_left;
+
+  if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
+    return false;
+
+  return true;
+}
+
 static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles)
 {
   char title[TEXT_MAX] = {0};
