@@ -53,7 +53,7 @@
 #define NM_DHCP_TITLE _("Dynamic %s Setup")
 #define NM_DHCP_TEXT _("Do you wish to use %s DHCP for this profile?\n")
 #define NM_WIFI_TITLE _("Wi-Fi Setup")
-#define NM_WIFI_TEXT _("Enter the SSID of the AP you are connecting to.\nEnter the WEP or WPA PSK for the AP.\nIf there is no PSK, then leave this blank.\n")
+#define NM_WIFI_TEXT _("Enter the SSID of the AP you are connecting to.\nEnter the WEP or WPA PSK for the AP.\nThe PSK must be prefixed by 'wep' or 'wpa' followed by a ':'.\nIf there is no PSK, then leave this blank.\n")
 #define NM_NO_PROFILE_TITLE _("No Profiles")
 #define NM_NO_PROFILE_TEXT _("There are no profiles to edit or delete.\nYou must create one first with 'Create Profile'.\n")
 #define NM_SELECTION_TITLE _("Network Profile Selection")
