@@ -813,6 +813,8 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   newtComponent label2 = 0;
   newtComponent entry2 = 0;
   newtComponent next = 0;
+  newtComponent form = 0;
+  struct newtExitStruct es = {0};
   
   if(!get_text_screen_size(NM_WIFI_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -899,6 +901,103 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(psk),entry_width,&psk,0);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
+
+  form = newtForm(0,0,NEWT_FLAG_NOF12);
+
+  newtFormAddComponents(form,textbox,label1,entry1,label2,entry2,next,(void *) 0);
+
+  newtFormSetCurrent(form,entry1);
+
+  while(true)
+  {
+    newtFormRun(form,&es);
+
+    if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
+    {
+      bool pass = false;
+      bool wpa = false;
+      bool wep = false;
+
+      if(!is_wifi_ssid(ssid))
+        goto fail;
+    
+      if(strlen(psk) > 0)
+      {
+        if(strncmp(psk,"wpa:",4) == 0)
+        {
+          if(!is_wpa_psk(psk+4))
+            goto fail;
+          
+          if(!device->wpa && !device->wpa2)
+            goto fail;
+            
+          wpa = true;
+        }
+        else if(strncmp(psk,"wep:",4) == 0)
+        {
+          if(!is_wep_psk(psk+4))
+            goto fail;
+          
+          if(!device->wep)
+            goto fail;
+          
+          wep = true;
+        }
+        else
+          goto fail;
+      }
+    
+      pass = true;
+    
+      fail:
+    
+      if(!pass)
+      {
+        continue;
+      }
+    
+      iniparser_unset(profile->data,WIFI_KEY);
+      
+      iniparser_set(profile->data,WIFI_KEY,"");
+      
+      iniparser_set(profile->data,WIFI_KEY ":mode","infrastructure");
+      
+      iniparser_set(profile->data,WIFI_KEY ":ssid",ssid);
+    
+      iniparser_unset(profile->data,WIFI_KEY "-security");
+    
+      if(wpa || wep)
+      {
+        iniparser_set(profile->data,WIFI_KEY ":security",WIFI_KEY "-security");
+ 
+        iniparser_set(profile->data,WIFI_KEY "-security","");
+        
+        if(wpa)
+        {
+          iniparser_set(profile->data,WIFI_KEY "-security:key-mgmt","wpa-psk");
+          
+          iniparser_set(profile->data,WIFI_KEY "-security:psk",psk+4);
+        }
+        else if(wep)
+        {
+          iniparser_set(profile->data,WIFI_KEY "-security:key-mgmt","none");
+
+          iniparser_set(profile->data,WIFI_KEY "-security:auth-alg","open");
+
+          iniparser_set(profile->data,WIFI_KEY "-security:wep-key-type","1");
+
+          iniparser_set(profile->data,WIFI_KEY "-security:wep-key0",psk+4);
+        }
+      }
+      
+      break;
+    }
+  }
+
+
+  newtFormDestroy(form);
+
+  newtPopWindow();
 
   return true;
 }
