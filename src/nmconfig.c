@@ -480,19 +480,13 @@ static bool nmconfig_finish(void)
 {
   int i = 0;
   int j = 0;
-  int k = 0;
 
   if(nmprofiles != 0)
   {
-    for( ; nmprofiles[j] != 0 ; ++j )
-      ;
-
     for( ; nmprofiles[i] != 0 ; ++i )
     {
       struct nmprofile *profile = nmprofiles[i];
 
-      ui_dialog_progress(_("Writing Network Profile Changes"),"",get_percent(i,j));
-    
       if(profile->data != 0 && profile->newpath != 0)
       {
         int fd = -1;
@@ -511,7 +505,6 @@ static bool nmconfig_finish(void)
           error(strerror(errno));
           if(fd != -1)
             close(fd);
-          ui_dialog_progress(0,0,-1);
           return false;
         }
       
@@ -527,8 +520,6 @@ static bool nmconfig_finish(void)
       nmprofile_free(profile);
     }
 
-    ui_dialog_progress(0,0,-1);
-
     free(nmprofiles);
   
     nmprofiles = 0;
@@ -536,8 +527,8 @@ static bool nmconfig_finish(void)
 
   if(nmdevices != 0)
   {
-    for( ; nmdevices[k] != 0 ; ++k )
-      nmdevice_free(nmdevices[k]);
+    for( ; nmdevices[j] != 0 ; ++j )
+      nmdevice_free(nmdevices[j]);
 
     free(nmdevices);
 
