@@ -405,7 +405,7 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   
   label = newtLabel(0,textbox_height+1,PROFILE_NAME_TEXT);
 
-  entry = newtEntry(entry_left,textbox_height+1,strng(name),entry_width,&name,0);
+  entry = newtEntry(entry_left,textbox_height+1,strng(name),entry_width,&name,NEWT_FLAG_SCROLL);
 
   listbox = newtListbox(0,textbox_height+label_height+2,listbox_height,NEWT_FLAG_SCROLL);
 
@@ -694,23 +694,23 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
 
   label1 = newtLabel(0,textbox_height+1,ADDRESS_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,strng(address),entry_width,&address,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,strng(address),entry_width,&address,NEWT_FLAG_SCROLL);
 
   label2 = newtLabel(0,textbox_height+label1_height+2,PREFIX_TEXT);
 
-  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(prefix),entry_width,&prefix,0);
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(prefix),entry_width,&prefix,NEWT_FLAG_SCROLL);
 
   label3 = newtLabel(0,textbox_height+label1_height+label2_height+3,GATEWAY_TEXT);
 
-  entry3 = newtEntry(entry_left,textbox_height+label1_height+label2_height+3,strng(gateway),entry_width,&gateway,0);
+  entry3 = newtEntry(entry_left,textbox_height+label1_height+label2_height+3,strng(gateway),entry_width,&gateway,NEWT_FLAG_SCROLL);
 
   label4 = newtLabel(0,textbox_height+label1_height+label2_height+label3_height+4,DNS_SERVERS_TEXT);
 
-  entry4 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+4,strng(servers),entry_width,&servers,0);
+  entry4 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+4,strng(servers),entry_width,&servers,NEWT_FLAG_SCROLL);
 
   label5 = newtLabel(0,textbox_height+label1_height+label2_height+label3_height+label4_height+5,SEARCH_DOMAINS_TEXT);
 
-  entry5 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+label4_height+5,strng(domains),entry_width,&domains,0);
+  entry5 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+label4_height+5,strng(domains),entry_width,&domains,NEWT_FLAG_SCROLL);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
@@ -894,11 +894,11 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   
   label1 = newtLabel(0,textbox_height+1,SSID_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,strng(ssid),entry_width,&ssid,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,strng(ssid),entry_width,&ssid,NEWT_FLAG_SCROLL);
 
   label2 = newtLabel(0,textbox_height+label1_height+2,PSK_TEXT);
 
-  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(psk),entry_width,&psk,0);
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(psk),entry_width,&psk,NEWT_FLAG_SCROLL);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
@@ -1120,7 +1120,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
 
   label1 = newtLabel(0,textbox_height+1,FORMAT_MOUNT_ENTRY_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry_width,&path,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,(target->mountpath != 0) ? target->mountpath : g->hostroot,entry_width,&path,NEWT_FLAG_SCROLL);
 
   listbox = newtListbox(0,textbox_height+label1_height+2,listbox_height,NEWT_FLAG_SCROLL);
 
@@ -1384,7 +1384,7 @@ static bool ui_dialog_partition_modify_partition(struct disk *disk,int n)
 
   name = (strcmp(disk_get_type(disk),"gpt") == 0) ? disk_partition_get_name(disk,n) : "";
 
-  entry = newtEntry(entry_left,textbox_height+1,name,entry_width,&name,0);
+  entry = newtEntry(entry_left,textbox_height+1,name,entry_width,&name,NEWT_FLAG_SCROLL);
 
   listbox = newtListbox(0,textbox_height+label_height+checkbox_height+3,listbox_height,NEWT_FLAG_SCROLL);
 
@@ -1508,7 +1508,7 @@ static bool ui_dialog_partition_new_partition(struct disk *disk)
 
   size_to_string(text,sizeof(text),disk_get_free_size(disk),false);
 
-  entry = newtEntry(entry_left,textbox_height+1,text,entry_width,&result,0);
+  entry = newtEntry(entry_left,textbox_height+1,text,entry_width,&result,NEWT_FLAG_SCROLL);
 
   listbox = newtListbox(0,textbox_height+label_height+2,listbox_height,NEWT_FLAG_SCROLL);
 
@@ -2979,11 +2979,11 @@ extern bool ui_window_host(char **hostname,char **prettyhostname)
 
   label1 = newtLabel(0,textbox_height+1,HOSTNAME_ENTRY_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&name1,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&name1,NEWT_FLAG_SCROLL);
 
   label2 = newtLabel(0,textbox_height+label1_height+2,PRETTY_HOSTNAME_ENTRY_TEXT);
 
-  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&name2,0);
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&name2,NEWT_FLAG_SCROLL);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
@@ -3078,11 +3078,11 @@ extern bool ui_window_root(struct account *data)
 
   label1 = newtLabel(0,textbox_height+1,PASSWORD_ENTER_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&password1,NEWT_FLAG_PASSWORD);
+  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&password1,NEWT_FLAG_PASSWORD|NEWT_FLAG_SCROLL);
 
   label2 = newtLabel(0,textbox_height+label1_height+2,PASSWORD_CONFIRM_TEXT);
 
-  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&password2,NEWT_FLAG_PASSWORD);
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&password2,NEWT_FLAG_PASSWORD|NEWT_FLAG_SCROLL);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
@@ -3208,19 +3208,19 @@ extern bool ui_window_user(struct account *data)
 
   label1 = newtLabel(0,textbox_height+1,NAME_ENTRY_TEXT);
 
-  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&name,0);
+  entry1 = newtEntry(entry_left,textbox_height+1,"",entry_width,&name,NEWT_FLAG_SCROLL);
 
   label2 = newtLabel(0,textbox_height+label1_height+2,USER_ENTRY_TEXT);
 
-  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&user,0);
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,"",entry_width,&user,NEWT_FLAG_SCROLL);
 
   label3 = newtLabel(0,textbox_height+label1_height+label2_height+3,PASSWORD_ENTER_TEXT);
 
-  entry3 = newtEntry(entry_left,textbox_height+label1_height+label2_height+3,"",entry_width,&password1,NEWT_FLAG_PASSWORD);
+  entry3 = newtEntry(entry_left,textbox_height+label1_height+label2_height+3,"",entry_width,&password1,NEWT_FLAG_PASSWORD|NEWT_FLAG_SCROLL);
 
   label4 = newtLabel(0,textbox_height+label1_height+label2_height+label3_height+4,PASSWORD_CONFIRM_TEXT);
 
-  entry4 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+4,"",entry_width,&password2,NEWT_FLAG_PASSWORD);
+  entry4 = newtEntry(entry_left,textbox_height+label1_height+label2_height+label3_height+4,"",entry_width,&password2,NEWT_FLAG_PASSWORD|NEWT_FLAG_SCROLL);
 
   next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
