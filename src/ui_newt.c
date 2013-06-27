@@ -953,6 +953,7 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
     
       if(!pass)
       {
+        ui_dialog_text(NM_WIFI_ERROR_TITLE,NM_WIFI_ERROR_TEXT);
         continue;
       }
     
