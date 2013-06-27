@@ -815,6 +815,12 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   int entry_width = 0;
   int next_width = 0;
   int next_height = 0;
+  newtComponent textbox = 0;
+  newtComponent label1 = 0;
+  newtComponent entry1 = 0;
+  newtComponent label2 = 0;
+  newtComponent entry2 = 0;
+  newtComponent next = 0;
   
   if(!get_text_screen_size(NM_WIFI_TEXT,&textbox_width,&textbox_height))
     return false;
@@ -831,6 +837,12 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
 
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
+
+  if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,NM_WIFI_TITLE) != 0)
+  {
+    eprintf("Failed to open a NEWT window.\n");
+    return false;
+  }
 
   return true;
 }
