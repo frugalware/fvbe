@@ -816,6 +816,7 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   int next_width = 0;
   int next_height = 0;
   char *p = 0;
+  char buf[TEXT_MAX] = {0};
   const char *ssid = 0;
   const char *psk = 0;
   newtComponent textbox = 0;
@@ -845,6 +846,43 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
 
   if(is_wifi_ssid(p))
     ssid = strdupa(p);
+
+  p = iniparser_getstring(profile->data,WIFI_KEY ":security","");
+  
+  if(strlen(p) > 0)
+  {
+    char *base = strdupa(p);
+  
+    strfcpy(buf,sizeof(buf),"%s:key-mgmt",base);
+    
+    p = iniparser_getstring(profile->data,buf,"");
+    
+    if(strcmp(p,"wpa-psk") == 0)
+    {
+      strfcpy(buf,sizeof(buf),"%s:psk",base);
+    
+      p = iniparser_getstring(profile->data,buf,"");
+      
+      if(is_wpa_psk(p))
+        psk = strdupa(p);
+    }
+    else if(strcmp(p,"none") == 0)
+    {
+      strfcpy(buf,sizeof(buf),"%s:wep-key-type",base);
+      
+      p = iniparser_getstring(profile->data,buf,"");
+      
+      if(strcmp(p,"1") == 0)
+      {
+        strfcpy(buf,sizeof(buf),"%s:wep-key0",base);
+      
+        p = iniparser_getstring(profile->data,buf,"");
+        
+        if(is_wep_psk(p))
+          psk = strdupa(p);
+      }
+    }
+  }
 
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,NM_WIFI_TITLE) != 0)
   {
