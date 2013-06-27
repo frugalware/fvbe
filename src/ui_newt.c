@@ -815,6 +815,7 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   int entry_width = 0;
   int next_width = 0;
   int next_height = 0;
+  char *p = 0;
   const char *ssid = 0;
   const char *psk = 0;
   newtComponent textbox = 0;
@@ -839,6 +840,11 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
 
   if(!get_button_screen_size(NEXT_BUTTON_TEXT,&next_width,&next_height))
     return false;
+
+  p = iniparser_getstring(profile->data,WIFI_KEY ":ssid","");
+
+  if(is_wifi_ssid(p))
+    ssid = strdupa(p);
 
   if(newtCenteredWindow(NEWT_WIDTH,NEWT_HEIGHT,NM_WIFI_TITLE) != 0)
   {
