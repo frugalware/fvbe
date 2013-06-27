@@ -1015,6 +1015,19 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
   if(!ui_dialog_edit_profile(profile,devices,profiles,&device))
     return false;
 
+  if(strcmp(device->type,WIFI_KEY) == 0 && !ui_dialog_wifi(profile,device))
+    return false;
+  else if(strcmp(device->type,WIRED_KEY) == 0)
+  {
+    iniparser_unset_section(profile->data,WIRED_KEY);
+    
+    iniparser_set(profile->data,WIRED_KEY);
+    
+    iniparser_unset_section(profile->data,WIFI_KEY);
+  
+    iniparser_unset_section(profile->data,WIFI_KEY "-security");
+  }
+
   strfcpy(buf,sizeof(buf),"%s:mac-address",device->type);
 
   iniparser_set(profile->data,buf,device->hwaddr);
