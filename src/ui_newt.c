@@ -328,7 +328,7 @@ static void ui_dialog_text(const char *title,const char *text)
   newtPopWindow();
 }
 
-static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles)
+static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles,struct nmdevice **out)
 {
   int textbox_width = 0;
   int textbox_height = 0;
@@ -479,11 +479,6 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       
       iniparser_unset(profile->data,PROFILE_KEY);
       
-      if(type != 0)
-        iniparser_unset(profile->data,type);
-      
-      iniparser_unset(profile->data,device->type);
-      
       iniparser_set(profile->data,PROFILE_KEY,"");
       
       iniparser_set(profile->data,PROFILE_NAME_KEY,name);
@@ -492,17 +487,13 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       
       iniparser_set(profile->data,PROFILE_TYPE_KEY,device->type);
 
-      strfcpy(buf,sizeof(buf),"%s:mac-address",device->type);
-      
-      iniparser_set(profile->data,device->type,"");
-      
-      iniparser_set(profile->data,buf,device->hwaddr);
-
       strfcpy(buf,sizeof(buf),"/etc/NetworkManager/system-connections/%s",name);
 
       free(profile->newpath);
       
       profile->newpath = strdup(buf);
+
+      *out = device;
 
       break;
     }
@@ -917,10 +908,11 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
 
 static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles)
 {
+  struct nmdevice *device = 0;
   char title[TEXT_MAX] = {0};
   char text[TEXT_MAX] = {0};
 
-  if(!ui_dialog_edit_profile(profile,devices,profiles))
+  if(!ui_dialog_edit_profile(profile,devices,profiles,&device))
     return false;
 
   strfcpy(title,sizeof(title),NM_DHCP_TITLE,"IPv4");
