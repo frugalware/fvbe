@@ -815,6 +815,8 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
   int entry_width = 0;
   int next_width = 0;
   int next_height = 0;
+  const char *ssid = 0;
+  const char *psk = 0;
   newtComponent textbox = 0;
   newtComponent label1 = 0;
   newtComponent entry1 = 0;
@@ -843,6 +845,20 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
     eprintf("Failed to open a NEWT window.\n");
     return false;
   }
+  
+  textbox = newtTextbox(0,0,textbox_width,textbox_height,0);
+
+  newtTextboxSetText(textbox,NM_WIFI_TEXT);
+  
+  label1 = newtLabel(0,textbox_height+1,SSID_TEXT);
+
+  entry1 = newtEntry(entry_left,textbox_height+1,strng(ssid),entry_width,&ssid,0);
+
+  label2 = newtLabel(0,textbox_height+label1_height+2,PSK_TEXT);
+
+  entry2 = newtEntry(entry_left,textbox_height+label1_height+2,strng(psk),entry_width,&psk,0);
+
+  next = newtButton(NEWT_WIDTH-next_width,NEWT_HEIGHT-next_height,NEXT_BUTTON_TEXT);
 
   return true;
 }
