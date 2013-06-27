@@ -864,7 +864,11 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
       p = iniparser_getstring(profile->data,buf,"");
       
       if(is_wpa_psk(p))
-        psk = strdupa(p);
+      {
+        strfcpy(buf,sizeof(buf),"wpa:%s",p);
+        
+        psk = strdupa(buf);
+      }
     }
     else if(strcmp(p,"none") == 0)
     {
@@ -879,7 +883,11 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
         p = iniparser_getstring(profile->data,buf,"");
         
         if(is_wep_psk(p))
-          psk = strdupa(p);
+        {
+          strfcpy(buf,sizeof(buf),"wep:%s",p);
+          
+          psk = strdupa(buf);
+        }
       }
     }
   }
