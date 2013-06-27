@@ -991,6 +991,8 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
         }
       }
       
+      iniparser_unset_section(profile->data,WIRED_KEY);
+      
       break;
     }
   }
