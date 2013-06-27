@@ -474,7 +474,7 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
         continue;
       }
       
-      iniparser_unset(profile->data,PROFILE_KEY);
+      iniparser_unset_section(profile->data,PROFILE_KEY);
       
       iniparser_set(profile->data,PROFILE_KEY,"");
       
@@ -768,7 +768,7 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
         continue;
       }
     
-      iniparser_unset(profile->data,ipkey);
+      iniparser_unset_section(profile->data,ipkey);
       
       iniparser_set(profile->data,ipkey,"");
       
@@ -957,7 +957,7 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
         continue;
       }
     
-      iniparser_unset(profile->data,WIFI_KEY);
+      iniparser_unset_section(profile->data,WIFI_KEY);
       
       iniparser_set(profile->data,WIFI_KEY,"");
       
@@ -965,14 +965,14 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
       
       iniparser_set(profile->data,WIFI_KEY ":ssid",ssid);
     
-      iniparser_unset(profile->data,WIFI_KEY "-security");
+      iniparser_unset_section(profile->data,WIFI_KEY "-security");
     
       if(wpa || wep)
       {
-        iniparser_set(profile->data,WIFI_KEY ":security",WIFI_KEY "-security");
- 
         iniparser_set(profile->data,WIFI_KEY "-security","");
         
+        iniparser_set(profile->data,WIFI_KEY ":security",WIFI_KEY "-security");
+ 
         if(wpa)
         {
           iniparser_set(profile->data,WIFI_KEY "-security:key-mgmt","wpa-psk");
@@ -1025,7 +1025,7 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
     return false;
   else
   {
-    iniparser_unset(profile->data,"ipv4");
+    iniparser_unset_section(profile->data,"ipv4");
     
     iniparser_set(profile->data,"ipv4","");
     
@@ -1040,7 +1040,7 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
     return false;
   else
   {
-    iniparser_unset(profile->data,"ipv6");
+    iniparser_unset_section(profile->data,"ipv6");
     
     iniparser_set(profile->data,"ipv6","");
     
