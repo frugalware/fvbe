@@ -179,6 +179,7 @@ struct tool
   const char *name;
 };
 
+extern void iniparser_unset_section(dictionary *d,const char *s);
 extern int charpp_qsort(const void *A,const void *B);
 extern void charpp_free(char **pp);
 extern void account_free(struct account *account);

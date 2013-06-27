@@ -25,6 +25,37 @@ static int raid_compare(const void *A,const void *B)
   return strcmp(a,raid_get_path(b));
 }
 
+extern void iniparser_unset_section(dictionary *d,const char *s)
+{
+  int i = 0;
+  int j = 0;
+  char **p = 0;
+
+  if(d == 0 || s == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return;
+  }
+
+  j = iniparser_getsecnkeys(d,(char *) s);
+
+  p = iniparser_getseckeys(d,(char *) s);
+  
+  if(j == 0 || p == 0)
+  {
+    free(p);
+    return;
+  }
+  
+  for( ; i < j ; ++i )
+    iniparser_unset(d,p[i]);
+  
+  iniparser_unset(d,s);
+  
+  free(p);
+}
+
 extern int charpp_qsort(const void *A,const void *B)
 {
   const char *a = *(const char **) A;
