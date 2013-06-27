@@ -1021,7 +1021,7 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
   {
     iniparser_unset_section(profile->data,WIRED_KEY);
     
-    iniparser_set(profile->data,WIRED_KEY);
+    iniparser_set(profile->data,WIRED_KEY,"");
     
     iniparser_unset_section(profile->data,WIFI_KEY);
   
