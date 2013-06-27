@@ -55,7 +55,7 @@
 #define NM_WIFI_TITLE _("Wi-Fi Setup")
 #define NM_WIFI_TEXT _("Enter the SSID of the AP you are connecting to.\nEnter the WEP or WPA PSK for the AP.\nThe PSK must be prefixed by 'wep' or 'wpa' followed by a ':'.\nIf there is no PSK, then leave this blank.\n")
 #define NM_WIFI_ERROR_TITLE _("Invalid Wi-Fi Parameters")
-#define NM_WIFI_ERROR_TEXT _("You have specified invalid parameters.\nPlease check that they meet the following requirements:\n\nSSID must not be empty.\nSSID must not contain more than 32 characters.\nSSID may only contain ASCII characters.\nWEP PSK must be 5 or 13 characters for ASCII.\nWEP PSK must be 13 or 26 characters for HEX.\nWPA PSK must be between 8 and 63 characters for ASCII.\nWPA PSK must be 64 characters for HEX.\nHardware does not support WEP, WPA1, and/or WPA2.\n")
+#define NM_WIFI_ERROR_TEXT _("You have specified invalid parameters.\nPlease check that they meet the following requirements:\n\nSSID must not be empty.\nSSID must not contain more than 32 characters.\nSSID may only contain ASCII characters.\nWEP PSK must be 5 or 13 characters for ASCII.\nWEP PSK must be 13 or 26 characters for HEX.\nWPA PSK must be between 8 and 63 characters for ASCII.\nWPA PSK must be 64 characters for HEX.\nPSK does not start with 'wep' or 'wpa' followed by a ':'.\nHardware does not support WEP, WPA1, and/or WPA2.\n")
 #define NM_NO_PROFILE_TITLE _("No Profiles")
 #define NM_NO_PROFILE_TEXT _("There are no profiles to edit or delete.\nYou must create one first with 'Create Profile'.\n")
 #define NM_SELECTION_TITLE _("Network Profile Selection")
