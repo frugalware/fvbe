@@ -906,11 +906,16 @@ static bool ui_dialog_wifi(struct nmprofile *profile,struct nmdevice *device)
 static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice **devices,struct nmprofile **profiles)
 {
   struct nmdevice *device = 0;
+  char buf[TEXT_MAX] = {0};
   char title[TEXT_MAX] = {0};
   char text[TEXT_MAX] = {0};
 
   if(!ui_dialog_edit_profile(profile,devices,profiles,&device))
     return false;
+
+  strfcpy(buf,sizeof(buf),"%s:mac-address",device->type);
+
+  iniparser_set(profile->data,buf,device->hwaddr);
 
   strfcpy(title,sizeof(title),NM_DHCP_TITLE,"IPv4");
   
