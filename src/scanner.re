@@ -12,13 +12,13 @@
 #define YYLEN            (YYCURSOR - YYSTART)
 #define YYMAX(S)         ((S) + 1 + 1)
 #define YYLENCHECK(S)    (YYLEN < YYMAX(S))
-#define YYDECLARE(A,B)                   \
-static inline bool A(YYCTYPE2 *YYCURSOR) \
-{                                        \
-  YYCTYPE2 *YYSTART = YYCURSOR;          \
-  YYCTYPE2 *YYMARKER = YYCURSOR;         \
-  B                                      \
-  YYSTART = YYSTART;                     \
+#define YYDECLARE(A,B)                                                  \
+__attribute__((always_inline)) static inline bool A(YYCTYPE2 *YYCURSOR) \
+{                                                                       \
+  YYCTYPE2 *YYSTART = YYCURSOR;                                         \
+  YYCTYPE2 *YYMARKER = YYCURSOR;                                        \
+  B                                                                     \
+  YYSTART = YYSTART;                                                    \
 }
 
 /*!re2c
