@@ -573,6 +573,8 @@ static bool nmconfig_finish(void)
   {
     strfcpy(command,sizeof(command),"nmcli connection up id '%s'",shell_escape(pname));
   
+    sleep(2);
+  
     if(!execute(command,g->hostroot,0))
       return false;
   
