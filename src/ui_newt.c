@@ -344,7 +344,6 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   char buf[TEXT_MAX] = {0};
   bool found = false;
   const char *name = 0;
-  const char *uuid = 0;
   const char *mac = 0;
   newtComponent textbox = 0;
   newtComponent label = 0;
@@ -375,11 +374,6 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
   
   if(strlen(p) > 0)
     name = strdupa(p);
-  
-  p = iniparser_getstring(profile->data,PROFILE_UUID_KEY,"");
-  
-  if(is_uuid(p))
-    uuid = strdupa(p);
   
   p = iniparser_getstring(profile->data,PROFILE_TYPE_KEY,"");
   
@@ -480,7 +474,7 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       
       iniparser_set(profile->data,PROFILE_NAME_KEY,name);
       
-      iniparser_set(profile->data,PROFILE_UUID_KEY,(uuid != 0) ? uuid : uuidgen());
+      iniparser_set(profile->data,PROFILE_UUID_KEY,uuidgen());
       
       iniparser_set(profile->data,PROFILE_TYPE_KEY,device->type);
 
