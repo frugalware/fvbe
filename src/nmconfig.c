@@ -19,6 +19,7 @@
 
 static struct nmdevice **nmdevices = 0;
 static struct nmprofile **nmprofiles = 0;
+static char *pname = 0;
 
 static inline const char *nm_next_token(const char *p)
 {
@@ -461,6 +462,13 @@ static bool nmconfig_setup_profiles(void)
 
 static bool nmconfig_start(void)
 {
+  char *entries[4096] = {0};
+  struct nmprofile *profile = 0;
+  size_t i = 0;
+  size_t j = 0;
+  size_t size = sizeof(entries) / sizeof(*entries);
+  char *entry = 0;
+
   if(!nmconfig_setup_devices())
     return false;
 
@@ -473,6 +481,31 @@ static bool nmconfig_start(void)
   if(!ui_window_nm(nmdevices,&nmprofiles))
     return false;
 
+  for( ; (profile = nmprofiles[j]) != 0 ; ++j )
+  {
+    char *s = 0;
+        
+    if(profile->data == 0 || i == size - 1)
+      continue;
+          
+    s = iniparser_getstring(profile->data,PROFILE_NAME_KEY,"");
+          
+    if(strlen(s) == 0)
+      continue;
+          
+    entries[i++] = s;
+  }
+        
+  entries[i] = 0;
+
+  if(i > 0 && ui_dialog_yesno(NM_CHANGE_TITLE,NM_CHANGE_TEXT,false))
+  {
+    if(!ui_window_list(NM_SELECTION_TITLE,NM_ACTIVE_TEXT,entries,&entry))
+      return false;
+    
+    pname = strdup(entry);
+  }
+
   return true;
 }
 
@@ -480,6 +513,7 @@ static bool nmconfig_finish(void)
 {
   int i = 0;
   int j = 0;
+  char command[_POSIX_ARG_MAX] = {0};
 
   if(nmprofiles != 0)
   {
@@ -533,6 +567,18 @@ static bool nmconfig_finish(void)
     free(nmdevices);
 
     nmdevices = 0;
+  }
+
+  if(pname != 0)
+  {
+    strfcpy(command,sizeof(command),"nmcli connection up id '%s'",shell_escape(pname));
+  
+    if(!execute(command,g->hostroot,0))
+      return false;
+  
+    free(pname);
+  
+    pname = 0;
   }
 
   return true;
