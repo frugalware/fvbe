@@ -749,12 +749,15 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
 
       strfcat(servers2,sizeof(servers2),";");
       
-      strfcpy(domains2,sizeof(domains2),"%s",domains);
+      if(strlen(domains) > 0)
+      {
+        strfcpy(domains2,sizeof(domains2),"%s",domains);
       
-      if(!process_ini_list(domains2,is_dns_domain,',',';'))
-        goto fail;
+        if(!process_ini_list(domains2,is_dns_domain,',',';'))
+          goto fail;
 
-      strfcat(domains2,sizeof(domains2),";");
+        strfcat(domains2,sizeof(domains2),";");
+      }
 
       pass = true;
       
@@ -778,7 +781,8 @@ static bool ui_dialog_static_ip(int type,struct nmprofile *profile)
       
       iniparser_set(profile->data,serverkey,servers2);
       
-      iniparser_set(profile->data,searchkey,domains2);
+      if(strlen(domains) > 0)
+        iniparser_set(profile->data,searchkey,domains2);
     
       break;
     }
