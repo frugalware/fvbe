@@ -1040,8 +1040,11 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
   
   strfcpy(text,sizeof(text),NM_DHCP_TEXT,"IPv4");
 
-  if(!ui_dialog_yesno(title,text,false) && !ui_dialog_static_ip(4,profile))
-    return false;
+  if(!ui_dialog_yesno(title,text,false))
+  {
+    if(!ui_dialog_static_ip(4,profile))
+      return false;
+  }
   else
   {
     iniparser_unset_section(profile->data,"ipv4");
@@ -1055,8 +1058,11 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
   
   strfcpy(text,sizeof(text),NM_DHCP_TEXT,"IPv6");
 
-  if(!ui_dialog_yesno(title,text,false) && !ui_dialog_static_ip(6,profile))
-    return false;
+  if(!ui_dialog_yesno(title,text,false))
+  {
+    if(!ui_dialog_static_ip(6,profile))
+      return false;
+  }
   else
   {
     iniparser_unset_section(profile->data,"ipv6");
