@@ -65,8 +65,6 @@ bail:
 
 static void global_cleanup(void)
 {
-  char **p = 0;
-
   free(g->logpath);
 
   if(g->logfile)
@@ -74,13 +72,7 @@ static void global_cleanup(void)
 
   free(g->isodevice);
 
-  if(g->fstabdata != 0)
-  {
-    for( p = g->fstabdata ; *p != 0 ; ++p )
-      free(*p);
-  
-    free(g->fstabdata);
-  }
+  charpp_free(g->fstabdata);
 
   free(g->groups);
   
