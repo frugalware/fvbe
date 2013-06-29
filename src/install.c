@@ -199,6 +199,7 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_ADD_START:
+      eprintf("%s: installing %s (%s)\n",__func__,(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
       break;
 
     case PM_TRANS_EVT_EXTRACT_DONE:
@@ -208,6 +209,7 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_ADD_DONE:
+      eprintf("%s: installed %s (%s)\n",__func__,(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
       break;
 
     default:
