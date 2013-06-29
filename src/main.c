@@ -141,6 +141,12 @@ extern int main(int argc,char **argv)
     g->guestroot = "/";
   }
 
+  if(g->insetup && !infvbe())
+  {
+    printf("You cannot run the installer outside of FVBE.\n");
+    return EXIT_FAILURE;
+  }
+
   if(setlocale(LC_ALL,"") == 0)
   {
     error(strerror(errno));
