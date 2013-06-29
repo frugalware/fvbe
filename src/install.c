@@ -177,15 +177,19 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_START:
+      eprintf("libpacman: interconflicts start\n");
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_DONE:
+      eprintf("libpacman: interconflicts done\n");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_START:
+      eprintf("libpacman: file conflicts start\n");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_DONE:
+      eprintf("libpacman: file conflicts done\n");
       break;
 
     case PM_TRANS_EVT_CLEANUP_START:
@@ -195,7 +199,7 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_ADD_START:
-      eprintf("%s: installing %s (%s)\n",__func__,(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
+      eprintf("libpacman: installing %s (%s)\n",(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
       break;
 
     case PM_TRANS_EVT_EXTRACT_DONE:
@@ -205,7 +209,7 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_ADD_DONE:
-      eprintf("%s: installed %s (%s)\n",__func__,(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
+      eprintf("libpacman: installed %s (%s)\n",(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
       break;
 
     default:
