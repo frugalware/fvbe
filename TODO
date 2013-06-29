@@ -8,7 +8,6 @@ setup DM for whichever GUI mode we are using
 
 fwsetup:
 
-implement network setup
 implement network install (mirror and connection)
 add config tool for selecting the default VISUAL/EDITOR
 add config tool for selecting the display manager
