@@ -206,6 +206,7 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_SCRIPTLET_INFO:
+      eprintf("libpacman: %s%s",(char *) data1,(strchr(data1,'\n') == 0) ? "\n" : "");
       break;
 
     case PM_TRANS_EVT_ADD_DONE:
