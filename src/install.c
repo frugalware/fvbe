@@ -177,9 +177,13 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_START:
+      percent = 0;
+      title = _("Checking Inter-Conflicts");
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_DONE:
+      percent = 100;
+      title = _("Checking Inter-Conflicts");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_START:
