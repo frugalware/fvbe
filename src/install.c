@@ -611,6 +611,12 @@ static bool install_groups_install(const struct install *groups)
     return false;
   }
 
+  if(pacman_trans_addtarget("scriptlet-core") == -1)
+  {
+    error(pacman_strerror(pm_errno));
+    return false;
+  }
+
   for( const struct install *i = groups ; i->name != 0 ; ++i )
   {
     if(!i->checked)
@@ -641,6 +647,9 @@ static bool install_groups_install(const struct install *groups)
         error(pacman_strerror(pm_errno));
         return false;
       }
+
+      if(strcmp(pkg,"scriptlet-core") == 0)
+        continue;
 
       if(pacman_trans_addtarget(pkg) == -1)
       {
