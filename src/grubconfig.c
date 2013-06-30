@@ -46,6 +46,9 @@ static void fetch_root_device(char *s,size_t n)
     if((device = strtok(line,SPACE_CHARS)) == 0)
       continue;
     
+    if(strcmp(device,"rootfs") == 0)
+      continue;
+    
     if((root = strtok(0,SPACE_CHARS)) == 0)
       continue;
     
