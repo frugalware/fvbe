@@ -108,13 +108,12 @@ extern bool preconfig_mount_extra(void)
 
 static bool preconfig_prepare_source(void)
 {
-  bool fvbe = infvbe();
   char path[PATH_MAX] = {0};
   struct stat st = {0};
   char groups[LINE_MAX] = {0};
   const char *source = "unknown";
 
-  if(fvbe && g->isodevice != 0)
+  if(g->infvbe && g->isodevice != 0)
   {
     if(!mkdir_recurse(ISO_ROOT))
     {
@@ -164,7 +163,7 @@ static bool preconfig_prepare_source(void)
       source = "network";
     }
   }
-  else if(!fvbe)
+  else if(!g->infvbe)
   {
     strfcpy(path,sizeof(path),"%s/var/cache/pacman-g2/pkg",g->guestroot);
   
@@ -177,7 +176,7 @@ static bool preconfig_prepare_source(void)
     
     source = "cache";
   }
-  else if(fvbe)
+  else if(g->infvbe)
   {
     source = "network";
   }

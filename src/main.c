@@ -17,6 +17,13 @@
 
 #include "local.h"
 
+static inline bool infvbe(void)
+{
+  const char *env = getenv("HOSTNAME");
+  
+  return (env != 0 && strcmp(env,"fvbe") == 0);
+}
+
 static void find_iso(void)
 {
   blkid_cache cache = 0;
@@ -102,7 +109,9 @@ extern int main(int argc,char **argv)
 
   g->insetup = (strcmp(g->name,"fwsetup") == 0);
 
-  if(g->insetup && !infvbe())
+  g->infvbe = infvbe();
+
+  if(g->insetup && !g->infvbe)
   {
     printf("You cannot run the installer outside of FVBE.\n");
     return EXIT_FAILURE;

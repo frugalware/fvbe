@@ -83,6 +83,7 @@ struct global
   unsigned int seed;
   const char *name;
   bool insetup;
+  bool infvbe;
   char *logpath;
   FILE *logfile;
   const char *hostroot;
@@ -226,12 +227,6 @@ static inline long long maxv(long long *v,size_t size)
   return i;
 }
 static inline const char *strng(const char *s) { return (s == 0) ? "" : s; }
-static inline bool infvbe(void)
-{
-  const char *env = getenv("HOSTNAME");
-  
-  return (env != 0 && strcmp(env,"fvbe") == 0);
-}
 static inline bool inx11(void)
 {
   const char *env = getenv("DISPLAY");
