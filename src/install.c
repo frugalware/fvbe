@@ -53,7 +53,7 @@ static void install_log_callback(unsigned short level,char *msg)
   // This parameter is never used.
   level = level;
 
-  eprintf("libpacman: %s%s",msg,(strchr(msg,'\n') == 0) ? "\n" : "");
+  eprintf("pacman: %s%s",msg,(strchr(msg,'\n') == 0) ? "\n" : "");
 }
 
 static int install_download_callback(PM_NETBUF *ctl,int dl_xfered0,void *arg)
@@ -153,13 +153,13 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
     case PM_TRANS_EVT_RESOLVEDEPS_START:
       percent = 0;
       title = _("Resolving Dependencies");
-      eprintf("libpacman: resolving dependencies\n");
+      eprintf("pacman: resolving dependencies\n");
       break;
 
     case PM_TRANS_EVT_RESOLVEDEPS_DONE:
       percent = 100;
       title = _("Resolving Dependencies");
-      eprintf("libpacman: resolved dependencies\n");
+      eprintf("pacman: resolved dependencies\n");
       break;
 
     case PM_TRANS_EVT_RETRIEVE_START:
@@ -171,52 +171,52 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
     case PM_TRANS_EVT_INTEGRITY_START:
       percent = 0;
       title = _("Checking Package Integrity");
-      eprintf("libpacman: checking package integrity\n");
+      eprintf("pacman: checking package integrity\n");
       break;
 
     case PM_TRANS_EVT_INTEGRITY_DONE:
       percent = 100;
       title = _("Checking Package Integrity");
-      eprintf("libpacman: checked package integrity\n");
+      eprintf("pacman: checked package integrity\n");
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_START:
-      eprintf("libpacman: checking interconflicts\n");
+      eprintf("pacman: checking interconflicts\n");
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_DONE:
-      eprintf("libpacman: checked interconflicts\n");
+      eprintf("pacman: checked interconflicts\n");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_START:
-      eprintf("libpacman: checking file conflicts\n");
+      eprintf("pacman: checking file conflicts\n");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_DONE:
-      eprintf("libpacman: checked file conflicts\n");
+      eprintf("pacman: checked file conflicts\n");
       break;
 
     case PM_TRANS_EVT_CLEANUP_START:
-      eprintf("libpacman: cleaning up\n");
+      eprintf("pacman: cleaning up\n");
       break;
 
     case PM_TRANS_EVT_CLEANUP_DONE:
-      eprintf("libpacman: cleaned up\n");
+      eprintf("pacman: cleaned up\n");
       break;
 
     case PM_TRANS_EVT_ADD_START:
-      eprintf("libpacman: installing %s (%s)\n",(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
+      eprintf("pacman: installing %s (%s)\n",(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
       break;
 
     case PM_TRANS_EVT_EXTRACT_DONE:
       break;
 
     case PM_TRANS_EVT_SCRIPTLET_INFO:
-      eprintf("libpacman: %s%s",(char *) data1,(strchr(data1,'\n') == 0) ? "\n" : "");
+      eprintf("pacman: %s%s",(char *) data1,(strchr(data1,'\n') == 0) ? "\n" : "");
       break;
 
     case PM_TRANS_EVT_ADD_DONE:
-      eprintf("libpacman: installed %s (%s)\n",(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
+      eprintf("pacman: installed %s (%s)\n",(char *) pacman_pkg_getinfo(data1,PM_PKG_NAME),(char *) pacman_pkg_getinfo(data1,PM_PKG_VERSION));
       break;
 
     default:
