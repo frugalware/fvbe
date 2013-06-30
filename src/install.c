@@ -153,11 +153,13 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
     case PM_TRANS_EVT_RESOLVEDEPS_START:
       percent = 0;
       title = _("Resolving Dependencies");
+      eprintf("libpacman: resolving dependencies\n");
       break;
 
     case PM_TRANS_EVT_RESOLVEDEPS_DONE:
       percent = 100;
       title = _("Resolving Dependencies");
+      eprintf("libpacman: resolved dependencies\n");
       break;
 
     case PM_TRANS_EVT_RETRIEVE_START:
@@ -169,33 +171,37 @@ static void install_event_callback(unsigned char event,void *data1,void *data2)
     case PM_TRANS_EVT_INTEGRITY_START:
       percent = 0;
       title = _("Checking Package Integrity");
+      eprintf("libpacman: checking package integrity\n");
       break;
 
     case PM_TRANS_EVT_INTEGRITY_DONE:
       percent = 100;
       title = _("Checking Package Integrity");
+      eprintf("libpacman: checked package integrity\n");
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_START:
-      eprintf("libpacman: interconflicts start\n");
+      eprintf("libpacman: checking interconflicts\n");
       break;
 
     case PM_TRANS_EVT_INTERCONFLICTS_DONE:
-      eprintf("libpacman: interconflicts done\n");
+      eprintf("libpacman: checked interconflicts\n");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_START:
-      eprintf("libpacman: file conflicts start\n");
+      eprintf("libpacman: checking file conflicts\n");
       break;
 
     case PM_TRANS_EVT_FILECONFLICTS_DONE:
-      eprintf("libpacman: file conflicts done\n");
+      eprintf("libpacman: checked file conflicts\n");
       break;
 
     case PM_TRANS_EVT_CLEANUP_START:
+      eprintf("libpacman: cleaning up\n");
       break;
 
     case PM_TRANS_EVT_CLEANUP_DONE:
+      eprintf("libpacman: cleaned up\n");
       break;
 
     case PM_TRANS_EVT_ADD_START:
