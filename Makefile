@@ -59,5 +59,18 @@ bin/resolvegroups: src/resolvegroups.o
 
 setup: bin/fwsetup
 
+install: bin/fwsetup
+	mkdir -p $(DESTDIR)/usr/sbin
+	install -m 0755 bin/fwsetup $(DESTDIR)/usr/sbin/fwsetup
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/langconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/kbconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/nmconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/rootconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/userconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/hostconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/modeconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/timeconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/grubconfig
+
 clean:
 	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) rootfs fvbe.conf var
