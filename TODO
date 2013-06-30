@@ -29,3 +29,5 @@ implement gui frontend
 disable tty blanking
 redo how format structs are allocated
 full UEFI support
+look into a real fix for the nmconfig delay. sleep won't cut it long term.
+
