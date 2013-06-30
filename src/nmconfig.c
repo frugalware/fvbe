@@ -498,7 +498,7 @@ static bool nmconfig_start(void)
         
   entries[i] = 0;
 
-  if(i > 0 && ui_dialog_yesno(NM_CHANGE_TITLE,NM_CHANGE_TEXT,false))
+  if(i > 0 && !g->insetup && ui_dialog_yesno(NM_CHANGE_TITLE,NM_CHANGE_TEXT,false))
   {
     if(!ui_window_list(NM_SELECTION_TITLE,NM_ACTIVE_TEXT,entries,&entry))
       return false;
