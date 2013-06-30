@@ -82,9 +82,9 @@ struct global
 {
   unsigned int seed;
   const char *name;
+  bool insetup;
   char *logpath;
   FILE *logfile;
-  bool insetup;
   const char *hostroot;
   const char *guestroot;
   char *isodevice;

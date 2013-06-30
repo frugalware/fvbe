@@ -100,6 +100,14 @@ extern int main(int argc,char **argv)
   else
     ++g->name;
 
+  g->insetup = (strcmp(g->name,"fwsetup") == 0);
+
+  if(g->insetup && !infvbe())
+  {
+    printf("You cannot run the installer outside of FVBE.\n");
+    return EXIT_FAILURE;
+  }
+
   strfcpy(path,sizeof(path),"/var/log/%s.log",g->name);
 
   g->logpath = strdup(path);
@@ -122,10 +130,8 @@ extern int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
 
-  if(strcmp(g->name,"fwsetup") == 0)
+  if(g->insetup)
   {
-    g->insetup = true;
-  
     g->hostroot = "/";
   
     g->guestroot = "/mnt/install";
@@ -134,17 +140,9 @@ extern int main(int argc,char **argv)
   }
   else
   {
-    g->insetup = false;
-  
     g->hostroot = "/";
   
     g->guestroot = "/";
-  }
-
-  if(g->insetup && !infvbe())
-  {
-    printf("You cannot run the installer outside of FVBE.\n");
-    return EXIT_FAILURE;
   }
 
   if(setlocale(LC_ALL,"") == 0)
