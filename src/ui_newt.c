@@ -478,7 +478,7 @@ static bool ui_dialog_edit_profile(struct nmprofile *profile,struct nmdevice **d
       
       iniparser_set(profile->data,PROFILE_TYPE_KEY,device->type);
 
-      strfcpy(buf,sizeof(buf),"/etc/NetworkManager/system-connections/%s",name);
+      strfcpy(buf,sizeof(buf),"etc/NetworkManager/system-connections/%s",name);
 
       free(profile->newpath);
       

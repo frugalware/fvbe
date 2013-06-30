@@ -414,7 +414,7 @@ static bool nmconfig_setup_profiles(void)
   dictionary *data = 0;
   struct nmprofile *profile = 0;
   
-  if((dir = opendir("/etc/NetworkManager/system-connections")) == 0)
+  if((dir = opendir("etc/NetworkManager/system-connections")) == 0)
   {
     error(strerror(errno));
     return 0;
@@ -426,7 +426,7 @@ static bool nmconfig_setup_profiles(void)
   {
     const char *name = p->d_name;
     
-    strfcpy(path,sizeof(path),"/etc/NetworkManager/system-connections/%s",name);
+    strfcpy(path,sizeof(path),"etc/NetworkManager/system-connections/%s",name);
     
     if(
       i == size - 1            ||
