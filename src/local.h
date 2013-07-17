@@ -54,7 +54,6 @@
 #define NEWT_HEIGHT 21
 #endif
 
-#define ISO_ROOT "/mnt/iso"
 #define SPACE_CHARS " \t\r\n\v\f"
 #define LOWER_CHARS "abcdefghijklmnopqrstuvwxyz"
 #define TEXT_MAX 8192

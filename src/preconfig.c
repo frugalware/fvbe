@@ -17,6 +17,8 @@
 
 #include "local.h"
 
+#define ISO_ROOT "/run/initramfs/live"
+
 static inline bool preconfig_copy_fdb(const char *fdb)
 {
   char old[PATH_MAX] = {0};
@@ -113,71 +115,39 @@ static bool preconfig_prepare_source(void)
   char groups[LINE_MAX] = {0};
   const char *source = "unknown";
 
-  if(g->infvbe && g->isodevice != 0)
+  if(g->infvbe && stat(ISO_ROOT "/packages",&st) == 0)
   {
-    if(!mkdir_recurse(ISO_ROOT))
-    {
-      error("failed to create iso root");
-      return false;
-    }
-    
-    if(mount(g->isodevice,ISO_ROOT,"iso9660",MS_RDONLY,0) == -1)
-    {
-      error(strerror(errno));
-      error("failed to mount iso");
-      return false;
-    }
-    
-    if(stat(ISO_ROOT "/packages",&st) == 0)
-    {
-      file2str(ISO_ROOT "/packages/groups",groups,sizeof(groups));
+    file2str(ISO_ROOT "/packages/groups",groups,sizeof(groups));
 
-      if(strlen(groups) == 0)
-      {
-        error("no groups file or empty group files");
-        return false;
-      }
-    
-      g->groups = strdup(groups);
-      
-      strfcpy(path,sizeof(path),"%s/var/cache/pacman-g2/pkg",g->guestroot);
-     
-      if(mount(ISO_ROOT "/packages",path,"",MS_BIND,0) == -1)
-      {
-        error(strerror(errno));
-        error("failed to mount iso package cache");
-        return false;
-      }
-      
-      if(!preconfig_copy_fdb("frugalware") && !preconfig_copy_fdb("frugalware-current"))
-      {
-        error("failed to find the fdb");
-        return false;
-      }
-      
-      source = "iso";
-    }
-    else
+    if(strlen(groups) == 0)
     {
-      error("no packages on the iso");
-      source = "network";
-    }
-  }
-  else if(!g->infvbe)
-  {
-    strfcpy(path,sizeof(path),"%s/var/cache/pacman-g2/pkg",g->guestroot);
-  
-    if(mount("/var/cache/pacman-g2/pkg",path,"",MS_BIND,0) == -1)
-    {
-      error(strerror(errno));
-      error("failed to mount host package cache");
+      error("no groups file or empty group files");
       return false;
     }
     
-    source = "cache";
+    g->groups = strdup(groups);
+      
+    strfcpy(path,sizeof(path),"%s/var/cache/pacman-g2/pkg",g->guestroot);
+     
+    if(mount(ISO_ROOT "/packages",path,"",MS_BIND,0) == -1)
+    {
+      error(strerror(errno));
+      error("failed to mount iso package cache");
+      return false;
+    }
+      
+    if(!preconfig_copy_fdb("frugalware") && !preconfig_copy_fdb("frugalware-current"))
+    {
+      error("failed to find the fdb");
+      return false;
+    }
+      
+    source = "iso";
   }
   else if(g->infvbe)
   {
+    error("no packages on the iso");
+    
     source = "network";
   }
   
