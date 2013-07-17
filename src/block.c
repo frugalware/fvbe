@@ -21,18 +21,20 @@
 #define EMPTY_PARTITION &(struct partition) {0}
 #define GPT_BOOT_FLAG (1ULL << 2ULL)
 
-#define DOS_DATA     0x83
-#define DOS_SWAP     0x82
-#define DOS_RAID     0xfd
-#define DOS_LVM      0x8e
-#define DOS_EFI      0xef
-#define DOS_EXTENDED 0x05
-#define GPT_DATA     "0fc63daf-8483-4772-8e79-3d69d8477de4"
-#define GPT_SWAP     "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f"
-#define GPT_RAID     "a19d880f-05fc-4d3b-a006-743f0f84911e"
-#define GPT_LVM      "e6d6d379-f507-44c2-a23c-238f2a3df928"
-#define GPT_EFI      "c12a7328-f81f-11d2-ba4b-00a0c93ec93b"
-#define GPT_BIOS     "21686148-6449-6e6f-744e-656564454649"
+#define DOS_DATA      0x83
+#define DOS_SWAP      0x82
+#define DOS_RAID      0xfd
+#define DOS_LVM       0x8e
+#define DOS_EFI       0xef
+#define DOS_EXTENDED  0x05
+#define DOS_EXTENDED2 0x0f
+#define DOS_EXTENDED3 0x85
+#define GPT_DATA      "0fc63daf-8483-4772-8e79-3d69d8477de4"
+#define GPT_SWAP      "0657fd6d-a4ab-43c4-84e5-0933c84b4f4f"
+#define GPT_RAID      "a19d880f-05fc-4d3b-a006-743f0f84911e"
+#define GPT_LVM       "e6d6d379-f507-44c2-a23c-238f2a3df928"
+#define GPT_EFI       "c12a7328-f81f-11d2-ba4b-00a0c93ec93b"
+#define GPT_BIOS      "21686148-6449-6e6f-744e-656564454649"
 
 enum devicetype
 {
