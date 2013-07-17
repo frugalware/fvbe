@@ -82,6 +82,7 @@ struct disk
   long long sectors;
   bool modified;
   unsigned int dosuuid;
+  unsigned char dosextended;
   char gptuuid[37];
   struct partition table[128];
   int size;
@@ -708,7 +709,7 @@ extern long long disk_get_free_size(struct disk *disk)
   {
     struct partition *last = &disk->table[disk->size-1];
 
-    if(disk->type == DISKTYPE_DOS && last->dostype == DOS_EXTENDED)
+    if(disk->type == DISKTYPE_DOS && last->dostype == disk->dosextended)
       size -= last->start + disk->device->alignment;
     else if(disk->type == DISKTYPE_DOS && last->number > 4)
       size -= last->end + 1 + disk->device->alignment;
@@ -777,7 +778,7 @@ extern bool disk_has_extended_partition(struct disk *disk)
 
   for( ; i < disk->size ; ++i )
   {
-    if(disk->table[i].dostype == DOS_EXTENDED)
+    if(disk->table[i].dostype == disk->dosextended)
       return true;
   }
 
@@ -886,7 +887,7 @@ extern int disk_create_extended_partition(struct disk *disk)
   if(!newpartition(disk,disk_get_free_size(disk),&part) || part.number > 4)
     return -1;
 
-  part.dostype = DOS_EXTENDED;
+  part.dostype = disk->dosextended;
 
   memcpy(&disk->table[disk->size++],&part,sizeof(struct partition));
 
@@ -916,7 +917,7 @@ extern int disk_create_logical_partition(struct disk *disk,long long size)
   {
     struct partition *part = &disk->table[i];
 
-    if(part->dostype == DOS_EXTENDED && ext == 0)
+    if(part->dostype == disk->dosextended && ext == 0)
       ext = part;
 
     last = part;
@@ -1006,7 +1007,7 @@ extern void disk_partition_set_purpose(struct disk *disk,int n,const char *purpo
     else if(strcmp(purpose,"efi") == 0)
       part->dostype = DOS_EFI;
     else if(strcmp(purpose,"extended") == 0)
-      part->dostype = DOS_EXTENDED;
+      part->dostype = disk->dosextended;
   }
   else if(disk->type == DISKTYPE_GPT)
   {
@@ -1102,7 +1103,7 @@ extern const char *disk_partition_get_purpose(struct disk *disk,int n)
       purpose = "lvm";
     else if(part->dostype == DOS_EFI)
       purpose = "efi";
-    else if(part->dostype == DOS_EXTENDED)
+    else if(part->dostype == disk->dosextended)
       purpose = "extended";
   }
   else if(disk->type == DISKTYPE_GPT)
@@ -1226,7 +1227,7 @@ extern bool disk_flush(struct disk *disk)
         (part->dosactive) ? '*' : '-'
       );
       
-      if(part->dostype == DOS_EXTENDED)
+      if(part->dostype == disk->dosextended)
         for( j = part->number ; j < 4 ; ++j )
           strfcat(command,sizeof(command),"0 0 0x00 -\\n");
     }
