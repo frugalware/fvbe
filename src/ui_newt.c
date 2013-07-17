@@ -2478,8 +2478,7 @@ extern bool ui_window_partition(struct device **devices,struct disk **disks)
           {
             key.partition_number = i;
 
-            if(newtListboxDeleteEntry(listbox,(void *) key.data) == -1)
-              break;
+            newtListboxDeleteEntry(listbox,(void *) key.data);
           }
 
           key.data = action.data;
