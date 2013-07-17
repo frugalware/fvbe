@@ -17,8 +17,6 @@
 
 #include "local.h"
 
-#define ISO_ROOT "/run/initramfs/live"
-
 static inline bool preconfig_copy_fdb(const char *fdb)
 {
   char old[PATH_MAX] = {0};

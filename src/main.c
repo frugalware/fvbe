@@ -24,50 +24,35 @@ static inline bool infvbe(void)
   return (env != 0 && strcmp(env,"fvbe") == 0);
 }
 
-static void find_iso(void)
+static void find_iso_device(void)
 {
-  blkid_cache cache = 0;
-  blkid_dev_iterate iter = 0;
-  blkid_dev dev = 0;
-  char path[PATH_MAX] = {0};
+  FILE *file = 0;
+  char line[LINE_MAX] = {0};
+  char *device = 0;
+  char *root = 0;
 
-  if(blkid_get_cache(&cache,"/dev/null") != 0)
+  if((file = fopen("/proc/mounts","rb")) == 0)
   {
-    error("failed to create blkid cache");
-    goto bail;
+    error(strerror(errno));
+    return;
   }
-  
-  if(blkid_probe_all(cache) != 0)
-  {
-    error("failed to probe blkid devices");
-    goto bail;
-  }
-  
-  if(blkid_probe_all_removable(cache) != 0)
-  {
-    error("failed to probe removable blkid devices");
-    goto bail;
-  }
-  
-  if((iter = blkid_dev_iterate_begin(cache)) == 0)
-  {
-    error("failed to create blkid dev iter");
-    goto bail;
-  }
-  
-  while(blkid_dev_next(iter,&dev) == 0)
-    if(blkid_dev_has_tag(dev,"TYPE","iso9660") && blkid_dev_has_tag(dev,"LABEL","FVBE"))
-      strfcpy(path,sizeof(path),"%s",blkid_dev_devname(dev));
-  
-  blkid_dev_iterate_end(iter);
 
-  if(strlen(path) != 0)
-    g->isodevice = strdup(path);
+  while(fgets(line,sizeof(line),file) != 0)
+  {
+    if((device = strtok(line,SPACE_CHARS)) == 0)
+      continue;
+    
+    if((root = strtok(0,SPACE_CHARS)) == 0)
+      continue;
+    
+    if(strcmp(root,ISO_ROOT) == 0)
+    {
+      g->isodevice = strdup(device);
+      break;
+    }
+  }
 
-bail:
-
-  if(cache != 0)
-    blkid_put_cache(cache);
+  fclose(file);
 }
 
 static void global_cleanup(void)
@@ -145,7 +130,7 @@ extern int main(int argc,char **argv)
   
     g->guestroot = "/mnt/install";
     
-    find_iso();
+    find_iso_device();
   }
   else
   {
