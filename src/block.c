@@ -585,6 +585,9 @@ extern struct disk *disk_open(struct device *device)
 
   getsectors(&disk);
 
+  if(disk.type == DISKTYPE_DOS)
+    disk.dosextended = DOS_EXTENDED;
+
   if(!getuuid(&disk))
     goto bail;
 
@@ -613,6 +616,9 @@ extern struct disk *disk_open(struct device *device)
         part->dostype = blkid_partition_get_type(partition);
 
         part->dosactive = (blkid_partition_get_flags(partition) == 0x80);
+
+        if(part->dostype == DOS_EXTENDED2 || part->dostype == DOS_EXTENDED3)
+          disk.dosextended = part->dostype;
 
         continue;
       }
@@ -758,6 +764,9 @@ extern void disk_new_table(struct disk *disk,const char *type)
   disk->type = disktype;
 
   getsectors(disk);
+
+  if(disk->type == DISKTYPE_DOS)
+    disk->dosextended = DOS_EXTENDED;
 
   disk->modified = true;
 }
