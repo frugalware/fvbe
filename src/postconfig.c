@@ -98,6 +98,8 @@ static bool write_fstab(void)
       (uuid = probe_uuid(device)) == 0
     )
     {
+      eprintf("%s: failed parsing fstab entry '%s'\n",__func__,*p);
+      eprintf("%s: device = %d, path = %d, filesystem = %d, uuid = %d\n",__func__,device != 0,path != 0,filesystem != 0,uuid != 0);
       errno = EINVAL;
       error(strerror(errno));
       fclose(file);
