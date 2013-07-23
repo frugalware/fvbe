@@ -91,6 +91,8 @@ static bool write_fstab(void)
 
   for( p = g->fstabdata ; *p != 0 ; ++p )
   {
+    eprintf("%s: about to parse '%s'\n",__func__,*p);
+
     if(
       (device = strtok(*p,":\n")) == 0    ||
       (path = strtok(0,":\n")) == 0       ||
