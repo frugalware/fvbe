@@ -105,6 +105,42 @@ static bool viconfig_setup_entries(void)
   return true;
 }
 
+static bool viconfig_write_profile(const char *path)
+{
+  int fd = -1;
+  FILE *file = 0;
+  
+  if(!mkdir_recurse("etc/profile.d"))
+    return false;
+
+  if(
+    (fd = open("etc/profile.d/viconfig.sh",O_CREAT|O_TRUNC|O_WRONLY,0755)) == -1 ||
+    fchown(fd,0,0) == -1                                                         ||
+    fchmod(fd,0755) == -1                                                        ||
+    (file = fdopen(fd,"wb")) == 0
+  )
+  {
+    error(strerror(errno));
+    if(fd != -1)
+      close(fd);
+    return false;
+  }
+
+  fprintf(file,
+    "VISUAL=\"%s\"\n"
+    "EDITOR=\"%s\"\n"
+    "\n"
+    "export VISUAL\n"
+    "export EDITOR\n",
+    path,
+    path
+  );
+
+  fclose(file);
+
+  return true;
+}
+
 static bool viconfig_start(void)
 {
   if(!viconfig_setup_editors())
