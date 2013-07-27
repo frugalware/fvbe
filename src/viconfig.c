@@ -81,11 +81,18 @@ static bool viconfig_setup_editors(void)
 
 static bool viconfig_start(void)
 {
+  if(!viconfig_setup_editors())
+    return false;
+
   return true;
 }
 
 static bool viconfig_finish(void)
 {
+  charpp_free(editors);
+  
+  editors = 0;
+
   return true;
 }
 
