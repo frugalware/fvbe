@@ -81,9 +81,36 @@ static bool viconfig_setup_editors(void)
   return true;
 }
 
+static bool viconfig_setup_entries(void)
+{
+  int i = 0;
+  char *s = 0;
+  char *p = 0;
+
+  entries = alloc(char *,sizeof(list) / sizeof(*list));
+
+  for( ; (s = entries[i]) != 0 ; ++i )
+  {
+    if((p = strrchr(s,'/')) == 0)
+    {
+      eprintf("%s: not a full editor path '%s'\n",__func__,s);
+      return false;
+    }
+    
+    entries[i] = p;
+  }
+
+  entries[i] = 0;
+
+  return true;
+}
+
 static bool viconfig_start(void)
 {
   if(!viconfig_setup_editors())
+    return false;
+
+  if(!viconfig_setup_entries())
     return false;
 
   return true;
@@ -91,6 +118,10 @@ static bool viconfig_start(void)
 
 static bool viconfig_finish(void)
 {
+  free(entries);
+  
+  entries = 0;
+
   charpp_free(editors);
   
   editors = 0;
