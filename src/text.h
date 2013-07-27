@@ -127,6 +127,8 @@
 #define USER_TEXT _("Enter the information for an initial user.\n")
 #define TIME_TITLE _("Initial Time Setup")
 #define TIME_TEXT _("Select the timezone relevant to you from the list below.\n")
+#define VI_TITLE _("VI Setup")
+#define VI_TEXT _("Select a editor to use for the vi executable.\nThis also sets the editor for the 'VISUAL' and 'EDITOR'.\n")
 #define UTC_TEXT _("Universal Time Clock")
 #define MODE_TITLE _("Boot Mode Setup")
 #define MODE_TEXT _("Select a boot mode from the list below.\nThis decides whether you boot to a text console or display manager.\nThe display manager mode requires one to be installed.\n")

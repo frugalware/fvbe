@@ -113,6 +113,9 @@ static bool viconfig_start(void)
   if(!viconfig_setup_entries())
     return false;
 
+  if(!ui_window_list(VI_TITLE,VI_TEXT,entries,&entry))
+    return false;
+
   return true;
 }
 
