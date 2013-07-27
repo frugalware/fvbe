@@ -32,9 +32,24 @@ static const char *list[] =
   "jstar",
   0
 };
+static size_t list_count = (sizeof(list) / sizeof(*list)) - 1;
 static char **editors = 0;
 static char **entries = 0;
 static char *entry = 0;
+
+static int lfind_compare(const void *A,const void *B)
+{
+  const char *a = (const char *) A;
+  const char *b = *(const char **) B;
+  const char *c = strrchr(b,'/');
+  
+  if(c == 0)
+    c = b;
+  else
+    ++c;
+
+  return strcmp(a,c);
+}
 
 static bool viconfig_setup_editors(void)
 {
@@ -54,7 +69,7 @@ static bool viconfig_setup_editors(void)
 
   env = strdupa(env);
 
-  editors = alloc(char *,sizeof(list) / sizeof(*list));
+  editors = alloc(char *,list_count + 1);
 
   for( ; list[i] != 0 ; ++i )
   {
@@ -87,7 +102,7 @@ static bool viconfig_setup_entries(void)
   char *s = 0;
   char *p = 0;
 
-  entries = alloc(char *,sizeof(list) / sizeof(*list));
+  entries = alloc(char *,list_count + 1);
 
   for( ; (s = entries[i]) != 0 ; ++i )
   {
