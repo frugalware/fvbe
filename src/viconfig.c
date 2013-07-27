@@ -17,25 +17,27 @@
 
 #include "local.h"
 
+static const char *list[] =
+{
+  "vim",
+  "nano",
+  "vile",
+  "ne",
+  "dex",
+  "diakonos",
+  "jed",
+  "joe",
+  "jmacs",
+  "jpico",
+  "jstar",
+  0
+};
 static char **editors = 0;
+static char **entries = 0;
+static char *entry = 0;
 
 static bool viconfig_setup_editors(void)
 {
-  static const char *list[] =
-  {
-    "vim",
-    "nano",
-    "vile",
-    "ne",
-    "dex",
-    "diakonos",
-    "jed",
-    "joe",
-    "jmacs",
-    "jpico",
-    "jstar",
-    0
-  };
   const char *env = 0;
   size_t i = 0;
   const char *s = 0;
