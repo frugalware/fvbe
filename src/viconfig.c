@@ -17,106 +17,48 @@
 
 #include "local.h"
 
-static const char *list[] =
-{
-  "vim",
-  "nano",
-  "vile",
-  "ne",
-  "dex",
-  "diakonos",
-  "jed",
-  "joe",
-  "jmacs",
-  "jpico",
-  "jstar",
-  0
-};
-static size_t list_count = (sizeof(list) / sizeof(*list)) - 1;
 static char **editors = 0;
-static char **entries = 0;
-static char *entry = 0;
-
-static int lfind_compare(const void *A,const void *B)
-{
-  const char *a = (const char *) A;
-  const char *b = *(const char **) B;
-  const char *c = strrchr(b,'/');
-  
-  if(c == 0)
-    c = b;
-  else
-    ++c;
-
-  return strcmp(a,c);
-}
+static char *editor = 0;
 
 static bool viconfig_setup_editors(void)
 {
-  const char *env = 0;
+  static const char *list[] =
+  {
+    "vim",
+    "nano",
+    "vile",
+    "ne",
+    "dex",
+    "diakonos",
+    "jed",
+    "joe",
+    "jmacs",
+    "jpico",
+    "jstar",
+    0
+  };
+  static const size_t list_count = (sizeof(list) / sizeof(*list)) - 1;
   size_t i = 0;
   const char *s = 0;
-  const char *e = 0;
   char path[PATH_MAX] = {0};
   struct stat st = {0};
   size_t j = 0;
 
-  if((env = getenv("PATH")) == 0)
-  {
-    error("PATH is not defined");
-    return false;
-  }
-
-  env = strdupa(env);
-
   editors = alloc(char *,list_count + 1);
 
-  for( ; list[i] != 0 ; ++i )
+  for( ; (s = list[i]) != 0 ; ++i )
   {
-    for( s = e = env ; *e != 0 ; s = e )
+    strfcpy(path,sizeof(path),"/usr/bin/%s",s);
+  
+    if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0755) == 0755)
     {
-      if((e = strchr(e,':')) == 0)
-        e = s + strlen(s);
-      
-      strfcpy(path,sizeof(path),"%.*s/%s",(int) (e-s),s,list[i]);
-      
-      if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0755) == 0755)
-      {
-        editors[j++] = strdup(path);
-        break;
-      }
-      
-      if(*e == ':')
-        ++e;
+      editors[j++] = strdup(s);
+      break;
     }
   }
 
   editors[j] = 0;
   
-  return true;
-}
-
-static bool viconfig_setup_entries(void)
-{
-  int i = 0;
-  char *s = 0;
-  char *p = 0;
-
-  entries = alloc(char *,list_count + 1);
-
-  for( ; (s = entries[i]) != 0 ; ++i )
-  {
-    if((p = strrchr(s,'/')) == 0)
-    {
-      eprintf("%s: not a full editor path '%s'\n",__func__,s);
-      return false;
-    }
-    
-    entries[i] = p;
-  }
-
-  entries[i] = 0;
-
   return true;
 }
 
@@ -161,10 +103,7 @@ static bool viconfig_start(void)
   if(!viconfig_setup_editors())
     return false;
 
-  if(!viconfig_setup_entries())
-    return false;
-
-  if(!ui_window_list(VI_TITLE,VI_TEXT,entries,&entry))
+  if(!ui_window_list(VI_TITLE,VI_TEXT,editors,&editor))
     return false;
 
   return true;
@@ -172,10 +111,6 @@ static bool viconfig_start(void)
 
 static bool viconfig_finish(void)
 {
-  free(entries);
-  
-  entries = 0;
-
   charpp_free(editors);
   
   editors = 0;
