@@ -48,7 +48,7 @@ static bool viconfig_setup_editors(void)
 
   for( ; (s = list[i]) != 0 ; ++i )
   {
-    strfcpy(path,sizeof(path),"/usr/bin/%s",s);
+    strfcpy(path,sizeof(path),"usr/bin/%s",s);
   
     if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0755) == 0755)
     {
@@ -98,6 +98,17 @@ static bool viconfig_write_profile(const char *path)
   return true;
 }
 
+static bool viconfig_symlink(const char *old,const char *new)
+{
+  if((unlink(new) == -1 && errno != ENOENT) || symlink(old,new) == -1)
+  {
+    error(strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
 static bool viconfig_start(void)
 {
   if(!viconfig_setup_editors())
@@ -111,11 +122,30 @@ static bool viconfig_start(void)
 
 static bool viconfig_finish(void)
 {
+  char path[PATH_MAX] = {0};
+  bool rv = true;
+
+  if(editor != 0)
+  {
+    strfcpy(path,sizeof(path),"/usr/bin/%s",editor);
+  
+    if(!viconfig_symlink(path,"bin/vi"))
+      rv = false;
+      
+    if(!viconfig_symlink(path,"usr/bin/vi"))
+      rv = false;
+  
+    if(!viconfig_write_profile(path))
+      rv = false;
+  
+    editor = 0;
+  }
+
   charpp_free(editors);
   
   editors = 0;
 
-  return true;
+  return rv;
 }
 
 struct tool viconfig_tool =
