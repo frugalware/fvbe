@@ -51,10 +51,7 @@ static bool viconfig_setup_editors(void)
     strfcpy(path,sizeof(path),"usr/bin/%s",s);
   
     if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0755) == 0755)
-    {
       editors[j++] = strdup(s);
-      break;
-    }
   }
 
   editors[j] = 0;
