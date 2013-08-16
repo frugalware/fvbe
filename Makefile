@@ -68,6 +68,7 @@ install: bin/fwsetup
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/rootconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/userconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/hostconfig
+	ln -s -f fwsetup $(DESTDIR)/usr/sbin/viconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/modeconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/timeconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/grubconfig
