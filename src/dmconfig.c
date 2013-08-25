@@ -20,21 +20,45 @@
 static char **managers = 0;
 static char *manager = 0;
 
-static bool dmconfig_action(const char *mode)
+static bool dmconfig_setup_managers(void)
 {
-  const char *old = 0;
-  const char *new = "etc/systemd/system/default.target";
-
-  if(strcmp(mode,"Text Console") == 0)
-    old = "/lib/systemd/system/multi-user.target";
-  else if(strcmp(mode,"Display Manager") == 0)
-    old = "/lib/systemd/system/graphical.target";
-  else
+  static const char *list[] =
   {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
+    "none",
+    "gdm",
+    "kdm",
+    "lightdm",
+    "lxdm",
+    "xdm",
+    0
+  };
+  static const size_t list_count = (sizeof(list) / sizeof(*list)) - 1;
+  size_t i = 0;
+  const char *s = 0;
+  char path[PATH_MAX] = {0};
+  struct stat st = {0};
+  size_t j = 0;
+
+  managers = alloc(char *,list_count + 1);
+
+  for( ; (s = list[i]) != 0 ; ++i )
+  {
+    strfcpy(path,sizeof(path),"lib/systemd/system/%s.service",s);
+  
+    if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0644) == 0644)
+      managers[j++] = strdup(s);
   }
+
+  managers[j] = 0;
+
+  return true;
+}
+
+
+static bool dmconfig_symlink_target(void)
+{
+  const char *old = (strcmp(manager,"none") == 0) ? "/lib/systemd/system/multi-user.target" : "/lib/systemd/system/graphical.target";
+  const char *new = "etc/systemd/system/default.target";
 
   if(unlink(new) == -1 && errno != ENOENT)
   {
@@ -53,7 +77,10 @@ static bool dmconfig_action(const char *mode)
 
 static bool dmconfig_start(void)
 {
-  if(!ui_window_list(MODE_TITLE,MODE_TEXT,modes,&mode))
+  if(!dmconfig_setup_managers())
+    return false;
+
+  if(!ui_window_list(MODE_TITLE,MODE_TEXT,managers,&manager))
     return false;
 
   return true;
@@ -63,11 +90,11 @@ static bool dmconfig_finish(void)
 {
   bool success = true;
 
-  if(mode != 0)
+  if(manager != 0)
   {
-    success = dmconfig_action(mode);
+    success = dmconfig_action(manager);
   
-    mode = 0;
+    manager = 0;
   }
 
   return success;
