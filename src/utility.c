@@ -69,11 +69,16 @@ extern bool readlink0(const char *path,char *buf,size_t size)
   
   n = readlink(path,buf,size);
   
-  if(n > 0 && n < size)
+  if(n > 0 && (size_t) n < size)
   {
     buf[n] = 0;
     return true;
   }
+
+  if(n > 0)
+    errno = ERANGE;
+
+  error(strerror(errno));
 
   return false;
 }

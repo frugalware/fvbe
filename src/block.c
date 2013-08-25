@@ -1359,25 +1359,15 @@ extern struct raid *raid_open(struct device *device)
 
   for( int i = 0 ; i < disks ; ++i )
   {
-    ssize_t n = -1;
-  
     strfcpy(path,sizeof(path),"/sys/class/block/%s/md/rd%d",basename(base),i);
     
-    // < 1 means empty or error. == sizeof(buf) means it is truncated.
-    if((n = readlink(path,buf,sizeof(buf))) < 1 || n == sizeof(buf))
+    if(!readlink0(path,buf,sizeof(buf)))
     {
-      if(n != -1)
-        errno = ERANGE;
- 
-      error(strerror(errno));
- 
       for( int j = 0 ; j < i ; ++j )
         device_close(devices[j]);
  
       return 0;
     }
-    
-    buf[n] = 0;
     
     if(strncmp(buf,"dev-",4) != 0)
     {
