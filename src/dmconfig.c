@@ -75,6 +75,32 @@ static bool dmconfig_symlink_target(void)
   return true;
 }
 
+static bool dmconfig_update_via_old(void)
+{
+  char old[PATH_MAX] = {0};
+  char *new = "etc/systemd/system/display-manager.service";
+  
+  if(!dmconfig_symlink_target())
+    return false;
+  
+  if(strcmp(manager,"none") != 0)
+    strfcpy(old,sizeof(old),"lib/systemd/system/%s.service",manager);
+
+  if(unlink(new) == -1 && errno != ENOENT)
+  {
+    error(strerror(errno));
+    return false;
+  }
+  
+  if(strlen(old) > 0 && symlink(old,new) == -1)
+  {
+    error(strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
 static bool dmconfig_start(void)
 {
   if(!dmconfig_setup_managers())
