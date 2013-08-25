@@ -184,7 +184,7 @@ struct tool *tools[] =
   &userconfig_tool,
   &hostconfig_tool,
   &viconfig_tool,
-  &modeconfig_tool,
+  &dmconfig_tool,
   &timeconfig_tool,
   &grubconfig_tool,
   0

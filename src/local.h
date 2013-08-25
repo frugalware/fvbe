@@ -326,7 +326,7 @@ extern struct tool rootconfig_tool;
 extern struct tool userconfig_tool;
 extern struct tool hostconfig_tool;
 extern struct tool viconfig_tool;
-extern struct tool modeconfig_tool;
+extern struct tool dmconfig_tool;
 extern struct tool timeconfig_tool;
 extern struct tool grubconfig_tool;
 extern struct tool *tools[];

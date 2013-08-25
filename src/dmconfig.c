@@ -17,15 +17,10 @@
 
 #include "local.h"
 
-static char *modes[] =
-{
-  "Text Console",
-  "Display Manager",
-  0
-};
-static char *mode = 0;
+static char **managers = 0;
+static char *manager = 0;
 
-static bool modeconfig_action(const char *mode)
+static bool dmconfig_action(const char *mode)
 {
   const char *old = 0;
   const char *new = "etc/systemd/system/default.target";
@@ -56,7 +51,7 @@ static bool modeconfig_action(const char *mode)
   return true;
 }
 
-static bool modeconfig_start(void)
+static bool dmconfig_start(void)
 {
   if(!ui_window_list(MODE_TITLE,MODE_TEXT,modes,&mode))
     return false;
@@ -64,13 +59,13 @@ static bool modeconfig_start(void)
   return true;
 }
 
-static bool modeconfig_finish(void)
+static bool dmconfig_finish(void)
 {
   bool success = true;
 
   if(mode != 0)
   {
-    success = modeconfig_action(mode);
+    success = dmconfig_action(mode);
   
     mode = 0;
   }
@@ -78,9 +73,9 @@ static bool modeconfig_finish(void)
   return success;
 }
 
-struct tool modeconfig_tool =
+struct tool dmconfig_tool =
 {
-  modeconfig_start,
-  modeconfig_finish,
+  dmconfig_start,
+  dmconfig_finish,
   __FILE__
 };
