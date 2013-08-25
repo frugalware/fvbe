@@ -56,6 +56,28 @@ extern void iniparser_unset_section(dictionary *d,const char *s)
   free(p);
 }
 
+extern bool readlink0(const char *path,char *buf,size_t size)
+{
+  ssize_t n = -1;
+
+  if(path == 0 || buf == 0 || size == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+  
+  n = readlink(path,buf,size);
+  
+  if(n > 0 && n < size)
+  {
+    buf[n] = 0;
+    return true;
+  }
+
+  return false;
+}
+
 extern int charpp_qsort(const void *A,const void *B)
 {
   const char *a = *(const char **) A;
