@@ -90,7 +90,7 @@ static bool update_via_old(void)
     return false;
   
   if(strcmp(manager,"none") != 0)
-    strfcpy(old,sizeof(old),"lib/systemd/system/%s.service",manager);
+    strfcpy(old,sizeof(old),"/lib/systemd/system/%s.service",manager);
 
   if(unlink(new) == -1 && errno != ENOENT)
   {
