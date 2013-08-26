@@ -43,6 +43,12 @@ static bool dmconfig_setup_managers(void)
 
   for( ; (s = list[i]) != 0 ; ++i )
   {
+    if(strcmp(s,"none") == 0)
+    {
+      managers[j++] = strdup(s);
+      continue;
+    }
+
     strfcpy(path,sizeof(path),"lib/systemd/system/%s.service",s);
   
     if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0644) == 0644)
