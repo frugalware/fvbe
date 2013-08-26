@@ -123,7 +123,7 @@ static bool update_via_new(void)
     
     // +1 to include null terminator in the memmove().
     if(s != 0 && e != 0)
-      memmove(old,s,e-s+1);
+      memmove(old,s+1,e-s);
   }
   else
     *old = 0;
