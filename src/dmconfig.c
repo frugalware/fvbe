@@ -157,6 +157,9 @@ static bool dmconfig_start(void)
   if(!dmconfig_setup_managers())
     return false;
 
+  if(managers[0] != 0 && managers[1] == 0)
+    return true;
+
   if(!ui_window_list(DM_TITLE,DM_TEXT,managers,&manager))
     return false;
 
