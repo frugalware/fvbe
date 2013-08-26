@@ -69,6 +69,10 @@ else
   ln -sf /lib/systemd/system/multi-user.target $FVBE_ROOT/etc/systemd/system/default.target
 fi
 
+# Install vi symlinks for installer.
+ln -sf /usr/bin/vile $FVBE_ROOT/usr/bin/vi
+ln -sf /usr/bin/vile $FVBE_ROOT/bin/vi
+
 # Script for setting up the end-user customizations during boot-up.
 cat > $FVBE_ROOT/usr/libexec/fvbe-setup << EOF
 #!/bin/sh
