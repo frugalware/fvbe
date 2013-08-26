@@ -55,7 +55,7 @@ static bool dmconfig_setup_managers(void)
 }
 
 
-static bool dmconfig_symlink_target(void)
+static bool symlink_target(void)
 {
   const char *old = (strcmp(manager,"none") == 0) ? "/lib/systemd/system/multi-user.target" : "/lib/systemd/system/graphical.target";
   const char *new = "etc/systemd/system/default.target";
@@ -75,12 +75,12 @@ static bool dmconfig_symlink_target(void)
   return true;
 }
 
-static bool dmconfig_update_via_old(void)
+static bool update_via_old(void)
 {
   char old[PATH_MAX] = {0};
   char *new = "etc/systemd/system/display-manager.service";
   
-  if(!dmconfig_symlink_target())
+  if(!symlink_target())
     return false;
   
   if(strcmp(manager,"none") != 0)
@@ -101,6 +101,57 @@ static bool dmconfig_update_via_old(void)
   return true;
 }
 
+static bool update_via_new(void)
+{
+  char old[PATH_MAX] = {0};
+  char new[PATH_MAX] = {0};
+  char command[_POSIX_ARG_MAX] = {0};
+  
+  if(!symlink_target())
+    return false;
+  
+  if(readlink0("etc/systemd/system/display-manager.service",old,sizeof(old)))
+  {
+    char *s = strrchr(old,'/');
+    char *e = (s != 0) ? s + strlen(s) : 0;
+    
+    // +1 to include null terminator in the memmove().
+    if(s != 0 && e != 0)
+      memmove(old,s,e-s+1);
+  }
+  else
+    *old = 0;
+
+  if(strcmp(manager,"none") != 0)
+    strfcpy(new,sizeof(new),"%s.service",manager);
+
+  if(strlen(old) > 0)
+  {
+    strfcpy(command,sizeof(command),"systemctl disable %s",old);
+    
+    if(!execute(command,g->guestroot,0))
+      return false;
+  }
+
+  if(strlen(new) > 0)
+  {
+    strfcpy(command,sizeof(command),"systemctl enable %s",new);
+    
+    if(!execute(command,g->guestroot,0))
+      return false;
+  }
+
+  return true;
+}
+
+static bool dmconfig_action(void)
+{
+  if(g->insetup)
+    return update_via_old();
+  
+  return update_via_new();
+}
+
 static bool dmconfig_start(void)
 {
   if(!dmconfig_setup_managers())
@@ -118,9 +169,16 @@ static bool dmconfig_finish(void)
 
   if(manager != 0)
   {
-    success = dmconfig_action(manager);
+    success = dmconfig_action();
   
     manager = 0;
+  }
+
+  if(managers != 0)
+  {
+    charpp_free(managers);
+    
+    managers = 0;
   }
 
   return success;
