@@ -133,7 +133,7 @@ static bool update_via_new(void)
 
   if(strlen(old) > 0)
   {
-    strfcpy(command,sizeof(command),"systemctl disable %s",old);
+    strfcpy(command,sizeof(command),"systemctl disable '%s'",shell_escape(old));
     
     if(!execute(command,g->guestroot,0))
       return false;
@@ -141,7 +141,7 @@ static bool update_via_new(void)
 
   if(strlen(new) > 0)
   {
-    strfcpy(command,sizeof(command),"systemctl enable %s",new);
+    strfcpy(command,sizeof(command),"systemctl enable '%s'",shell_escape(new));
     
     if(!execute(command,g->guestroot,0))
       return false;
