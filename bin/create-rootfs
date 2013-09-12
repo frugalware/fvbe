@@ -149,6 +149,7 @@ To begin installation of Frugalware, you must login as root. Then, you
 must run the following command:
 
 fwsetup
+
 EOF
 done
 
