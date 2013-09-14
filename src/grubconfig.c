@@ -105,6 +105,7 @@ static bool grubconfig_action(void)
   int count = 0;
   int padding = 0;
   char command[_POSIX_ARG_MAX] = {0};
+  struct stat st = {0};
   
   fetch_root_device(device,sizeof(device));
   
@@ -151,6 +152,23 @@ static bool grubconfig_action(void)
   {
     ui_dialog_progress(0,0,-1);
     return false;
+  }
+
+  if(lstat("boot/grub/locale/en.mo",&st) == -1 || S_ISLNK(st.st_mode))
+  {
+    if(unlink("boot/grub/locale/en.mo") == -1 && errno != ENOENT)
+    {
+      error(strerror(errno));
+      ui_dialog_progress(0,0,-1);
+      return false;
+    }
+
+    if(symlink("en@quot.mo","boot/grub/locale/en.mo") == -1)
+    {
+      error(strerror(errno));
+      ui_dialog_progress(0,0,-1);
+      return false;
+    }
   }
 
   ui_dialog_progress(0,0,-1);
