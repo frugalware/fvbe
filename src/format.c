@@ -327,7 +327,10 @@ static void format_prepare_fstab(void)
   do
   {
     --i;
-    strfcpy(text,sizeof(text),"%s:%s:%s",targets[i]->devicepath,targets[i]->mountpath,targets[i]->newfilesystem);
+    const char *devicepath = targets[i]->devicepath;
+    const char *mountpath = targets[i]->mountpath;
+    const char *newfilesystem = targets[i]->newfilesystem;
+    strfcpy(text,sizeof(text),"%s:%s:%s",devicepath,(strcmp(newfilesystem,"swap") == 0) ? "/" : mountpath,newfilesystem);
     g->fstabdata[i] = strdup(text);
     eprintf("%s: %s\n",__func__,g->fstabdata[i]);
   } while(i > 0);
