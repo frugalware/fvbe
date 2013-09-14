@@ -1048,14 +1048,29 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
     iniparser_set(profile->data,"ipv4:method","auto");
   }
 
-  strfcpy(title,sizeof(title),NM_DHCP_TITLE,"IPv6");
+  strfcpy(title,sizeof(title),NM_ASK_IP_TITLE,"IPv6");
   
-  strfcpy(text,sizeof(text),NM_DHCP_TEXT,"IPv6");
+  strfcpy(text,sizeof(text),NM_ASK_IP_TEXT,"IPv6");
 
-  if(!ui_dialog_yesno(title,text,false))
+  if(ui_dialog_yesno(title,text,true))
   {
-    if(!ui_dialog_static_ip(6,profile))
-      return false;
+    strfcpy(title,sizeof(title),NM_DHCP_TITLE,"IPv6");
+  
+    strfcpy(text,sizeof(text),NM_DHCP_TEXT,"IPv6");
+
+    if(!ui_dialog_yesno(title,text,false))
+    {
+      if(!ui_dialog_static_ip(6,profile))
+        return false;
+    }
+    else
+    {
+      iniparser_unset_section(profile->data,"ipv6");
+    
+      iniparser_set(profile->data,"ipv6","");
+    
+      iniparser_set(profile->data,"ipv6:method","auto");
+    }
   }
   else
   {
@@ -1063,7 +1078,7 @@ static inline bool process_nm_profile(struct nmprofile *profile,struct nmdevice 
     
     iniparser_set(profile->data,"ipv6","");
     
-    iniparser_set(profile->data,"ipv6:method","auto");
+    iniparser_set(profile->data,"ipv6:method","ignore");
   }
 
   return true;
