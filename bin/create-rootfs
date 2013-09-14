@@ -130,6 +130,7 @@ TTYPath=/dev/tty1
 TTYReset=yes
 TTYVHangup=yes
 TTYVTDisallocate=yes
+IgnoreSIGPIPE=no
 
 [Install]
 WantedBy=multi-user.target
