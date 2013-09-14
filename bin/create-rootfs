@@ -167,17 +167,8 @@ EOF
 for i in $FVBE_ROOT/etc/issue{,.net}; do
   sed -i 's|Frugalware|Frugalware Versatile Bootable Environment|' $i
   cat >> $i << EOF
-The following users are available for use:
-
-root
-guest
-
-All of them use the same password -- fvbe.
-
-To begin installation of Frugalware, you must login as root. Then, you
-must run the following command:
-
-fwsetup
+Username: root guest
+Password: fvbe fvbe
 
 EOF
 done
