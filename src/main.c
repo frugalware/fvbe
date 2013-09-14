@@ -19,9 +19,9 @@
 
 static inline bool infvbe(void)
 {
-  const char *env = getenv("HOSTNAME");
+  struct stat st = {0};
   
-  return (env != 0 && strcmp(env,"fvbe") == 0);
+  return (stat("/run/initramfs/live/LiveOS/squashfs.img",&st) == 0 && S_ISREG(st.st_mode));
 }
 
 static void find_iso_device(void)
