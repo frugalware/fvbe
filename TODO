@@ -9,8 +9,6 @@ setup DM for whichever GUI mode we are using
 fwsetup:
 
 implement network install (mirror and connection)
-add config tool for selecting the default VISUAL/EDITOR
-add config tool for selecting the display manager
 add config tool for configuring DPI/PPI and other font options for freetype
 look at filtering out nm devices that are unusable (nm-managed = false)
 look at seeing if we can avoid having space equal to the alignment leftover at the end of the disk.
