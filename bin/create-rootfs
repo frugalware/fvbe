@@ -121,7 +121,7 @@ ConditionPathExists=/dev/tty0
 [Service]
 ExecStart=-/usr/sbin/fwsetup
 Type=idle
-Restart=always
+Restart=on-failure
 RestartSec=0
 StandardInput=tty
 StandardOutput=tty
