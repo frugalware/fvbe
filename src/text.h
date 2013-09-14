@@ -125,6 +125,8 @@
 #define ROOT_TEXT _("Enter a password for the root user.\n")
 #define NAME_ENTRY_TEXT _("Real Name")
 #define USER_ENTRY_TEXT _("User Name")
+#define USER_ASK_TITLE _("New User Inquiry")
+#define USER_ASK_TEXT _("Do you wish to setup a new user?\n")
 #define USER_TITLE _("New User Setup")
 #define USER_TEXT _("Enter the information for a new user.\n")
 #define TIME_TITLE _("Initial Time Setup")

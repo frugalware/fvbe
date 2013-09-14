@@ -59,6 +59,9 @@ static bool userconfig_action(const struct account *account)
 
 static bool userconfig_start(void)
 {
+  if(!ui_dialog_yesno(USER_ASK_TITLE,USER_ASK_TEXT,false))
+    return true;
+
   account = alloc(struct account,1);
   
   if(!ui_window_user(account))
