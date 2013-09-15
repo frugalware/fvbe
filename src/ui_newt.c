@@ -1092,10 +1092,10 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
   int label1_height = 0;
   int listbox_width = 0;
   int listbox_height = 0;
-  int cancel_width = 0;
-  int cancel_height = 0;
   int ok_width = 0;
   int ok_height = 0;
+  int cancel_width = 0;
+  int cancel_height = 0;
   int entry_left = 0;
   int entry_width = 0;
   newtComponent textbox = 0;
@@ -1128,10 +1128,10 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
   if(!get_label_screen_size(FORMAT_MOUNT_ENTRY_TEXT,&label1_width,&label1_height))
     return false;
 
-  if(!get_button_screen_size(CANCEL_BUTTON_TEXT,&cancel_width,&cancel_height))
+  if(!get_button_screen_size(OK_BUTTON_TEXT,&ok_width,&ok_height))
     return false;
 
-  if(!get_button_screen_size(OK_BUTTON_TEXT,&ok_width,&ok_height))
+  if(!get_button_screen_size(CANCEL_BUTTON_TEXT,&cancel_width,&cancel_height))
     return false;
 
   entry_left = label1_width + 1;
@@ -1181,13 +1181,13 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
     newtListboxSetCurrentByKey(listbox,(void *) filesystems[0]);
   }
 
-  cancel = newtButton(NEWT_WIDTH-cancel_width,NEWT_HEIGHT-cancel_height,CANCEL_BUTTON_TEXT);
-
   ok = newtButton(NEWT_WIDTH-cancel_width-ok_width,NEWT_HEIGHT-cancel_height,OK_BUTTON_TEXT);
+
+  cancel = newtButton(NEWT_WIDTH-cancel_width,NEWT_HEIGHT-cancel_height,CANCEL_BUTTON_TEXT);
 
   form = newtForm(0,0,NEWT_FLAG_NOF12);
 
-  newtFormAddComponents(form,textbox,label1,entry1,listbox,cancel,ok,(void *) 0);
+  newtFormAddComponents(form,textbox,label1,entry1,listbox,ok,cancel,(void *) 0);
 
   newtFormSetCurrent(form,entry1);
 
