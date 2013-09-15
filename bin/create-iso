@@ -7,9 +7,9 @@ set -e
 do_video()
 {
   echo "submenu 'Video Resolutions' {"
-  for i in 1024x768 800x600 640x480; do
-  echo "  menuentry '$i' {"
-  echo "    set video=video=$i"
+  for i in 1280x1024-795 1024x768-792 800x600-789 640x480-786; do
+  echo "  menuentry '${i%-*}' {"
+  echo "    set video='vga=${i#*-} nomodeset'"
   echo "    export video"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"  
