@@ -1115,6 +1115,7 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
     "jfs",
     "xfs",
     "btrfs",
+    "vfat",
     "swap",
     0
   };
