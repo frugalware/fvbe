@@ -56,6 +56,25 @@ extern void iniparser_unset_section(dictionary *d,const char *s)
   free(p);
 }
 
+extern bool inuefi(void)
+{
+  struct stat st = {0};
+  size_t i = 0;
+  const char *s = 0;
+  static const char *paths[] =
+  {
+    "/sys/firmware/efi",
+    "/proc/efi",
+    0
+  };
+  
+  for( ; (s = paths[i]) != 0 ; ++i )
+    if(stat(s,&st) == 0 && S_ISDIR(st.st_mode))
+      return true;
+
+  return false;
+}
+
 extern bool readlink0(const char *path,char *buf,size_t size)
 {
   ssize_t n = -1;
