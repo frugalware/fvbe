@@ -47,6 +47,16 @@ static inline void add_target(struct format *p,int *n,int *size)
   *n += 1;
 }
 
+static int compare_target(const void *A,const void *B)
+{
+  struct format *a = * (struct format **) A;
+  struct format *b = * (struct format **) B;
+  size_t c = dirs_count(a->mountpath);
+  size_t d = dirs_count(b->mountpath);
+  
+  return c - d;
+}
+
 static inline void probe_filesystem(struct format *target)
 {
   blkid_probe probe = 0;
@@ -196,35 +206,6 @@ static void format_filter_devices(void)
   targets = redim(targets,struct format *,j);
 }
 
-static bool format_sort_devices(void)
-{
-  struct format **p = targets;
-  struct format *t = 0;
-
-  for( ; *p != 0 ; ++p )
-  {
-    struct format *target = *p;
-
-    if(strcmp(target->newfilesystem,"swap") != 0 && strcmp(target->mountpath,g->hostroot) == 0)
-      break;
-  }
-
-  if(*p == 0)
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return false;
-  }
-
-  t = targets[0];
-
-  targets[0] = *p;
-
-  *p = t;
-
-  return true;
-}
-
 static bool format_process_devices(void)
 {
   int i = 0;
@@ -240,14 +221,16 @@ static bool format_process_devices(void)
 
   padding = get_number_padding(j);
 
+  qsort(targets,j,sizeof(struct format *),compare_target);
+
   for( ; i < j ; ++i )
   {
     struct format *target = targets[i];
 
     if(strcmp(target->newfilesystem,"swap") == 0)
-      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s",padding,i+1,j,target->newfilesystem);
+      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->devicepath,target->newfilesystem);
     else
-      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->newfilesystem,target->devicepath);
+      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s - %-8s",padding,i+1,j,target->devicepath,target->newfilesystem,target->mountpath);
 
     ui_dialog_progress(_("Formatting"),text,get_percent(i+1,j));
 
@@ -348,9 +331,6 @@ static bool format_run(void)
     return false;
 
   format_filter_devices();
-
-  if(!format_sort_devices())
-    return false;
 
   if(!format_process_devices())
     return false;

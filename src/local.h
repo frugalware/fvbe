@@ -208,6 +208,25 @@ extern bool execute(const char *command,const char *root,pid_t *cpid);
 extern void *memdup(const void *mem,size_t size);
 extern void *malloc0(size_t size);
 extern const char *uuidgen(void);
+static inline size_t dirs_count(const char *s)
+{
+  size_t n = 0;
+  bool trail = false;
+
+  for( ; s[0] != 0 ; ++s )
+  {
+    if(s[0] == '/')
+      ++n;
+
+    if(s[0] == '/' && s[1] == 0)
+      trail = true;
+  }
+
+  if(!trail)
+    ++n;
+  
+  return n;
+}
 static inline long long min(long long a,long long b) { return (a < b) ? a : b; }
 static inline long long max(long long a,long long b) { return (a > b) ? a : b; }
 static inline long long minv(long long *v,size_t size)
