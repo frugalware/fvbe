@@ -227,9 +227,9 @@ static bool format_process_devices(void)
     struct format *target = targets[i];
 
     if(strcmp(target->newfilesystem,"swap") == 0)
-      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s",padding,i+1,j,target->newfilesystem);
+      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->devicepath,target->newfilesystem);
     else
-      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s",padding,i+1,j,target->newfilesystem,target->devicepath);
+      strfcpy(text,sizeof(text),"(%*d/%d) - %-8s - %-8s - %-8s",padding,i+1,j,target->devicepath,target->newfilesystem,target->mountpath);
 
     ui_dialog_progress(_("Formatting"),text,get_percent(i+1,j));
 
