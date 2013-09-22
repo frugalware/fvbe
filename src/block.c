@@ -835,6 +835,41 @@ extern bool disk_can_store_bios_grub(struct disk *disk)
   return (size >= MEBIBYTE);
 }
 
+extern bool disk_can_store_uefi_grub(struct disk *disk)
+{  
+  long long size = 0;
+  int i = 0;
+  struct partition *part = 0;
+
+  if(disk == 0 || disk->size < 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  if(disk->size == 0)
+    return false;
+
+  for( ; i < disk->size ; ++i )
+  {
+    part = &disk->table[i];
+    
+    if(
+      (disk->type == DISKTYPE_DOS && part->dostype == DOS_EFI)           ||
+      (disk->type == DISKTYPE_GPT && strcmp(part->gpttype,GPT_EFI) == 0)
+    )
+    {
+      size = part->size;
+      break;
+    }
+  }
+
+  size *= disk->device->sectorsize;
+  
+  return (size >= MEBIBYTE);
+}
+
 extern int disk_create_partition(struct disk *disk,long long size)
 {
   struct partition part = {0};

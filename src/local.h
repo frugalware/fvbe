@@ -284,6 +284,7 @@ extern long long disk_get_free_size(struct disk *disk);
 extern void disk_new_table(struct disk *disk,const char *type);
 extern bool disk_has_extended_partition(struct disk *disk);
 extern bool disk_can_store_bios_grub(struct disk *disk);
+extern bool disk_can_store_uefi_grub(struct disk *disk);
 extern int disk_create_partition(struct disk *disk,long long size);
 extern int disk_create_extended_partition(struct disk *disk);
 extern int disk_create_logical_partition(struct disk *disk,long long size);
