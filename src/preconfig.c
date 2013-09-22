@@ -17,6 +17,12 @@
 
 #include "local.h"
 
+struct preconfig
+{
+  const char *path;
+  const char *filesystem;
+};
+
 static inline bool preconfig_copy_fdb(const char *fdb)
 {
   char old[PATH_MAX] = {0};
@@ -29,82 +35,44 @@ static inline bool preconfig_copy_fdb(const char *fdb)
   return copy(old,new);
 }
 
-static bool preconfig_create_paths(void)
+static bool preconfig_prepare_paths(void)
 {
   size_t i = 0;
-  static const char *paths[] =
+  static const struct preconfig paths[] =
   {
-    "/sys",
-    "/proc",
-    "/dev",
-    "/tmp",
-    "/var/tmp",
-    "/var/lib/pacman-g2",
-    "/var/cache/pacman-g2/pkg",
-    "/var/log",
-    "/etc/X11/xorg.conf.d",
-    0
-  };  
+    {                     "/sys",    "sysfs" },
+    {                    "/proc",     "proc" },
+    {                     "/dev", "devtmpfs" },
+    {                     "/tmp",    "tmpfs" },
+    {                 "/var/tmp",    "tmpfs" },
+    {                 "/var/log",         "" },
+    {       "/var/lib/pacman-g2",         "" },
+    {     "/etc/X11/xorg.conf.d",         "" },
+    { "/var/cache/pacman-g2/pkg",         "" },
+    {                          0,          0 }
+  };
   char path[PATH_MAX] = {0};
+  const struct preconfig *p = 0;
 
-  for( ; paths[i] != 0 ; ++i )
+  for( p = &paths[i] ; p->path != 0 && p->filesystem != 0 ; p = &paths[++i] )
   {
-    strfcpy(path,sizeof(path),"%s%s",g->guestroot,paths[i]);
+    strfcpy(path,sizeof(path),"%s%s",g->guestroot,p->path);
     
     if(!mkdir_recurse(path))
       return false;
+
+    if(strlen(p->filesystem) == 0)
+      continue;
+
+    if(mount("none",path,p->filesystem,0,0) == -1)
+    {
+      error(strerror(errno));
+      return false;
+    }
   }
 
   return true;
 }
-
-extern bool preconfig_mount_extra(void)
-{
-  char path[PATH_MAX] = {0};
-
-  strfcpy(path,sizeof(path),"%s/dev",g->guestroot);
-
-  if(mount("none",path,"devtmpfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(path,sizeof(path),"%s/proc",g->guestroot);
-
-  if(mount("none",path,"proc",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(path,sizeof(path),"%s/sys",g->guestroot);
-
-  if(mount("none",path,"sysfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(path,sizeof(path),"%s/tmp",g->guestroot);
-
-  if(mount("none",path,"tmpfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  strfcpy(path,sizeof(path),"%s/var/tmp",g->guestroot);
-  
-  if(mount("none",path,"tmpfs",0,0) == -1)
-  {
-    error(strerror(errno));
-    return false;
-  }
-
-  return true;
-}
-
 
 static bool preconfig_prepare_source(void)
 {
@@ -156,10 +124,7 @@ static bool preconfig_prepare_source(void)
 
 static bool preconfig_run(void)
 {
-  if(!preconfig_create_paths())
-    return false;
-
-  if(!preconfig_mount_extra())
+  if(!preconfig_prepare_paths())
     return false;
 
   if(!preconfig_prepare_source())
