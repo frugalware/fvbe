@@ -17,33 +17,6 @@
 
 #include "local.h"
 
-static inline size_t dirs_count(const char *s)
-{
-  size_t n = 0;
-  bool trail = false;
-
-  if(s == 0 || s[0] != '/')
-  {
-    errno = EINVAL;
-    error(strerror(errno));
-    return 0;    
-  }
-  
-  for( ; s[0] != 0 ; ++s )
-  {
-    if(s[0] == '/')
-      ++n;
-
-    if(s[0] == '/' && s[1] == 0)
-      trail = true;
-  }
-
-  if(!trail)
-    ++n;
-  
-  return n;
-}
-
 static int dirs_ascend_compare(const void *A,const void *B)
 {
   const char *a = * (char **) A;
