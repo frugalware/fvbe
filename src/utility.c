@@ -542,8 +542,7 @@ extern void umount_all(void)
       i == size - 1                                          ||
       strtok(line,SPACE_CHARS) == 0                          ||
       (path = strtok(0,SPACE_CHARS)) == 0                    ||
-      strncmp(path,g->guestroot,strlen(g->guestroot)) != 0   ||
-      strcmp(path,g->guestroot) == 0
+      strncmp(path,g->guestroot,strlen(g->guestroot)) != 0
     )
       continue;
     
@@ -551,6 +550,8 @@ extern void umount_all(void)
   }
   
   paths[i] = 0;
+  
+  qsort(paths,i,sizeof(char *),dirs_descend_compare);
   
   for( i = 0 ; paths[i] != 0 ; ++i )
   {
@@ -561,12 +562,6 @@ extern void umount_all(void)
       error(strerror(errno));
       goto bail;
     }
-  }
-
-  if(umount2(g->guestroot,MNT_DETACH|UMOUNT_NOFOLLOW) == -1 && errno != ENOENT)
-  {
-    error(strerror(errno));
-    goto bail;
   }
 
 bail:
