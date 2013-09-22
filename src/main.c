@@ -131,6 +131,8 @@ extern int main(int argc,char **argv)
     g->guestroot = "/mnt/install";
     
     find_iso_device();
+
+    umount_all();
   }
   else
   {
