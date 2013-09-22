@@ -69,7 +69,6 @@ static inline void probe_filesystem(struct format *target)
     "jfs",
     "xfs",
     "btrfs",
-    "vfat",
     "swap",
     0
   };
@@ -250,8 +249,6 @@ static bool format_process_devices(void)
         program = "mkfs.xfs -f";
       else if(strcmp(target->newfilesystem,"btrfs") == 0)
         program = "mkfs.btrfs";
-      else if(strcmp(target->newfilesystem,"vfat") == 0)
-        program = "mkfs.vfat -F 32";
       else if(strcmp(target->newfilesystem,"swap") == 0)
         program = "mkswap";
 
