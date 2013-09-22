@@ -2652,19 +2652,25 @@ extern bool ui_window_partition(struct device **devices,struct disk **disks)
     else if(es.reason == NEWT_EXIT_COMPONENT && es.u.co == next)
     {
       bool empty = true;
+      // Defaults to true because we may need to install to all hard drives.
       bool bios = true;
+      // Defaults to false because we only need to install to one hard drive.
+      bool uefi = false;
       
       for( i = 0 ; devices[i] != 0 ; ++i )
       {
         struct disk *disk = disks[i];
         
-        if(disk == 0 || (k = disk_partition_get_count(disk)) == 0)
+        if(disk == 0 || disk_partition_get_count(disk) == 0)
           continue;
         
         empty = false;
         
         if(bios)
           bios = disk_can_store_bios_grub(disk);
+        
+        if(!uefi)
+          uefi = disk_can_store_uefi_grub(disk);
       }
     
       if(empty)
@@ -2673,7 +2679,10 @@ extern bool ui_window_partition(struct device **devices,struct disk **disks)
         continue;
       }
     
-      if(!bios && !ui_dialog_yesno(NO_GRUB_BIOS_TITLE,NO_GRUB_BIOS_TEXT,true))
+      if(!inuefi() && !bios && !ui_dialog_yesno(NO_GRUB_TITLE,NO_GRUB_BIOS_TEXT,true))
+        continue;
+
+      if(inuefi() && !uefi && !ui_dialog_yesno(NO_GRUB_TITLE,NO_GRUB_UEFI_TEXT,true))
         continue;
     
       break;
