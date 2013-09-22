@@ -54,7 +54,7 @@ static int compare_target(const void *A,const void *B)
   size_t c = dirs_count(a->mountpath);
   size_t d = dirs_count(b->mountpath);
   
-  return (c < d) ? -1 : (c > d) ? 1 : 0;
+  return c - d;
 }
 
 static inline void probe_filesystem(struct format *target)

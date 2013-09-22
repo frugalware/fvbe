@@ -17,6 +17,7 @@
 
 #include "local.h"
 
+#if 0
 static int dirs_ascend_compare(const void *A,const void *B)
 {
   const char *a = * (char **) A;
@@ -24,8 +25,9 @@ static int dirs_ascend_compare(const void *A,const void *B)
   size_t c = dirs_count(a);
   size_t d = dirs_count(b);
   
-  return (c < d) ? -1 : (c > d) ? 1 : 0;
+  return c - d;
 }
+#endif
 
 static int dirs_descend_compare(const void *A,const void *B)
 {
@@ -34,7 +36,7 @@ static int dirs_descend_compare(const void *A,const void *B)
   size_t c = dirs_count(a);
   size_t d = dirs_count(b);
   
-  return (c < d) ? 1 : (c > d) ? -1 : 0;
+  return d - c;
 }
 
 static int raid_compare(const void *A,const void *B)
