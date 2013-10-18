@@ -78,6 +78,29 @@ extern void iniparser_unset_section(dictionary *d,const char *s)
   free(p);
 }
 
+extern bool ispathpresent(const char *path,int type,int mode)
+{
+  struct stat st = {0};
+
+  if(path == 0)
+  {
+    errno = EINVAL;
+    error(strerror(errno));
+    return false;
+  }
+
+  if(stat(path,&st) == -1)
+    return false;
+
+  if(type > 0 && (st.st_mode & type) != type)
+    return false;
+
+  if(mode > 0 && (st.st_mode & 0777) != mode)
+    return false;
+  
+  return true;
+}
+
 extern bool readlink0(const char *path,char *buf,size_t size)
 {
   ssize_t n = -1;
