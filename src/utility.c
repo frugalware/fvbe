@@ -78,7 +78,7 @@ extern void iniparser_unset_section(dictionary *d,const char *s)
   free(p);
 }
 
-extern bool ispathpresent(const char *path,int type,int mode)
+extern bool ispathpresent(const char *path,unsigned int type,unsigned int mode)
 {
   struct stat st = {0};
 

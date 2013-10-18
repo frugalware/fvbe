@@ -181,7 +181,7 @@ struct tool
 };
 
 extern void iniparser_unset_section(dictionary *d,const char *s);
-extern bool ispathpresent(const char *path,int type,int mode);
+extern bool ispathpresent(const char *path,unsigned int type,unsigned int mode);
 extern bool readlink0(const char *path,char *buf,size_t size);
 extern int charpp_qsort(const void *A,const void *B);
 extern void charpp_free(char **pp);
