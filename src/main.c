@@ -19,9 +19,7 @@
 
 static inline bool infvbe(void)
 {
-  struct stat st = {0};
-  
-  return (stat("/run/initramfs/live/LiveOS/squashfs.img",&st) == 0 && S_ISREG(st.st_mode));
+  return ispathpresent("/run/initramfs/live/LiveOS/squashfs.img",S_IFREG,0444);
 }
 
 static void find_iso_device(void)
