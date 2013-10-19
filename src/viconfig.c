@@ -41,7 +41,6 @@ static bool viconfig_setup_editors(void)
   size_t i = 0;
   const char *s = 0;
   char path[PATH_MAX] = {0};
-  struct stat st = {0};
   size_t j = 0;
 
   editors = alloc(char *,list_count + 1);
@@ -50,7 +49,7 @@ static bool viconfig_setup_editors(void)
   {
     strfcpy(path,sizeof(path),"usr/bin/%s",s);
   
-    if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0755) == 0755)
+    if(ispathpresent(path,S_IFREG,0755))
       editors[j++] = strdup(s);
   }
 
