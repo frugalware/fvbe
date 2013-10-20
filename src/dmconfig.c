@@ -36,7 +36,6 @@ static bool dmconfig_setup_managers(void)
   size_t i = 0;
   const char *s = 0;
   char path[PATH_MAX] = {0};
-  struct stat st = {0};
   size_t j = 0;
 
   managers = alloc(char *,list_count + 1);
@@ -50,8 +49,8 @@ static bool dmconfig_setup_managers(void)
     }
 
     strfcpy(path,sizeof(path),"lib/systemd/system/%s.service",s);
-  
-    if(stat(path,&st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & 0644) == 0644)
+
+    if(ispathpresent(path,S_IFREG,0644))
       managers[j++] = strdup(s);
   }
 
