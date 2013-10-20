@@ -63,7 +63,7 @@ if [ -n "$FVBE_ISO_PACKAGES" ]; then
     MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-$FVBE_ARCH"
   elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
     FDB=frugalware.fdb
-    MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-stable/frugalware-$FVBE_ARCH"
+    MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-$FVBE_ISO_RELEASE/frugalware-$FVBE_ARCH"
   fi
   mkdir -p $FVBE_ROOT/packages
   while read line; do
