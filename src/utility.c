@@ -250,7 +250,6 @@ extern int get_number_padding(int n)
 extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
 {
   size_t j = 0;
-  struct stat st = {0};
 
   if(raids == 0 || s == 0 || n == 0)
   {
@@ -268,7 +267,7 @@ extern bool find_unused_raid_device(struct raid **raids,char *s,size_t n)
     
     if(
       lfind(s,raids,&j,sizeof(struct raid *),raid_compare) != 0 ||
-      stat(s,&st) == 0
+      ispathpresent(s,S_IFBLK,0660)
     )
       continue;
     
