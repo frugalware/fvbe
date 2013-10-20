@@ -91,14 +91,13 @@ static bool update_via_old(const char *zone,bool utc)
 static bool update_via_new(const char *zone,bool utc)
 {
   char command[_POSIX_ARG_MAX] = {0};
-  struct stat st = {0};
   
   strfcpy(command,sizeof(command),"timedatectl set-timezone '%s'",shell_escape(zone));
   
   if(!execute(command,g->guestroot,0))
     return false;
 
-  if(stat("etc/adjtime",&st) == -1)
+  if(!ispathpresent("etc/adjtime",S_IFREG,0644))
   {
     strfcpy(command,sizeof(command),"hwclock --systohc %s",(utc) ? "--utc" : "--localtime");
 
