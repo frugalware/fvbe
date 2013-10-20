@@ -77,11 +77,10 @@ static bool preconfig_prepare_paths(void)
 static bool preconfig_prepare_source(void)
 {
   char path[PATH_MAX] = {0};
-  struct stat st = {0};
   char groups[LINE_MAX] = {0};
   const char *source = "unknown";
 
-  if(g->infvbe && stat(ISO_ROOT "/packages",&st) == 0)
+  if(g->infvbe && ispathpresent(ISO_ROOT "/packages",S_IFDIR,0555))
   {
     file2str(ISO_ROOT "/packages/groups",groups,sizeof(groups));
 
