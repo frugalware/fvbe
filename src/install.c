@@ -36,7 +36,7 @@ static int dl_howmany = 0;
 
 static void install_database_callback(const char *name,PM_DB *db)
 {
-  if(strcmp(name,"frugalware") == 0 || strcmp(name,"frugalware-current") == 0)
+  if(strcmp(name,RELEASE_BRANCH) == 0)
   {
     if(dl_database != 0)
     {

@@ -101,7 +101,7 @@ static bool preconfig_prepare_source(void)
       return false;
     }
       
-    if(!preconfig_copy_fdb("frugalware") && !preconfig_copy_fdb("frugalware-current"))
+    if(!preconfig_copy_fdb(RELEASE_BRANCH))
     {
       error("failed to find the fdb");
       return false;

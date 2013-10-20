@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <pacman.h>
+#include "local.h"
 
 static PM_DB *syncdb = 0;
 
@@ -33,7 +34,7 @@ static void janitor(void)
 
 static void database_callback(const char *name,PM_DB *db)
 {
-  if(strcmp(name,"frugalware") == 0 || strcmp(name,"frugalware-current") == 0)
+  if(strcmp(name,RELEASE_BRANCH) == 0)
   {
     if(syncdb != 0)
     {
