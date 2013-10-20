@@ -42,6 +42,7 @@
 #include <locale.h>
 #include <time.h>
 #include <dirent.h>
+#include <signal.h>
 #include <libgen.h>
 #include <search.h>
 #include <blkid.h>

@@ -1790,6 +1790,14 @@ extern int ui_main(int argc,char **argv)
     return code;
   }
 
+  // Needed to keep SIGWINCH from screwing up system calls.
+  if(siginterrupt(SIGWINCH,false) == -1)
+  {
+    eprintf("Failed to stop SIGWINCH from interrupting system calls.\n");
+    newtFinished();
+    return code;
+  }
+
   newtGetScreenSize(&w,&h);
 
   if(w < 80 || h < 24)
