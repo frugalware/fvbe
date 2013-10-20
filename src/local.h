@@ -54,6 +54,14 @@
 #define NEWT_HEIGHT 21
 #endif
 
+#ifdef RELEASE_STABLE
+#define RELEASE_BRANCH "frugalware"
+#elif defined(RELEASE_CURRENT)
+#define RELEASE_BRANCH "frugalware-current"
+#else
+#error "Release is not defined!"
+#endif
+
 #define ISO_ROOT "/run/initramfs/live"
 #define SPACE_CHARS " \t\r\n\v\f"
 #define LOWER_CHARS "abcdefghijklmnopqrstuvwxyz"
