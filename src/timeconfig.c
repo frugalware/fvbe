@@ -97,7 +97,7 @@ static bool update_via_new(const char *zone,bool utc)
   if(!execute(command,g->guestroot,0))
     return false;
 
-  if(!ispathpresent("etc/adjtime",S_IFREG,0644))
+  if(!ispathpresent("etc/adjtime",S_IFREG,0))
   {
     strfcpy(command,sizeof(command),"hwclock --systohc %s",(utc) ? "--utc" : "--localtime");
 
