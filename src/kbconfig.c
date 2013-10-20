@@ -208,7 +208,7 @@ static bool kbconfig_update(const struct layout *layout)
   if(!execute(command,g->hostroot,0))
     return false;
 
-  if(inx11())
+  if(inx11() && ispathpresent("/usr/bin/setxkbmap",S_IFREG,0755))
   {
     strfcpy(command,sizeof(command),"setxkbmap -option ''");
     
