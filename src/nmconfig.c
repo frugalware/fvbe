@@ -21,6 +21,36 @@ static struct nmdevice **nmdevices = 0;
 static struct nmprofile **nmprofiles = 0;
 static char *pname = 0;
 
+static bool nm_is_running(void)
+{
+  FILE *pipe = 0;
+  char line[LINE_MAX] = {0};
+  char *p = 0;
+  
+  if((pipe = popen("LC_ALL=C nmcli -t -m tabular -f RUNNING -e yes nm 2>&1","r")) == 0)
+  {
+    error(strerror(errno));
+    return false;
+  }
+
+  if(fgets(line,sizeof(line),pipe) == 0)
+  {
+    pclose(pipe);
+    return false;
+  }
+  
+  if(pclose(pipe) == -1)
+  {
+    error(strerror(errno));
+    return false;
+  }
+
+  if((p = strchr(p,'\n')) != 0)
+    *p = 0;
+
+  return (strcmp(line,"running") == 0);
+}
+
 static inline const char *nm_next_token(const char *p)
 {
   char c1 = 0;
@@ -313,6 +343,14 @@ static void nmprofile_free(struct nmprofile *p)
   free(p);
 }
 
+static bool nmconfig_start_service(void)
+{
+  if(nm_is_running())
+    return true;
+
+  return execute("systemctl restart NetworkManager.service",g->hostroot,0);
+}
+
 static bool nmconfig_setup_devices(void)
 {
   FILE *pipe = 0;
@@ -468,6 +506,9 @@ static bool nmconfig_start(void)
   size_t j = 0;
   size_t size = sizeof(entries) / sizeof(*entries);
   char *entry = 0;
+
+  if(!nmconfig_start_service())
+    return false;
 
   if(!nmconfig_setup_devices())
     return false;
