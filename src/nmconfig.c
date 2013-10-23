@@ -45,7 +45,7 @@ static bool nm_is_running(void)
     return false;
   }
 
-  if((p = strchr(p,'\n')) != 0)
+  if((p = strchr(line,'\n')) != 0)
     *p = 0;
 
   return (strcmp(line,"running") == 0);
