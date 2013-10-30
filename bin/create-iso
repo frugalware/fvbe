@@ -4,50 +4,11 @@ set -e
 
 . ./fvbe.conf
 
-do_video()
-{
-  echo "submenu 'Video Resolutions' {"
-  for i in 1280x1024-795 1024x768-792 800x600-789 640x480-786; do
-  echo "  menuentry '${i%-*}' {"
-  echo "    set video='vga=${i#*-} nomodeset'"
-  echo "    export video"
-  echo "    configfile /boot/grub/menu.cfg"
-  echo "  }"  
-  done
-  echo "}"
-}
-
-do_locales()
-{
-  echo "submenu 'Locales' {"
-  for i in $(cat locales); do
-  echo "  menuentry '$i' {"
-  echo "    set locale=$i"
-  echo "    export locale"
-  echo "    configfile /boot/grub/menu.cfg"
-  echo "  }"
-  done
-  echo "}"
-}
-
-do_layouts()
-{
-  echo "submenu 'Keyboard Layouts' {"
-  for i in $(cat layouts); do
-  echo "  menuentry '$i' {"
-  echo "    set layout=$i"
-  echo "    export layout"
-  echo "    configfile /boot/grub/menu.cfg"
-  echo "  }"
-  done
-  echo "}"
-}
-
 # First, clean up.
 rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp local local.lastupdate sums var
 
 # Create the skeleton directory.
-mkdir -p $FVBE_ROOT/{boot/grub/fonts,LiveOS}
+mkdir -p $FVBE_ROOT/{boot,LiveOS}
 
 # Setup kernel and initrd.
 cp vmlinuz $FVBE_ROOT/boot/vmlinuz
@@ -81,53 +42,6 @@ EOF
   cp $FDB $FVBE_ROOT/packages/$FDB
   echo $FVBE_ISO_PACKAGES > $FVBE_ROOT/packages/groups
 fi
-
-# Collect some grub files that are not automatically handled.
-cp unicode.pf2 $FVBE_ROOT/boot/grub/fonts/unicode.pf2
-cat > $FVBE_ROOT/boot/grub/menu.cfg << EOF
-menuentry 'Frugalware Versatile Bootable Environment' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video
-  initrd /boot/initrd
-}
-menuentry 'Frugalware Versatile Bootable Environment (RAM)' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video rd.live.ram=1
-  initrd /boot/initrd
-}
-if [ \$mode = video ]; then
-$(do_video)
-fi
-$(do_locales)
-$(do_layouts)
-EOF
-
-# Setup grub2 config.
-cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
-set mode=$FVBE_ISO_IO_MODE
-export mode
-set locale=$FVBE_LOCALE
-export locale
-set layout=$FVBE_LAYOUT
-export layout
-
-if [ \$mode = video ]; then
-  loadfont unicode
-  insmod all_video  
-  terminal_input console
-  terminal_output gfxterm
-elif [ \$mode = serial ]; then
-  $FVBE_ISO_IO_SERIAL_GRUB
-  terminal_input serial
-  terminal_output serial
-  terminfo -u vt100-color
-  set video=$FVBE_ISO_IO_SERIAL_LINUX
-  export video
-fi
-
-configfile /boot/grub/menu.cfg
-EOF
-
-# Create the ISO.
-grub-mkrescue -o fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso $FVBE_ROOT -- -boot_image any partition_offset=16 -volid FVBE
 
 # Delete the root directory.
 rm -rf $FVBE_ROOT tmp local local.lastupdate sums var
