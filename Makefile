@@ -46,6 +46,20 @@ rootfs: bin/create-rootfs bin/fwsetup
 	bin/create-rootfs
 	touch rootfs
 
+ifeq ($(ARCH),i686)
+ISO_EXTRAS := syslinux/fvbe.bios
+endif
+
+ifeq ($(ARCH),x86_64)
+ISO_EXTRAS := syslinux/fvbe.bios syslinux/fvbe.efi
+endif
+
+syslinux/fvbe.bios: syslinux/fvbe.c syslinux/i386.ld
+	make -C syslinux SYSLINUX=bios
+
+syslinux/fvbe.efi: syslinux/fvbe.c syslinux/x86_64.ld
+	make -C syslinux SYSLINUX=efi
+
 $(ISO): rootfs bin/create-iso bin/resolvegroups
 	bin/create-iso
 
@@ -74,4 +88,4 @@ install: bin/fwsetup
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/grubconfig
 
 clean:
-	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) rootfs fvbe.conf var
+	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) rootfs fvbe.conf var syslinux/fvbe.bios syslinux/fvbe.efi
