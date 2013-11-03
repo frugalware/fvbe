@@ -77,8 +77,10 @@ install: bin/fwsetup
 clean:
 	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) rootfs fvbe.conf var
 else
+ROOT   := /usr/lib/syslinux
 CFLAGS := -std=gnu99
 CFLAGS += -Os
+CFLAGS += -Wall -Wextra
 ifeq ($(SYSLINUX),bios)
 CFLAGS += -m32
 CFLAGS += -march=i386
@@ -100,4 +102,9 @@ CFLAGS += -falign-functions=0
 CFLAGS += -falign-jumps=0
 CFLAGS += -falign-labels=0
 CFLAGS += -falign-loops=0
+CFLAGS += -nostdinc
+CFLAGS += -nostdlib
+CFLAGS += -I$(ROOT)/com32/include
+CFLAGS += -D__COM32__
+CFLAGS += -DDYNAMIC_MODULE
 endif
