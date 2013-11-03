@@ -86,16 +86,19 @@ CFLAGS += -m32
 CFLAGS += -march=i386
 CFLAGS += -mpreferred-stack-boundary=2
 CFLAGS += -Wl,-m,elf_i386
-CFLAGS += -Wl,-T,src/i386.ld
+CFLAGS += -Wl,-T,i386.ld
 CFLAGS += -L$(ROOT)
+CFLAGS += -mregparm=3
+TARGET := src/fvbe.bios
 endif
 ifeq ($(SYSLINUX),efi)
 CFLAGS += -m64
 CFLAGS += -march=x86-64
 CFLAGS += -mpreferred-stack-boundary=4
 CFLAGS += -Wl,-m,elf_x86_64
-CFLAGS += -Wl,-T,src/x86_64.ld
+CFLAGS += -Wl,-T,x86_64.ld
 CFLAGS += -L$(ROOT)/efi64
+TARGET := src/fvbe.efi
 endif
 CFLAGS += -fomit-frame-pointer
 CFLAGS += -fno-stack-protector
@@ -121,4 +124,7 @@ CFLAGS += -Wl,--hash-style=gnu
 CFLAGS += -Wl,--as-needed
 CFLAGS += -l:libutil.c32
 CFLAGS += -l:libcom32.c32
+
+$(TARGET): src/fvbe.c
+	cd src; cc $(CFLAGS) $(subst src/,,$<) -o $(subst src/,,$@)
 endif
