@@ -60,7 +60,7 @@ syslinux/fvbe.bios: syslinux/fvbe.c syslinux/i386.ld
 syslinux/fvbe.efi: syslinux/fvbe.c syslinux/x86_64.ld
 	make -C syslinux SYSLINUX=efi
 
-$(ISO): rootfs bin/create-iso bin/resolvegroups
+$(ISO): rootfs bin/create-iso bin/resolvegroups $(ISO_EXTRAS)
 	bin/create-iso
 
 iso: $(ISO)
