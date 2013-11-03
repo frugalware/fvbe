@@ -85,11 +85,15 @@ ifeq ($(SYSLINUX),bios)
 CFLAGS += -m32
 CFLAGS += -march=i386
 CFLAGS += -mpreferred-stack-boundary=2
+CFLAGS += -Wl,-m,elf_i386
+CFLAGS += -Wl,-T,src/i386.ld
 endif
 ifeq ($(SYSLINUX),efi)
 CFLAGS += -m64
 CFLAGS += -march=x86-64
 CFLAGS += -mpreferred-stack-boundary=4
+CFLAGS += -Wl,-m,elf_x86_64
+CFLAGS += -Wl,-T,src/x86_64.ld
 endif
 CFLAGS += -fomit-frame-pointer
 CFLAGS += -fno-stack-protector
@@ -107,4 +111,7 @@ CFLAGS += -nostdlib
 CFLAGS += -I$(ROOT)/com32/include
 CFLAGS += -D__COM32__
 CFLAGS += -DDYNAMIC_MODULE
+CFLAGS += -Wl,-shared
+CFLAGS += -Wl,--hash-style=gnu
+CFLAGS += -Wl,--as-needed
 endif
