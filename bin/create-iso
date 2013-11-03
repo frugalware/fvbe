@@ -48,6 +48,8 @@ fi
 if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   cp $SYSLINUX_ROOT/isolinux.bin $FVBE_ROOT/boot/syslinux/syslinux.bin
   cp $SYSLINUX_ROOT/ldlinux.c32 $FVBE_ROOT/boot/syslinux/ldlinux.c32
+  cp $SYSLINUX_ROOT/libutil.c32 $FVBE_ROOT/boot/syslinux/libutil.c32
+  cp $SYSLINUX_ROOT/libcom32.c32 $FVBE_ROOT/boot/syslinux/libcom32.c32
   cp syslinux/fvbe.bios $FVBE_ROOT/boot/syslinux/fvbe.c32
 fi
 

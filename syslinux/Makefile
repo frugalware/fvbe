@@ -42,7 +42,7 @@ CFLAGS += -D__COM32__
 CFLAGS += -DDYNAMIC_MODULE
 CFLAGS += -Wl,-shared
 CFLAGS += -Wl,--hash-style=gnu
-CFLAGS += -Wl,--as-needed
+#CFLAGS += -Wl,--as-needed
 CFLAGS += -l:libutil.c32
 CFLAGS += -l:libcom32.c32
 
