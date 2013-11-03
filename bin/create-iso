@@ -4,11 +4,13 @@ set -e
 
 . ./fvbe.conf
 
+SYSLINUX_ROOT="/usr/lib/syslinux"
+
 # First, clean up.
 rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp local local.lastupdate sums var
 
 # Create the skeleton directory.
-mkdir -p $FVBE_ROOT/{boot,LiveOS}
+mkdir -p $FVBE_ROOT/{boot/syslinux,LiveOS}
 
 # Setup kernel and initrd.
 cp vmlinuz $FVBE_ROOT/boot/vmlinuz
@@ -42,6 +44,24 @@ EOF
   cp $FDB $FVBE_ROOT/packages/$FDB
   echo $FVBE_ISO_PACKAGES > $FVBE_ROOT/packages/groups
 fi
+
+if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
+  cp $SYSLINUX_ROOT/isolinux.bin $FVBE_ROOT/boot/syslinux/syslinux.bin
+  cp $SYSLINUX_ROOT/ldlinux.c32 $FVBE_ROOT/boot/syslinux/ldlinux.c32
+  cp syslinux/fvbe.bios $FVBE_ROOT/boot/syslinux/fvbe.c32
+fi
+
+xorriso \
+  -as mkisofs \
+	-graft-points \
+	-no-emul-boot \
+	-boot-info-table \
+	-boot-load-size 4 \
+	-b boot/syslinux/syslinux.bin \
+	-c boot/syslinux/boot.cat \
+	-V "FVBE" \
+	-o "fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso" \
+	-r "$FVBE_ROOT"
 
 # Delete the root directory.
 rm -rf $FVBE_ROOT tmp local local.lastupdate sums var
