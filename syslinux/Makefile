@@ -37,14 +37,21 @@ CFLAGS += -nostdlib
 CFLAGS += -nodefaultlibs
 CFLAGS += -iwithprefix
 CFLAGS += include
-CFLAGS += -I$(ROOT)/com32/include
+CFLAGS += -Iinclude/libmenu
+CFLAGS += -Iinclude/libgpl
+CFLAGS += -Iinclude/libcom32
+CFLAGS += -Iinclude/libutil
+CFLAGS += -Iinclude/libcore
+CFLAGS += -Iinclude/libobj
 CFLAGS += -D__COM32__
 CFLAGS += -DDYNAMIC_MODULE
 CFLAGS += -Wl,-shared
 CFLAGS += -Wl,--hash-style=gnu
 #CFLAGS += -Wl,--as-needed
-CFLAGS += -l:libutil.c32
+CFLAGS += -l:libmenu.c32
+CFLAGS += -l:libgpl.c32
 CFLAGS += -l:libcom32.c32
+CFLAGS += -l:libutil.c32
 
 $(TARGET): fvbe.c
 	cc $(CFLAGS) $< -o $@
