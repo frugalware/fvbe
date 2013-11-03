@@ -1,3 +1,4 @@
+ifndef SYSLINUX
 include fvbe.conf
 
 ARCH    := $(subst ",,$(FVBE_ARCH))
@@ -75,3 +76,28 @@ install: bin/fwsetup
 
 clean:
 	rm -rf $(OBJECTS) src/resolvegroups.o bin/resolvegroups bin/fwsetup root vmlinuz initrd mounts rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) tmp local local.lastupdate sums $(FDB) rootfs fvbe.conf var
+else
+CFLAGS := -std=gnu99
+CFLAGS += -Os
+ifeq ($(SYSLINUX),bios)
+CFLAGS += -m32
+CFLAGS += -march=i386
+CFLAGS += -mpreferred-stack-boundary=2
+endif
+ifeq ($(SYSLINUX),efi)
+CFLAGS += -m64
+CFLAGS += -march=x86-64
+CFLAGS += -mpreferred-stack-boundary=4
+endif
+CFLAGS += -fomit-frame-pointer
+CFLAGS += -fno-stack-protector
+CFLAGS += -fwrapv
+CFLAGS += -freg-struct-return
+CFLAGS += -fno-exceptions
+CFLAGS += -fno-asynchronous-unwind-tables
+CFLAGS += -fPIC
+CFLAGS += -falign-functions=0
+CFLAGS += -falign-jumps=0
+CFLAGS += -falign-labels=0
+CFLAGS += -falign-loops=0
+endif
