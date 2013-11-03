@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+if [ -z "$1" ]; then
+	echo "Usage: $0 <root directory>"
+	exit 1
+fi
+
+SYSLINUX_ROOT="$1"
+
+rm -rf syslinux/include
+
+mkdir -p syslinux/include/{libcom32,libcore,libutil,libgpl,libmenu,libobj}
+
+cp -rf $SYSLINUX_ROOT/com32/include/* syslinux/include/libcom32/
+cp -rf $SYSLINUX_ROOT/core/include/* syslinux/include/libcore/ 
+cp -rf $SYSLINUX_ROOT/com32/libutil/include/* syslinux/include/libutil/
+cp -rf $SYSLINUX_ROOT/com32/gplinclude/* syslinux/include/libgpl/
+cp -rf $SYSLINUX_ROOT/com32/cmenu/libmenu/*.h syslinux/include/libmenu/
+cp -rf $SYSLINUX_ROOT/*.h syslinux/include/libobj/
