@@ -38,7 +38,7 @@ CFLAGS += -nodefaultlibs
 CFLAGS += -iwithprefix
 CFLAGS += include
 CFLAGS += -Iinclude/libmenu
-CFLAGS += -Iinclude/libgpl
+#CFLAGS += -Iinclude/libgpl
 CFLAGS += -Iinclude/libcom32
 CFLAGS += -Iinclude/libutil
 CFLAGS += -Iinclude/libcore
@@ -49,7 +49,7 @@ CFLAGS += -Wl,-shared
 CFLAGS += -Wl,--hash-style=gnu
 #CFLAGS += -Wl,--as-needed
 CFLAGS += -l:libmenu.c32
-CFLAGS += -l:libgpl.c32
+#CFLAGS += -l:libgpl.c32
 CFLAGS += -l:libcom32.c32
 CFLAGS += -l:libutil.c32
 
