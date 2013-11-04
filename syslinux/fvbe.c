@@ -1,10 +1,33 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <sys/pci.h>
+#include <errno.h>
 
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
+
+static unsigned char columns = 0;
+static unsigned char rows = 0;
+
+static bool text_output_initialize(void)
+{
+  int w = 0;
+  int h = 0;
+
+  if(getscreensize(STDOUT_FILENO,&w,&h) == -1)
+  {
+    error(strerror(errno));
+    return false;
+  }
+
+  columns = w;
+
+  rows = h;
+
+  return true;
+}
 
 static bool pci_bus_probe(void)
 {
@@ -45,6 +68,9 @@ static bool pci_bus_probe(void)
 
 extern int main(void)
 {
+  if(!text_output_initialize())
+    return EXIT_FAILURE;
+
   if(!pci_bus_probe())
     return EXIT_FAILURE;
 
