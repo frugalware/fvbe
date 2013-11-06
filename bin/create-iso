@@ -3,3 +3,11 @@
 set -e
 
 . ./fvbe.conf
+
+if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
+  cp $FVBE_ISO_SYSLINUX_ROOT/isolinux.bin $FVBE_ROOT/boot/syslinux/syslinux.bin
+  cp $FVBE_ISO_SYSLINUX_ROOT/ldlinux.c32 $FVBE_ROOT/boot/syslinux/ldlinux.c32
+  for i in $FVBE_ISO_SYSLINUX_MODULES; do
+    cp $FVBE_ISO_SYSLINUX_ROOT/$i.c32 $FVBE_ROOT/boot/syslinux/$i.c32
+  done
+fi
