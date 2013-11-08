@@ -31,6 +31,7 @@ cd $FVBE_ROOT
 xz -d < "$INITRD" | cpio --extract --preserve-modification-time
 
 install -m 0755 ../bin/init init
+install -m 0755 ../bin/qemu-exit sbin/qemu-exit
 
 find . | cpio --create -R 0:0 -H newc | xz --check=crc32 --lzma2=dict=1MiB > ../qemu-initrd
 

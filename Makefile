@@ -57,6 +57,9 @@ bin/fwsetup: $(OBJECTS)
 bin/resolvegroups: src/resolvegroups.o
 	cc $(LDFLAGS) $^ -o $@
 
+bin/qemu-exit: src/qemu-exit.o
+	cc $(LDFLAGS) $^ -o $@
+
 setup: bin/fwsetup
 
 install: bin/fwsetup
