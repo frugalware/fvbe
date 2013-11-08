@@ -55,10 +55,10 @@ bin/fwsetup: $(OBJECTS)
 	cc $(LDFLAGS) $^ -o $@
 
 bin/resolvegroups: src/resolvegroups.o
-	cc $(LDFLAGS) $^ -o $@
+	cc -lpacman $^ -o $@
 
 bin/qemu-exit: src/qemu-exit.o
-	cc $(LDFLAGS) $^ -o $@
+	cc $^ -o $@
 
 setup: bin/fwsetup
 

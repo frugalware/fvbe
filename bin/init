@@ -3,8 +3,7 @@
 error()
 {
   echo "$1"
-  halt
-  exit 1
+  qemu-exit
 }
 
 ROOT="/root"
@@ -34,4 +33,4 @@ fi
 
 bash
 
-halt
+qemu-exit
