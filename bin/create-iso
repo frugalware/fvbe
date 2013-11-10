@@ -4,13 +4,13 @@ set -e
 
 . ./fvbe.conf
 
-#if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
-#mkdir -p $FVBE_ROOT/boot/syslinux
-#cat > $FVBE_ROOT/boot/syslinux/syslinux.cfg << EOF
-#serial 0 115200
-#default fvbe
-#EOF
-#fi
+if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
+  cat > $FVBE_ISO_ROOTFS_ROOT/syslinux.cfg << EOF
+console 1
+serial 0 115200
+default fvbe
+EOF
+fi
 
 # Install syslinux bios.
 if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
@@ -26,6 +26,7 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   cp $ROOT3/locales $ROOT2/locales
   cp $ROOT3/layouts $ROOT2/layouts
   cp $ROOT3/syslinux/fvbe.bios $ROOT2/fvbe.c32
+  cp $ROOT3/syslinux.cfg $ROOT2/syslinux.cfg
   ARGS+=" -b boot/syslinux/isolinux.bin"
   ARGS+=" -c boot/syslinux/boot.cat"
   ARGS+=" -no-emul-boot"
@@ -60,6 +61,7 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   cp $ROOT4/locales $ROOT2/locales
   cp $ROOT4/layouts $ROOT2/layouts
   cp $ROOT4/syslinux/fvbe.$EFI $ROOT2/fvbe.c32
+  cp $ROOT4/syslinux.cfg $ROOT2/syslinux.cfg
   mformat -C -f 2880 -L 16 -i $ROOT3/efi.img ::
   mcopy -s -i $ROOT3/efi.img $FVBE_ROOT/efi ::/
   rm -rf $FVBE_ROOT/efi
