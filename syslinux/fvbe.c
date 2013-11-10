@@ -133,6 +133,27 @@ static bool layout_menu_setup(void)
   return true;
 }
 
+static bool main_menu_setup(void)
+{
+  init_menusystem("Frugalware Versatile Bootable Environment");
+
+  add_named_menu("main","Main Menu",-1);
+
+  add_item("Locales","",OPT_SUBMENU,"locale",0);
+
+  add_item("Keyboard Layouts","",OPT_SUBMENU,"layout",0);
+
+  if(!locale_menu_setup() || !layout_menu_setup())
+  {
+    close_menusystem();
+    return false;
+  }
+
+  set_window_size(0,0,rows,columns);
+
+  return true;
+}
+
 extern int main(void)
 {
   if(!text_output_setup())
@@ -143,7 +164,8 @@ extern int main(void)
     return EXIT_FAILURE;
 #endif
 
-  sleep(10);
+  if(!main_menu_setup())
+    return EXIT_FAILURE;
 
   return EXIT_SUCCESS;
 }
