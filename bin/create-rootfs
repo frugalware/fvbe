@@ -82,8 +82,6 @@ cat > $FVBE_ROOT/usr/libexec/fvbe-setup << EOF
 
 set -e
 
-echo "FONT=$FVBE_FONT" > /etc/vconsole.conf
-
 for i in \$(cat /proc/cmdline); do
   if [[ "\$i" =~ "locale.LANG=" ]]; then
     localectl set-locale LANG="\${i/locale.LANG=/}"
