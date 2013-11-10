@@ -181,6 +181,7 @@ cp $FVBE_ROOT/boot/initrd initrd
 cp $FVBE_ROOT/var/lib/pacman-g2/$FDB $FDB
 chroot $FVBE_ROOT sh -c "locale --all-locales | grep '\\.utf8$' | sort --unique" > locales
 tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
+ls $FVBE_ROOT/usr/share/consolefonts/ter-v*.psf.gz | sed -r 's|^.*/(ter-v[0-9]{2}[nbv]).psf.gz$|\1|' | sort --unique > fonts
 cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
 
 # Prune unimportant paths.

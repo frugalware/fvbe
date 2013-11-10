@@ -25,6 +25,7 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   done
   cp $ROOT3/locales $ROOT2/locales
   cp $ROOT3/layouts $ROOT2/layouts
+  cp $ROOT3/fonts $ROOT2/fonts
   cp $ROOT3/syslinux/fvbe.bios $ROOT2/fvbe.c32
   cp $ROOT3/syslinux.cfg $ROOT2/syslinux.cfg
   ARGS+=" -b boot/syslinux/isolinux.bin"
@@ -60,6 +61,7 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   done
   cp $ROOT4/locales $ROOT2/locales
   cp $ROOT4/layouts $ROOT2/layouts
+  cp $ROOT4/fonts $ROOT2/fonts
   cp $ROOT4/syslinux/fvbe.$EFI $ROOT2/fvbe.c32
   cp $ROOT4/syslinux.cfg $ROOT2/syslinux.cfg
   mformat -C -f 2880 -L 16 -i $ROOT3/efi.img ::
