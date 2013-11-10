@@ -12,7 +12,8 @@
 #define LINE_MAX 2048
 #endif
 
-#define MAX_MAIN    10
+#define MAX_MAIN     10
+#define MAX_FONTS    50
 #define MAX_LOCALES 300
 #define MAX_LAYOUTS 100
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
@@ -79,6 +80,46 @@ static bool pci_bus_probe(void)
   return true;
 }
 #endif
+
+static t_handler_return font_menu_handler(t_menusystem *ms,t_menuitem *mi)
+{
+  t_handler_return rv = { .valid = 1, .refresh = 0 };
+
+  strlcpy(font,mi->item,sizeof(font));
+
+  return rv;
+}
+
+static bool font_menu_setup(void)
+{
+  FILE *file = 0;
+  char line[LINE_MAX] = {0};
+
+  if((file = fopen("fonts","rb")) == 0)
+  {
+    error("failed to open fonts file");
+    return false;
+  }
+
+  add_named_menu("font","Font Selection",MAX_FONTS);
+
+  while(fgets(line,sizeof(line),file) != 0)
+  {
+    char *s = 0;
+    t_menuitem *p = 0;
+
+    if((s = strchr(line,'\n')) != 0)
+      *s = 0;
+
+    p = add_item(line,"",OPT_EXITMENU,"main",0);
+
+    p->handler = font_menu_handler;
+  }
+
+  fclose(file);
+
+  return true;
+}
 
 static t_handler_return locale_menu_handler(t_menusystem *ms,t_menuitem *mi)
 {
@@ -168,11 +209,13 @@ static bool main_menu_setup(void)
 
   add_item("Boot FVBE","",OPT_RUN,"",0);
 
+  add_item("Fonts","",OPT_SUBMENU,"font",0);
+
   add_item("Locales","",OPT_SUBMENU,"locale",0);
 
   add_item("Keyboard Layouts","",OPT_SUBMENU,"layout",0);
 
-  if(!locale_menu_setup() || !layout_menu_setup())
+  if(!font_menu_setup() || !locale_menu_setup() || !layout_menu_setup())
   {
     close_menusystem();
     return false;
