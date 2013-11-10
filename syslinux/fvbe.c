@@ -12,6 +12,9 @@
 #define LINE_MAX 2048
 #endif
 
+#define MAX_MAIN    10
+#define MAX_LOCALES 300
+#define MAX_LAYOUTS 100
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
 
 static unsigned char columns = 0;
@@ -86,7 +89,7 @@ static bool locale_menu_setup(void)
     return false;
   }
 
-  add_named_menu("locale","Locale Selection",-1);
+  add_named_menu("locale","Locale Selection",MAX_LOCALES);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -113,7 +116,7 @@ static bool layout_menu_setup(void)
     return false;
   }
 
-  add_named_menu("layout","Keyboard Layout Selection",-1);
+  add_named_menu("layout","Keyboard Layout Selection",MAX_LAYOUTS);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -132,7 +135,9 @@ static bool main_menu_setup(void)
 {
   init_menusystem("Frugalware Versatile Bootable Environment");
 
-  add_named_menu("main","Main Menu",-1);
+  add_named_menu("main","Main Menu",MAX_MAIN);
+
+  add_item("Boot FVBE","",OPT_RUN,"",0);
 
   add_item("Locales","",OPT_SUBMENU,"locale",0);
 
