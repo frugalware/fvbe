@@ -4,16 +4,27 @@ set -e
 
 . ./fvbe.conf
 
+#if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
+#mkdir -p $FVBE_ROOT/boot/syslinux
+#cat > $FVBE_ROOT/boot/syslinux/syslinux.cfg << EOF
+#serial 0 115200
+#default fvbe
+#EOF
+#fi
+
 # Install syslinux bios.
 if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   ROOT1="$FVBE_ISO_SYSLINUX_ROOT/bios"
   ROOT2="$FVBE_ROOT/boot/syslinux"
+  ROOT3="$FVBE_ISO_ROOTFS_ROOT"
   mkdir -p $ROOT2
   cp $ROOT1/isolinux.bin $ROOT2/isolinux.bin
   cp $ROOT1/ldlinux.c32 $ROOT2/ldlinux.c32
   for i in $FVBE_ISO_SYSLINUX_MODULES; do
     cp $ROOT1/$i.c32 $ROOT2/$i.c32
   done
+  cp $ROOT3/locales $ROOT2/locales
+  cp $ROOT3/layouts $ROOT2/layouts
   ARGS+=" -b boot/syslinux/isolinux.bin"
   ARGS+=" -c boot/syslinux/boot.cat"
   ARGS+=" -no-emul-boot"
@@ -38,12 +49,15 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   ROOT1="$FVBE_ISO_SYSLINUX_ROOT/$EFI"
   ROOT2="$FVBE_ROOT/efi/boot"
   ROOT3="$FVBE_ROOT/boot/syslinux"
+  ROOT4="$FVBE_ISO_ROOTFS_ROOT"
   mkdir -p $ROOT2 $ROOT3
   cp $ROOT1/syslinux.efi $ROOT2/$BOOT
   cp $ROOT1/ldlinux.${EFI/fi/} $ROOT2/ldlinux.${EFI/fi/}
   for i in $FVBE_ISO_SYSLINUX_MODULES; do
     cp $ROOT1/$i.c32 $ROOT2/$i.c32
   done
+  cp $ROOT4/locales $ROOT2/locales
+  cp $ROOT4/layouts $ROOT2/layouts
   mformat -C -f 2880 -L 16 -i $ROOT3/efi.img ::
   mcopy -s -i $ROOT3/efi.img $FVBE_ROOT/efi ::/
   rm -rf $FVBE_ROOT/efi
