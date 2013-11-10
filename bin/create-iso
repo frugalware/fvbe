@@ -14,6 +14,13 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   for i in $FVBE_ISO_SYSLINUX_MODULES; do
     cp $ROOT1/$i.c32 $ROOT2/$i.c32
   done
+
+  ARGS+=" -eltorito-boot boot/syslinux/isolinux.bin"
+  ARGS+=" -eltorito-catalog boot/syslinux/boot.cat"
+  ARGS+=" -no-emul-boot"
+  ARGS+=" -boot-load-size 4"
+  ARGS+=" -boot-info-table"
+  ARGS+=" -isohybrid-mbr $ROOT1/isohdppx.bin"
 fi
 
 # Install syslinux efi.
@@ -40,3 +47,8 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   mcopy -s -i $FVBE_ROOT/efi.img $FVBE_ROOT/efi ::/
   rm -rf $FVBE_ROOT/efi
 fi
+
+xorrisofs \
+  $ARGS \
+  -o fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso \
+  $FVBE_ROOT
