@@ -80,11 +80,19 @@ static bool pci_bus_probe(void)
 }
 #endif
 
+static t_handler_return locale_menu_handler(t_menusystem *ms,t_menuitem *mi)
+{
+  t_handler_return rv = { .valid = 1, .refresh = 0 };
+
+  strlcpy(locale,mi->item,sizeof(locale));
+
+  return rv;
+}
+
 static bool locale_menu_setup(void)
 {
   FILE *file = 0;
   char line[LINE_MAX] = {0};
-  char *p = 0;
 
   if((file = fopen("locales","rb")) == 0)
   {
@@ -96,10 +104,15 @@ static bool locale_menu_setup(void)
 
   while(fgets(line,sizeof(line),file) != 0)
   {
-    if((p = strchr(line,'\n')) != 0)
-      *p = 0;
+    char *s = 0;
+    t_menuitem *p = 0;
 
-    add_item(line,"",OPT_EXITMENU,"main",0);
+    if((s = strchr(line,'\n')) != 0)
+      *s = 0;
+
+    p = add_item(line,"",OPT_EXITMENU,"main",0);
+
+    p->handler = locale_menu_handler;
   }
 
   fclose(file);
@@ -107,11 +120,19 @@ static bool locale_menu_setup(void)
   return true;
 }
 
+static t_handler_return layout_menu_handler(t_menusystem *ms,t_menuitem *mi)
+{
+  t_handler_return rv = { .valid = 1, .refresh = 0 };
+
+  strlcpy(layout,mi->item,sizeof(layout));
+
+  return rv;
+}
+
 static bool layout_menu_setup(void)
 {
   FILE *file = 0;
   char line[LINE_MAX] = {0};
-  char *p = 0;
 
   if((file = fopen("layouts","rb")) == 0)
   {
@@ -123,10 +144,15 @@ static bool layout_menu_setup(void)
 
   while(fgets(line,sizeof(line),file) != 0)
   {
-    if((p = strchr(line,'\n')) != 0)
-      *p = 0;
+    char *s = 0;
+    t_menuitem *p = 0;
 
-    add_item(line,"",OPT_EXITMENU,"main",0);
+    if((s = strchr(line,'\n')) != 0)
+      *s = 0;
+
+    p = add_item(line,"",OPT_EXITMENU,"main",0);
+
+    p->handler = layout_menu_handler;
   }
 
   fclose(file);
