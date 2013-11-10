@@ -14,13 +14,13 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   for i in $FVBE_ISO_SYSLINUX_MODULES; do
     cp $ROOT1/$i.c32 $ROOT2/$i.c32
   done
-
-  ARGS+=" -eltorito-boot boot/syslinux/isolinux.bin"
-  ARGS+=" -eltorito-catalog boot/syslinux/boot.cat"
+  ARGS+=" -b boot/syslinux/isolinux.bin"
+  ARGS+=" -c boot/syslinux/boot.cat"
   ARGS+=" -no-emul-boot"
   ARGS+=" -boot-load-size 4"
   ARGS+=" -boot-info-table"
   ARGS+=" -isohybrid-mbr $ROOT1/isohdppx.bin"
+  ARGS+=" -eltorito-alt-boot"
 fi
 
 # Install syslinux efi.
@@ -37,15 +37,22 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   esac
   ROOT1="$FVBE_ISO_SYSLINUX_ROOT/$EFI"
   ROOT2="$FVBE_ROOT/efi/boot"
-  mkdir -p $ROOT2
+  ROOT3="$FVBE_ROOT/boot/syslinux"
+  mkdir -p $ROOT2 $ROOT3
   cp $ROOT1/syslinux.efi $ROOT2/$BOOT
   cp $ROOT1/ldlinux.${EFI/fi/} $ROOT2/ldlinux.${EFI/fi/}
   for i in $FVBE_ISO_SYSLINUX_MODULES; do
     cp $ROOT1/$i.c32 $ROOT2/$i.c32
   done
-  mformat -C -f 2880 -L 16 -i $FVBE_ROOT/efi.img ::
-  mcopy -s -i $FVBE_ROOT/efi.img $FVBE_ROOT/efi ::/
+  mformat -C -f 2880 -L 16 -i $ROOT3/efi.img ::
+  mcopy -s -i $ROOT3/efi.img $FVBE_ROOT/efi ::/
   rm -rf $FVBE_ROOT/efi
+  ARGS+=" -e boot/syslinux/efi.img"
+  ARGS+=" -c boot/syslinux/boot.cat"
+  ARGS+=" -no-emul-boot"
+  ARGS+=" -boot-load-size 4"
+  ARGS+=" -isohybrid-gpt-basdat"
+  ARGS+=" -eltorito-alt-boot"
 fi
 
 xorrisofs \
