@@ -12,7 +12,6 @@
 #define LINE_MAX 2048
 #endif
 
-#define RETURN_MAIN_MENU_TEXT "Return to Main Menu"
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
 
 static unsigned char columns = 0;
@@ -89,8 +88,6 @@ static bool locale_menu_setup(void)
 
   add_named_menu("locale","Locale Selection",-1);
 
-  add_item(RETURN_MAIN_MENU_TEXT,"",OPT_EXITMENU,"main",0);
-
   while(fgets(line,sizeof(line),file) != 0)
   {
     if((p = strchr(line,'\n')) != 0)
@@ -117,8 +114,6 @@ static bool layout_menu_setup(void)
   }
 
   add_named_menu("layout","Keyboard Layout Selection",-1);
-
-  add_item(RETURN_MAIN_MENU_TEXT,"",OPT_EXITMENU,"main",0);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -149,7 +144,7 @@ static bool main_menu_setup(void)
     return false;
   }
 
-  set_window_size(0,0,rows,columns);
+  set_window_size(0,0,columns,rows);
 
   return true;
 }
@@ -166,6 +161,8 @@ extern int main(void)
 
   if(!main_menu_setup())
     return EXIT_FAILURE;
+
+  showmenus(find_menu_num("main"));
 
   return EXIT_SUCCESS;
 }
