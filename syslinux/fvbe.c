@@ -19,6 +19,9 @@
 
 static unsigned char columns = 0;
 static unsigned char rows = 0;
+static char font[32]   = "ter-v16b";
+static char locale[32] = "en_US.utf8";
+static char layout[32] = "us";
 
 static bool text_output_setup(void)
 {
