@@ -5,13 +5,15 @@
 #include <unistd.h>
 #include <sys/pci.h>
 #include <errno.h>
+#include <cmenu.h>
 
+#define RETURN_MAIN_MENU_TEXT "Return to Main Menu"
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
 
 static unsigned char columns = 0;
 static unsigned char rows = 0;
 
-static bool text_output_initialize(void)
+static bool text_output_setup(void)
 {
   int w = 0;
   int h = 0;
@@ -29,6 +31,7 @@ static bool text_output_initialize(void)
   return true;
 }
 
+#if 0
 static bool pci_bus_probe(void)
 {
   struct pci_device *device = 0;
@@ -65,14 +68,46 @@ static bool pci_bus_probe(void)
 
   return true;
 }
+#endif
+
+static bool locale_menu_setup(void)
+{
+  FILE *file = 0;
+  char line[2048] = {0};
+  char *p = 0;
+
+  if((file = fopen("locales","rb")) == 0)
+  {
+    error("failed to open locales file");
+    return false;
+  }
+
+  add_named_menu("locale","Locale Selection",-1);
+
+  add_item(RETURN_MAIN_MENU_TEXT,"",OPT_EXITMENU,"main",0);
+
+  while(fgets(line,sizeof(line),file) != 0)
+  {
+    if((p = strchr(line,'\n')) != 0)
+      *p = 0;
+
+    add_item(line,"",OPT_EXITMENU,"main",0);
+  }
+
+  fclose(file);
+
+  return true;
+}
 
 extern int main(void)
 {
-  if(!text_output_initialize())
+  if(!text_output_setup())
     return EXIT_FAILURE;
 
+#if 0
   if(!pci_bus_probe())
     return EXIT_FAILURE;
+#endif
 
   sleep(10);
 
