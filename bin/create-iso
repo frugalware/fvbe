@@ -28,6 +28,8 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   cp $ROOT3/fonts $ROOT2/fonts
   cp $ROOT3/syslinux/fvbe.bios $ROOT2/fvbe.c32
   cp $ROOT3/syslinux.cfg $ROOT2/syslinux.cfg
+  cp $ROOT3/vmlinuz $ROOT2/vmlinuz
+  cp $ROOT3/initrd $ROOT2/initrd
   ARGS+=" -b boot/syslinux/isolinux.bin"
   ARGS+=" -c boot/syslinux/boot.cat"
   ARGS+=" -no-emul-boot"
@@ -64,7 +66,10 @@ if [ "$FVBE_ARCH" = "i686" -o "$FVBE_ARCH" = "x86_64" ]; then
   cp $ROOT4/fonts $ROOT2/fonts
   cp $ROOT4/syslinux/fvbe.$EFI $ROOT2/fvbe.c32
   cp $ROOT4/syslinux.cfg $ROOT2/syslinux.cfg
-  mformat -C -f 2880 -L 16 -i $ROOT3/efi.img ::
+  cp $ROOT4/vmlinuz $ROOT2/vmlinuz
+  cp $ROOT4/initrd $ROOT2/initrd
+  SIZE="$(du -s --apparent-size $FVBE_ROOT/efi | cut -f 1)"
+  mformat -C -t 1 -h 1 -s $(( ($SIZE + 256) * 1024 / 512 )) -L 16 -i $ROOT3/efi.img ::
   mcopy -s -i $ROOT3/efi.img $FVBE_ROOT/efi ::/
   rm -rf $FVBE_ROOT/efi
   ARGS+=" -e boot/syslinux/efi.img"
