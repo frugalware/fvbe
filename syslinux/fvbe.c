@@ -14,11 +14,15 @@
 #define LINE_MAX 2048
 #endif
 
-#define MAX_MAIN     10
-#define MAX_FONTS    50
-#define MAX_LOCALES 300
-#define MAX_LAYOUTS 100
-#define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
+#define FONT_MENU     0
+#define LOCALE_MENU   1
+#define LAYOUT_MENU   2
+#define MAIN_MENU     3
+#define MAX_MAIN    255
+#define MAX_FONTS   255
+#define MAX_LOCALES 255
+#define MAX_LAYOUTS 255
+#define error(S)    fprintf(stdout,"%s: %s\n",__func__,S)
 
 static unsigned char columns  = 0;
 static unsigned char rows     = 0;
@@ -305,7 +309,7 @@ extern int main(void)
 
   while(true)
   {
-    t_menuitem *p = showmenus(0);
+    t_menuitem *p = showmenus(MAIN_MENU);
 
     if(p != 0 && p->data != 0 && p->action == OPT_RUN)
     {
