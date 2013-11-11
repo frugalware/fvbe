@@ -86,11 +86,9 @@ static bool pci_bus_probe(void)
 }
 #endif
 
-static t_handler_return font_menu_handler(t_menusystem *ms,t_menuitem *mi)
+static t_handler_return menu_item_handler(t_menusystem *ms,t_menuitem *mi)
 {
   t_handler_return rv = { .valid = 1, .refresh = 0 };
-
-  strlcpy(font,mi->item,sizeof(font));
 
   return rv;
 }
@@ -118,21 +116,12 @@ static bool font_menu_setup(void)
 
     p = add_item(line,"",OPT_EXITMENU,"main",0);
 
-    p->handler = font_menu_handler;
+    p->handler = menu_item_handler;
   }
 
   fclose(file);
 
   return true;
-}
-
-static t_handler_return locale_menu_handler(t_menusystem *ms,t_menuitem *mi)
-{
-  t_handler_return rv = { .valid = 1, .refresh = 0 };
-
-  strlcpy(locale,mi->item,sizeof(locale));
-
-  return rv;
 }
 
 static bool locale_menu_setup(void)
@@ -158,21 +147,12 @@ static bool locale_menu_setup(void)
 
     p = add_item(line,"",OPT_EXITMENU,"main",0);
 
-    p->handler = locale_menu_handler;
+    p->handler = menu_item_handler;
   }
 
   fclose(file);
 
   return true;
-}
-
-static t_handler_return layout_menu_handler(t_menusystem *ms,t_menuitem *mi)
-{
-  t_handler_return rv = { .valid = 1, .refresh = 0 };
-
-  strlcpy(layout,mi->item,sizeof(layout));
-
-  return rv;
 }
 
 static bool layout_menu_setup(void)
@@ -198,7 +178,7 @@ static bool layout_menu_setup(void)
 
     p = add_item(line,"",OPT_EXITMENU,"main",0);
 
-    p->handler = layout_menu_handler;
+    p->handler = menu_item_handler;
   }
 
   fclose(file);
