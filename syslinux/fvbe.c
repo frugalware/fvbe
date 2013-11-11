@@ -14,23 +14,20 @@
 #define LINE_MAX 2048
 #endif
 
-#define FONT_MENU     0
-#define LOCALE_MENU   1
-#define LAYOUT_MENU   2
-#define MAIN_MENU     3
-#define MAX_MAIN    255
-#define MAX_FONTS   255
-#define MAX_LOCALES 255
-#define MAX_LAYOUTS 255
+#define MAX_MENU_SIZE 255
 #define error(S)    fprintf(stdout,"%s: %s\n",__func__,S)
 
-static unsigned char columns  = 0;
-static unsigned char rows     = 0;
-static char font[32]          = "ter-v16b";
-static char locale[32]        = "en_US.utf8";
-static char layout[32]        = "us";
-static char run[32]           = "";
-static char cmdline[LINE_MAX] = "";
+static unsigned char columns    = 0;
+static unsigned char rows       = 0;
+static unsigned char fontmenu   = 0;
+static unsigned char localemenu = 0;
+static unsigned char layoutmenu = 0;
+static unsigned char mainmenu   = 0;
+static char font[32]            = "ter-v16b";
+static char locale[32]          = "en_US.utf8";
+static char layout[32]          = "us";
+static char run[32]             = "";
+static char cmdline[LINE_MAX]   = "";
 
 static bool text_output_setup(void)
 {
@@ -109,7 +106,7 @@ static bool font_menu_setup(void)
     return false;
   }
 
-  add_named_menu("font","Font Selection",MAX_FONTS);
+  add_named_menu("font","Font Selection",MAX_MENU_SIZE);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -149,7 +146,7 @@ static bool locale_menu_setup(void)
     return false;
   }
 
-  add_named_menu("locale","Locale Selection",MAX_LOCALES);
+  add_named_menu("locale","Locale Selection",MAX_MENU_SIZE);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -189,7 +186,7 @@ static bool layout_menu_setup(void)
     return false;
   }
 
-  add_named_menu("layout","Keyboard Layout Selection",MAX_LAYOUTS);
+  add_named_menu("layout","Keyboard Layout Selection",MAX_MENU_SIZE);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -213,7 +210,7 @@ static bool main_menu_setup(void)
 {
   init_menusystem("Frugalware Versatile Bootable Environment");
 
-  add_named_menu("main","Main Menu",MAX_MAIN);
+  add_named_menu("main","Main Menu",MAX_MENU_SIZE);
 
   add_item("Boot FVBE","",OPT_RUN,"fvbe",0);
 
@@ -309,7 +306,7 @@ extern int main(void)
 
   while(true)
   {
-    t_menuitem *p = showmenus(MAIN_MENU);
+    t_menuitem *p = showmenus(mainmenu);
 
     if(p != 0 && p->data != 0 && p->action == OPT_RUN)
     {
