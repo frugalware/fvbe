@@ -292,7 +292,10 @@ extern int main(void)
         strlcpy(run,p->data,sizeof(run));
 
       if(strlen(run) != 0)
+      {
+        close_menusystem();
         break;
+      }
     }
   }
 
