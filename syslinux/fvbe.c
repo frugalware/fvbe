@@ -198,21 +198,21 @@ static bool main_menu_setup(void)
 
   set_window_size(0,0,columns,rows);
 
-  mainmenu = add_menu("Main Menu",MAX_MENU_SIZE);
-
-  add_item("Boot FVBE","",OPT_RUN,"fvbe",0);
-
-  add_item("Fonts","",OPT_SUBMENU,"font",0);
-
-  add_item("Locales","",OPT_SUBMENU,"locale",0);
-
-  add_item("Keyboard Layouts","",OPT_SUBMENU,"layout",0);
-
   if(!font_menu_setup() || !locale_menu_setup() || !layout_menu_setup())
   {
     close_menusystem();
     return false;
   }
+
+  mainmenu = add_menu("Main Menu",MAX_MENU_SIZE);
+
+  add_item("Boot FVBE","",OPT_RUN,"fvbe",0);
+
+  add_item("Fonts","",OPT_SUBMENU,0,fontmenu);
+
+  add_item("Locales","",OPT_SUBMENU,0,localemenu);
+
+  add_item("Keyboard Layouts","",OPT_SUBMENU,0,layoutmenu);
 
   return true;
 }
