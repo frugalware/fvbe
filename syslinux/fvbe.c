@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <limits.h>
 #include <cmenu.h>
+#include <syslinux/loadfile.h>
+#include <syslinux/linux.h>
 
 #ifndef LINE_MAX
 #define LINE_MAX 2048
@@ -224,6 +226,46 @@ static bool main_menu_setup(void)
   set_window_size(0,0,columns,rows);
 
   return true;
+}
+
+// No return value needed. If control returns to caller, it means this function has failed.
+static void boot_fvbe(void)
+{
+  const char kernel[] = "vmlinuz";
+  const char initrd[] = "initrd";
+  void *kernel_data = 0;
+  size_t kernel_size = 0;
+  struct initramfs *initramfs = 0;
+
+  printf("Loading %s... ",kernel);
+
+  if(loadfile(kernel,&kernel_data,&kernel_size) != 0)
+  {
+    printf("fail\n");
+    return;
+  }
+
+  printf("ok\n");
+
+  printf("Loading %s... ",initrd);
+
+  if((initramfs = initramfs_init()) == 0)
+  {
+    printf("fail\n");
+    return;
+  }
+
+  if(initramfs_load_archive(initramfs,initrd) != 0)
+  {
+    printf("fail\n");
+    return;
+  }
+
+  printf("ok\n");
+
+  syslinux_boot_linux(kernel_data,kernel_size,initramfs,0,0);
+
+  printf("failed to boot fvbe\n");
 }
 
 extern int main(void)
