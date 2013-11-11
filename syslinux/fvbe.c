@@ -104,7 +104,7 @@ static bool font_menu_setup(void)
     return false;
   }
 
-  add_named_menu("font","Font Selection",MAX_MENU_SIZE);
+  fontmenu = add_menu("Font Selection",MAX_MENU_SIZE);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -135,7 +135,7 @@ static bool locale_menu_setup(void)
     return false;
   }
 
-  add_named_menu("locale","Locale Selection",MAX_MENU_SIZE);
+  localemenu = add_menu("Locale Selection",MAX_MENU_SIZE);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -166,7 +166,7 @@ static bool layout_menu_setup(void)
     return false;
   }
 
-  add_named_menu("layout","Keyboard Layout Selection",MAX_MENU_SIZE);
+  layoutmenu = add_menu("Keyboard Layout Selection",MAX_MENU_SIZE);
 
   while(fgets(line,sizeof(line),file) != 0)
   {
@@ -190,7 +190,9 @@ static bool main_menu_setup(void)
 {
   init_menusystem("Frugalware Versatile Bootable Environment");
 
-  add_named_menu("main","Main Menu",MAX_MENU_SIZE);
+  set_window_size(0,0,columns,rows);
+
+  mainmenu = add_menu("Main Menu",MAX_MENU_SIZE);
 
   add_item("Boot FVBE","",OPT_RUN,"fvbe",0);
 
@@ -205,8 +207,6 @@ static bool main_menu_setup(void)
     close_menusystem();
     return false;
   }
-
-  set_window_size(0,0,columns,rows);
 
   return true;
 }
