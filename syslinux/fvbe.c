@@ -20,12 +20,13 @@
 #define MAX_LAYOUTS 100
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
 
-static unsigned char columns = 0;
-static unsigned char rows = 0;
-static char run[32]    = "";
-static char font[32]   = "ter-v16b";
-static char locale[32] = "en_US.utf8";
-static char layout[32] = "us";
+static unsigned char columns  = 0;
+static unsigned char rows     = 0;
+static char font[32]          = "ter-v16b";
+static char locale[32]        = "en_US.utf8";
+static char layout[32]        = "us";
+static char run[32]           = "";
+static char cmdline[LINE_MAX] = "";
 
 static bool text_output_setup(void)
 {
@@ -264,7 +265,7 @@ static void boot_fvbe(void)
 
   printf("ok\n");
 
-  syslinux_boot_linux(kernel_data,kernel_size,initramfs,0,0);
+  syslinux_boot_linux(kernel_data,kernel_size,initramfs,0,cmdline);
 
   printf("failed to boot fvbe\n");
 }
