@@ -117,6 +117,8 @@ static bool font_menu_setup(void)
     p = add_item(line,"",OPT_EXITMENU,"main",0);
 
     p->handler = menu_item_handler;
+
+    set_shortcut(line[0]);
   }
 
   fclose(file);
@@ -148,6 +150,8 @@ static bool locale_menu_setup(void)
     p = add_item(line,"",OPT_EXITMENU,"main",0);
 
     p->handler = menu_item_handler;
+
+    set_shortcut(line[0]);
   }
 
   fclose(file);
@@ -179,6 +183,8 @@ static bool layout_menu_setup(void)
     p = add_item(line,"",OPT_EXITMENU,"main",0);
 
     p->handler = menu_item_handler;
+
+    set_shortcut(line[0]);
   }
 
   fclose(file);
