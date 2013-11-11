@@ -239,6 +239,26 @@ static void boot_fvbe(void)
   size_t kernel_size = 0;
   struct initramfs *initramfs = 0;
 
+  strlcpy(cmdline,"",sizeof(cmdline));
+
+  if(strlen(font) > 0)
+  {
+    strlcat(cmdline," vconsole.font=",sizeof(cmdline));
+    strlcat(cmdline,font,sizeof(cmdline));
+  }
+
+  if(strlen(locale) > 0)
+  {
+    strlcat(cmdline," locale.LANG=",sizeof(cmdline));
+    strlcat(cmdline,locale,sizeof(cmdline));
+  }
+
+  if(strlen(layout) > 0)
+  {
+    strlcat(cmdline," vconsole.keymap=",sizeof(cmdline));
+    strlcat(cmdline,layout,sizeof(cmdline));
+  }
+
   printf("Loading %s... ",kernel);
 
   if(loadfile(kernel,&kernel_data,&kernel_size) != 0)
@@ -292,7 +312,7 @@ extern int main(void)
       if(strcmp(p->data,"fvbe") == 0)
         strlcpy(run,p->data,sizeof(run));
 
-      if(strlen(run) != 0)
+      if(strlen(run) > 0)
       {
         close_menusystem();
         break;
@@ -300,5 +320,10 @@ extern int main(void)
     }
   }
 
-  return EXIT_SUCCESS;
+  if(strcmp(run,"fvbe") == 0)
+    boot_fvbe();
+  else
+    error("unknown run command");
+
+  return EXIT_FAILURE;
 }
