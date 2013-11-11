@@ -22,6 +22,7 @@
 
 static unsigned char columns = 0;
 static unsigned char rows = 0;
+static char run[32]    = "";
 static char font[32]   = "ter-v16b";
 static char locale[32] = "en_US.utf8";
 static char layout[32] = "us";
@@ -209,7 +210,7 @@ static bool main_menu_setup(void)
 
   add_named_menu("main","Main Menu",MAX_MAIN);
 
-  add_item("Boot FVBE","",OPT_RUN,"",0);
+  add_item("Boot FVBE","",OPT_RUN,"fvbe",0);
 
   add_item("Fonts","",OPT_SUBMENU,"font",0);
 
@@ -281,7 +282,19 @@ extern int main(void)
   if(!main_menu_setup())
     return EXIT_FAILURE;
 
-  showmenus(find_menu_num("main"));
+  while(true)
+  {
+    t_menuitem *p = showmenus(0);
+
+    if(p != 0 && p->data != 0 && p->action == OPT_RUN)
+    {
+      if(strcmp(p->data,"fvbe") == 0)
+        strlcpy(run,p->data,sizeof(run));
+
+      if(strlen(run) != 0)
+        break;
+    }
+  }
 
   return EXIT_SUCCESS;
 }
