@@ -160,21 +160,25 @@ void PDC_transform_line(int lineno, int x, int len, const chtype *srcp)
 // TODO: implement syslinux backend for this function
 int PDC_get_columns(void)
 {
+    return 80;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_get_cursor_mode(void)
 {
+    return 0;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_get_rows(void)
 {
+    return 24;
 }
 
 // TODO: implement syslinux backend for this function
 bool PDC_check_key(void)
 {
+    return FALSE;
 }
 
 // TODO: implement syslinux backend for this function
@@ -185,16 +189,19 @@ void PDC_flushinp(void)
 // TODO: implement syslinux backend for this function
 int PDC_get_key(void)
 {
+    return -1;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_modifiers_set(void)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_mouse_set(void)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
@@ -205,16 +212,19 @@ void PDC_set_keyboard_binary(bool on)
 // TODO: implement syslinux backend for this function
 bool PDC_can_change_color(void)
 {
+    return FALSE;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_color_content(short color, short *red, short *green, short *blue)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_init_color(short color, short red, short green, short blue)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
@@ -225,6 +235,7 @@ void PDC_init_pair(short pair, short fg, short bg)
 // TODO: implement syslinux backend for this function
 int PDC_pair_content(short pair, short *fg, short *bg)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
@@ -240,6 +251,7 @@ void PDC_reset_shell_mode(void)
 // TODO: implement syslinux backend for this function
 int PDC_resize_screen(int nlines, int ncols)
 {
+    return ERR;
 }
 
 // TODO: implement syslinux backend for this function
@@ -265,11 +277,13 @@ void PDC_scr_free(void)
 // TODO: implement syslinux backend for this function
 int PDC_scr_open(int argc, char **argv)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_curs_set(int visibility)
 {
+    return OK;
 }
 
 void PDC_beep(void)
@@ -345,11 +359,13 @@ int PDC_setclipboard(const char *contents,long length)
 // TODO: implement syslinux backend for this function
 unsigned long PDC_get_input_fd(void)
 {
+    return 0;
 }
 
 // TODO: implement syslinux backend for this function
 int PDC_set_blink(bool blinkon)
 {
+    return OK;
 }
 
 // TODO: implement syslinux backend for this function
