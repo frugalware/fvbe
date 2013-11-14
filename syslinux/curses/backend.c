@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <syslinux/firmware.h>
 
 #ifdef CHTYPE_LONG
 #define A(x) ((chtype)x | A_ALTCHARSET)
@@ -271,14 +272,20 @@ int PDC_curs_set(int visibility)
 {
 }
 
-// TODO: implement syslinux backend for this function
 void PDC_beep(void)
 {
+    if(firmware->o_ops->beep)
+        firmware->o_ops->beep();
 }
 
-// TODO: implement syslinux backend for this function
 void PDC_napms(int ms)
 {
+    msleep(ms);
+}
+
+const char *PDC_sysname(void)
+{
+    return "SYSLINUX";
 }
 
 int PDC_clearclipboard(void)
