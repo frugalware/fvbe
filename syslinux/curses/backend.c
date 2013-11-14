@@ -1,6 +1,8 @@
 // Backend to SYSLINUX C API.
 
 #include <curspriv.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #ifdef CHTYPE_LONG
@@ -138,6 +140,12 @@ chtype asc_map[128] =
 };
 #endif
 
+static struct
+{
+    char *data;
+    long size;
+} clip;
+
 // TODO: implement syslinux backend for this function
 void PDC_gotoyx(int y, int x)
 {
@@ -273,28 +281,62 @@ void PDC_napms(int ms)
 {
 }
 
-// TODO: implement syslinux backend for this function
 int PDC_clearclipboard(void)
 {
+    if(clip.data != 0)
+    {
+        free(clip.data);
+        memset(&clip,0,sizeof(clip));
+    }
+
+    return PDC_CLIP_SUCCESS;
 }
 
-// TODO: implement syslinux backend for this function
 int PDC_freeclipboard(char *contents)
 {
+    if(contents != 0)
+        free(contents);
+
+    return PDC_CLIP_SUCCESS;
 }
 
-// TODO: implement syslinux backend for this function
-int PDC_getclipboard(char **contents, long *length)
+int PDC_getclipboard(char **contents,long *length)
 {
+    if(contents == 0 || length == 0)
+        return PDC_CLIP_ACCESS_ERROR;
+
+    if(clip.data == 0 || clip.size <= 0)
+        return PDC_CLIP_EMPTY;
+
+    if((*contents = malloc(clip.size)) == 0)
+        return PDC_CLIP_MEMORY_ERROR;
+
+    strlcpy(*contents,clip.data,clip.size);
+
+    *length = clip.size - 1;
+
+    return PDC_CLIP_SUCCESS;
 }
 
-// TODO: implement syslinux backend for this function
-int PDC_setclipboard(const char *contents, long length)
+int PDC_setclipboard(const char *contents,long length)
 {
+    if(contents == 0 || length <= 0)
+        return PDC_CLIP_ACCESS_ERROR;
+
+    PDC_clearclipboard();
+
+    if((clip.data = malloc(length + 1)) == 0)
+       return PDC_CLIP_MEMORY_ERROR;
+
+    strlcpy(clip.data,contents,length + 1);
+
+    clip.size = strlen(clip.data) + 1;
+
+    return PDC_CLIP_SUCCESS;
 }
 
 // TODO: implement syslinux backend for this function
-long PDC_get_input_fd(void)
+unsigned long PDC_get_input_fd(void)
 {
 }
 
