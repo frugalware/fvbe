@@ -138,138 +138,172 @@ chtype asc_map[128] =
 };
 #endif
 
+// TODO: implement syslinux backend for this function
 void PDC_gotoyx(int y, int x)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_transform_line(int lineno, int x, int len, const chtype *srcp)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_get_columns(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_get_cursor_mode(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_get_rows(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 bool PDC_check_key(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_flushinp(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_get_key(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_modifiers_set(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_mouse_set(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_set_keyboard_binary(bool on)
 {
 }
 
+// TODO: implement syslinux backend for this function
 bool PDC_can_change_color(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_color_content(short color, short *red, short *green, short *blue)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_init_color(short color, short red, short green, short blue)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_init_pair(short pair, short fg, short bg)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_pair_content(short pair, short *fg, short *bg)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_reset_prog_mode(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_reset_shell_mode(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_resize_screen(int nlines, int ncols)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_restore_screen_mode(int i)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_save_screen_mode(int i)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_scr_close(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_scr_free(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_scr_open(int argc, char **argv)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_curs_set(int visibility)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_beep(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_napms(int ms)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_clearclipboard(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_freeclipboard(char *contents)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_getclipboard(char **contents, long *length)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_setclipboard(const char *contents, long length)
 {
 }
 
+// TODO: implement syslinux backend for this function
 long PDC_get_input_fd(void)
 {
 }
 
+// TODO: implement syslinux backend for this function
 int PDC_set_blink(bool blinkon)
 {
 }
 
+// TODO: implement syslinux backend for this function
 void PDC_set_title(const char *title)
 {
 }
