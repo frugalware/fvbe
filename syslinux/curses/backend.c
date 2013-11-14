@@ -139,36 +139,137 @@ chtype asc_map[128] =
 #endif
 
 void PDC_gotoyx(int y, int x)
+{
+}
+
 void PDC_transform_line(int lineno, int x, int len, const chtype *srcp)
+{
+}
+
 int PDC_get_columns(void)
+{
+}
+
 int PDC_get_cursor_mode(void)
+{
+}
+
 int PDC_get_rows(void)
+{
+}
+
 bool PDC_check_key(void)
+{
+}
+
 void PDC_flushinp(void)
+{
+}
+
 int PDC_get_key(void)
+{
+}
+
 int PDC_modifiers_set(void)
+{
+}
+
 int PDC_mouse_set(void)
+{
+}
+
 void PDC_set_keyboard_binary(bool on)
+{
+}
+
 bool PDC_can_change_color(void)
+{
+}
+
 int PDC_color_content(short color, short *red, short *green, short *blue)
+{
+}
+
 int PDC_init_color(short color, short red, short green, short blue)
+{
+}
+
 void PDC_init_pair(short pair, short fg, short bg)
+{
+}
+
 int PDC_pair_content(short pair, short *fg, short *bg)
+{
+}
+
 void PDC_reset_prog_mode(void)
+{
+}
+
 void PDC_reset_shell_mode(void)
+{
+}
+
 int PDC_resize_screen(int nlines, int ncols)
+{
+}
+
 void PDC_restore_screen_mode(int i)
+{
+}
+
 void PDC_save_screen_mode(int i)
+{
+}
+
 void PDC_scr_close(void)
+{
+}
+
 void PDC_scr_free(void)
+{
+}
+
 int PDC_scr_open(int argc, char **argv)
+{
+}
+
 int PDC_curs_set(int visibility)
+{
+}
+
 void PDC_beep(void)
+{
+}
+
 void PDC_napms(int ms)
+{
+}
+
 int PDC_clearclipboard(void)
+{
+}
+
 int PDC_freeclipboard(char *contents)
+{
+}
+
 int PDC_getclipboard(char **contents, long *length)
+{
+}
+
 int PDC_setclipboard(const char *contents, long length)
+{
+}
+
 long PDC_get_input_fd(void)
+{
+}
+
 int PDC_set_blink(bool blinkon)
+{
+}
+
 void PDC_set_title(const char *title)
+{
+}
