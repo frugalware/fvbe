@@ -34,39 +34,26 @@ static inline void write_serial_string(const char *s)
 
 static inline const char *get_boxchar(bool serial,boxchar type)
 {
+  static const unsigned char utf8[][4] =
+  {
+    [BOXCHAR_UL   ] = { 226, 148, 140, 0 },
+    [BOXCHAR_UR   ] = { 226, 148, 144, 0 },
+    [BOXCHAR_LL   ] = { 226, 148, 148, 0 },
+    [BOXCHAR_LR   ] = { 226, 148, 152, 0 },
+    [BOXCHAR_HLINE] = { 226, 148, 128, 0 },
+    [BOXCHAR_VLINE] = { 226, 148, 130, 0 },
+  };
   static const unsigned char cp437[][2] =
   {
-    [BOXCHAR_UL]    = { 218, 0 },
-    [BOXCHAR_UR]    = { 191, 0 },
-    [BOXCHAR_LL]    = { 192, 0 },
-    [BOXCHAR_LR]    = { 217, 0 },
+    [BOXCHAR_UL   ] = { 218, 0 },
+    [BOXCHAR_UR   ] = { 191, 0 },
+    [BOXCHAR_LL   ] = { 192, 0 },
+    [BOXCHAR_LR   ] = { 217, 0 },
     [BOXCHAR_HLINE] = { 196, 0 },
     [BOXCHAR_VLINE] = { 179, 0 },
   };
 
-  switch(type)
-  {
-    case BOXCHAR_UL:
-      return (serial) ? "┌" : (char []) { 218, 0 };
-
-    case BOXCHAR_UR:
-      return (serial) ? "┐" : (char []) { 191, 0 };
-    
-    case BOXCHAR_LL:
-      return (serial) ? "└" : (char []) { 192, 0 };
-      
-    case BOXCHAR_LR:
-      return (serial) ? "┘" : (char []) { 217, 0 };
-    
-    case BOXCHAR_HLINE:
-      return (serial) ? "─" : (char []) { 196, 0 };
-    
-    case BOXCHAR_VLINE:
-      return (serial) ? "│" : (char []) { 179, 0 };
-    
-    default:
-      return "";
-  }
+  return (const char *) ((serial) ? utf8[type] : cp437[type]);
 }
 
 extern int main(void)
