@@ -34,6 +34,16 @@ static inline void write_serial_string(const char *s)
 
 static inline const char *get_boxchar(bool serial,boxchar type)
 {
+  static const unsigned char cp437[][2] =
+  {
+    [BOXCHAR_UL]    = { 218, 0 },
+    [BOXCHAR_UR]    = { 191, 0 },
+    [BOXCHAR_LL]    = { 192, 0 },
+    [BOXCHAR_LR]    = { 217, 0 },
+    [BOXCHAR_HLINE] = { 196, 0 },
+    [BOXCHAR_VLINE] = { 179, 0 },
+  };
+
   switch(type)
   {
     case BOXCHAR_UL:
