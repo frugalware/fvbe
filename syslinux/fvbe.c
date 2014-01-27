@@ -16,10 +16,47 @@
 
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
 
+typedef enum
+{
+  BOXCHAR_UL,
+  BOXCHAR_UR,
+  BOXCHAR_LL,
+  BOXCHAR_LR,
+  BOXCHAR_HLINE,
+  BOXCHAR_VLINE
+} boxchar;
+
 static inline void write_serial_string(const char *s)
 {
 	while(*s != 0)
 		write_serial(*s++);
+}
+
+static inline const char *get_boxchar(bool serial,boxchar type)
+{
+  switch(type)
+  {
+    case BOXCHAR_UL:
+      return (serial) ? "┌" : (char []) { 218, 0 };
+
+    case BOXCHAR_UR:
+      return (serial) ? "┐" : (char []) { 191, 0 };
+    
+    case BOXCHAR_LL:
+      return (serial) ? "└" : (char []) { 192, 0 };
+      
+    case BOXCHAR_LR:
+      return (serial) ? "┘" : (char []) { 217, 0 };
+    
+    case BOXCHAR_HLINE:
+      return (serial) ? "─" : (char []) { 196, 0 };
+    
+    case BOXCHAR_VLINE:
+      return (serial) ? "│" : (char []) { 179, 0 };
+    
+    default:
+      return "";
+  }
 }
 
 extern int main(void)
