@@ -8,6 +8,8 @@
 #include <limits.h>
 #include <syslinux/loadfile.h>
 #include <syslinux/linux.h>
+#include <syslinux/config.h>
+#include <console.h>
 #include <core.h>
 #include <bios.h>
 
@@ -32,6 +34,20 @@ typedef enum
   BOXCHAR_HLINE,
   BOXCHAR_VLINE
 } boxchar;
+
+static int rows = 0;
+static int columns = 0;
+
+static inline void get_input(char *buf,size_t chars)
+{
+  size_t i;
+  int c;
+
+  for( i = 0 ; (c = fgetc(stdin)) != EOF && i < chars ; ++i )
+    buf[i] = c;
+
+  buf[i] = 0;
+}
 
 static inline const char *get_boxchar(boxchar type)
 {
@@ -116,6 +132,32 @@ static bool open_terminal(void)
 
   if(FlowOutput & 0x8)
     sirq_install();
+
+  __syslinux_set_serial_console_info();
+
+  if(openconsole(&dev_rawcon_r,&dev_serial_w))
+    return false;
+
+  while(true)
+  {
+    char buf[11];
+
+    // Force cursor to bottom-right corner
+    printf("\e[999;999H");
+
+    // Request cursor position
+    printf("\e[6n");
+ 
+    // Retrieve input from stdin
+    get_input(buf,10);
+  
+    // Parse input to get terminal dimensions
+    if(sscanf(buf,"\e[%d;%dR",&rows,&columns) == 2)
+      break;
+    
+    // Sleep and try again.
+    msleep(250);
+  }
 
   return true;
 #endif
