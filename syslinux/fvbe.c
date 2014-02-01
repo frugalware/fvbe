@@ -14,6 +14,8 @@
 #define LINE_MAX 2048
 #endif
 
+#define SERIAL_OUTPUT
+
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
 
 typedef enum
@@ -32,8 +34,9 @@ static inline void write_serial_string(const char *s)
 		write_serial(*s++);
 }
 
-static inline const char *get_boxchar(bool serial,boxchar type)
+static inline const char *get_boxchar(boxchar type)
 {
+#if defined(SERIAL_OUTPUT)
   static const unsigned char utf8[][4] =
   {
     [BOXCHAR_UL   ] = { 226, 148, 140, 0 },
@@ -43,6 +46,9 @@ static inline const char *get_boxchar(bool serial,boxchar type)
     [BOXCHAR_HLINE] = { 226, 148, 128, 0 },
     [BOXCHAR_VLINE] = { 226, 148, 130, 0 },
   };
+
+  return (const char *) utf8[type];
+#elif defined(VESA_OUTPUT)
   static const unsigned char cp437[][2] =
   {
     [BOXCHAR_UL   ] = { 218, 0 },
@@ -53,7 +59,8 @@ static inline const char *get_boxchar(bool serial,boxchar type)
     [BOXCHAR_VLINE] = { 179, 0 },
   };
 
-  return (const char *) ((serial) ? utf8[type] : cp437[type]);
+  return (const char *) cp437[type];
+#endif
 }
 
 extern int main(void)
