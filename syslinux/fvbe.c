@@ -21,6 +21,8 @@ extern void sirq_install(void);
 #define LINE_MAX 2048
 #endif
 
+#define CSI "\e["
+
 #define SERIAL_OUTPUT
 
 #define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
@@ -47,6 +49,16 @@ static inline void get_input(char *buf,size_t chars)
     buf[i] = c;
 
   buf[i] = 0;
+}
+
+static inline void clear_screen(void)
+{
+  printf(CSI "2J");
+}
+
+static inline void gotoyx(int y,int x)
+{
+  printf(CSI "%d;%dH",y+1,x+1);
 }
 
 static inline const char *get_boxchar(boxchar type)
@@ -143,16 +155,16 @@ static bool open_terminal(void)
     char buf[11];
 
     // Force cursor to bottom-right corner
-    printf("\e[999;999H");
+    printf(CSI "999;999H");
 
     // Request cursor position
-    printf("\e[6n");
+    printf(CSI "6n");
  
     // Retrieve input from stdin
     get_input(buf,10);
   
     // Parse input to get terminal dimensions
-    if(sscanf(buf,"\e[%d;%dR",&rows,&columns) == 2)
+    if(sscanf(buf,CSI "%d;%dR",&rows,&columns) == 2)
       break;
     
     // Sleep and try again.
@@ -162,6 +174,50 @@ static bool open_terminal(void)
   return true;
 #endif
 }
+
+#if 0
+static void test(void)
+{
+  int y;
+  int x;
+
+  clear_screen();
+  
+  for( y = 0 ; y < rows ; ++y )
+  {
+    gotoyx(y,0);
+    for( x = 0 ; x < columns ; ++x )
+    {
+      const char *bc;
+      
+      if(y == 0)
+      {
+        if(x == 0)
+          bc = get_boxchar(BOXCHAR_UL);
+        else if(x+1 == columns)
+          bc = get_boxchar(BOXCHAR_UR);
+        else
+          bc = get_boxchar(BOXCHAR_HLINE);
+      }
+      else if(y+1 == rows)
+      {
+        if(x == 0)
+          bc = get_boxchar(BOXCHAR_LL);
+        else if(x+1 == columns)
+          bc = get_boxchar(BOXCHAR_LR);
+        else
+          bc = get_boxchar(BOXCHAR_HLINE);       
+      }
+      else if(x == 0 || x+1 == columns)
+        bc = get_boxchar(BOXCHAR_VLINE);
+      else
+        bc = " ";
+    
+      printf("%s",bc);
+    }
+  }
+}
+#endif
 
 extern int main(void)
 {
