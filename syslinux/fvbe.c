@@ -9,6 +9,11 @@
 #include <syslinux/loadfile.h>
 #include <syslinux/linux.h>
 #include <core.h>
+#include <bios.h>
+
+// Exports from core/serirq.c
+extern void sirq_cleanup_nowipe(void);
+extern void sirq_install(void);
 
 #ifndef LINE_MAX
 #define LINE_MAX 2048
@@ -28,12 +33,6 @@ typedef enum
   BOXCHAR_VLINE
 } boxchar;
 
-static inline void write_serial_string(const char *s)
-{
-	while(*s != 0)
-		write_serial(*s++);
-}
-
 static inline const char *get_boxchar(boxchar type)
 {
 #if defined(SERIAL_OUTPUT)
@@ -48,7 +47,7 @@ static inline const char *get_boxchar(boxchar type)
   };
 
   return (const char *) utf8[type];
-#elif defined(VESA_OUTPUT)
+#elif defined(VGA_OUTPUT) || defined(VESA_OUTPUT)
   static const unsigned char cp437[][2] =
   {
     [BOXCHAR_UL   ] = { 218, 0 },
@@ -63,7 +62,69 @@ static inline const char *get_boxchar(boxchar type)
 #endif
 }
 
+static bool open_terminal(void)
+{
+#if defined(SERIAL_OUTPUT)
+  static const int BaudMax = 115200;
+
+  // COM0 serial port
+  SerialPort = get_serial_port(0);
+
+  // 115200 baud rate
+  BaudDivisor = (BaudMax / 115200) & 0xffff;
+
+  // No flow control
+  FlowOutput = 0;
+  FlowInput = 0;
+  FlowIgnore = 0;
+
+  sirq_cleanup_nowipe();
+
+  outb(0x83,SerialPort + 3);
+  io_delay();
+
+  outb((BaudDivisor & 0xff),SerialPort);
+  io_delay();
+
+  outb(((BaudDivisor & 0xff00) >> 8),SerialPort + 1);
+  io_delay();
+
+  outb(0x03,SerialPort + 3);
+  io_delay();
+
+  if(inb(SerialPort + 3) != 0x03)
+  {
+    SerialPort = 0;
+    BaudDivisor = 0;
+    FlowOutput = 0;
+    FlowInput = 0;
+    FlowIgnore = 0;
+    return false;
+  }
+
+  outb(0x01,SerialPort + 2);
+  io_delay();
+
+  if(inb(SerialPort + 2) < 0x0C0)
+  {
+    outb(0,SerialPort + 2);
+    io_delay();
+  }
+
+  outb(FlowOutput,SerialPort + 4);
+  io_delay();
+
+  if(FlowOutput & 0x8)
+    sirq_install();
+
+  return true;
+#endif
+}
+
 extern int main(void)
 {
+  if(!open_terminal())
+    return EXIT_FAILURE;
+
   return EXIT_FAILURE;
 }
