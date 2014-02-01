@@ -3,15 +3,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <sys/pci.h>
+#include <pci.h>
 #include <errno.h>
 #include <limits.h>
 #include <syslinux/loadfile.h>
 #include <syslinux/linux.h>
 #include <syslinux/config.h>
+#include <cpu.h>
 #include <console.h>
 #include <core.h>
 #include <bios.h>
+#include <getkey.h>
 
 // Exports from core/serirq.c
 extern void sirq_cleanup_nowipe(void);
@@ -50,6 +52,29 @@ static inline void get_input(char *buf,size_t chars)
 
   buf[i] = 0;
 }
+
+// Borrowed code from com32/menu/drain.c
+static inline void drain_keyboard(void)
+{
+  volatile char junk;
+  int rv;
+
+  do
+  {
+    rv = read(0, (char *)&junk, 1);
+  }
+  while (rv > 0);
+
+  junk = 0;
+
+  cli();
+  *(volatile uint8_t *)0x419 = 0;
+  *(volatile uint16_t *)0x41a = 0x1e;
+  *(volatile uint16_t *)0x41c = 0x1e;
+  memset((void *)0x41e, 0, 32);
+  sti();
+}
+
 
 static inline void clear_screen(void)
 {
@@ -106,6 +131,7 @@ static bool open_terminal(void)
   FlowInput = 0;
   FlowIgnore = 0;
 
+  // Start of borrowed code from com32/elflink/ldlinux/readconfig.c
   sirq_cleanup_nowipe();
 
   outb(0x83,SerialPort + 3);
@@ -144,6 +170,8 @@ static bool open_terminal(void)
 
   if(FlowOutput & 0x8)
     sirq_install();
+
+  // End of borrowed code from com32/elflink/ldlinux/readconfig.c
 
   __syslinux_set_serial_console_info();
 
