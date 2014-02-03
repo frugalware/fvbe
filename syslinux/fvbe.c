@@ -37,6 +37,13 @@ typedef enum
   BOXCHAR_VLINE
 } boxchar;
 
+typedef struct menu
+{
+  struct menu *prev;
+  struct menu *next;
+  char *text;
+} menu;
+
 static int rows = 0;
 static int columns = 0;
 
@@ -152,6 +159,27 @@ static inline void render_bottom(void)
 static inline void gotoyx(int y,int x)
 {
   printf(CSI "%d;%dH",y+1,x+1);
+}
+
+static menu *menu_add_item(menu *m,const char *text)
+{
+  if(m == 0)
+  {
+    m = malloc(sizeof(menu));
+    m->prev = 0;
+    m->next = 0;
+    m->text = strdup(text);
+  }
+  else
+  {
+    m->next = malloc(sizeof(menu));
+    m->next->prev = m;
+    m->next->next = 0;
+    m->next->text = strdup(text);
+    m = m->next;
+  }
+
+  return m;
 }
 
 static bool open_terminal(void)
