@@ -107,6 +107,23 @@ static inline void clear_screen(void)
   printf(CSI "2J");
 }
 
+static inline void render_line(const char *line)
+{
+  int i;
+
+  printf(CSI "G");
+
+  printf("%s",get_boxchar(BOXCHAR_VLINE));
+
+  // Start at 2 because of reserved spaces on both screen edges.
+  for( i = 2 ; i < columns ; ++i )
+    printf("%c",(*line == '\n' || *line == 0) ? ' ' : *line++);
+
+  printf("%s",get_boxchar(BOXCHAR_VLINE));
+
+  printf(CSI "E");
+}
+
 static inline void gotoyx(int y,int x)
 {
   printf(CSI "%d;%dH",y+1,x+1);
