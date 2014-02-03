@@ -27,8 +27,6 @@ extern void sirq_install(void);
 
 #define SERIAL_OUTPUT
 
-#define error(S) fprintf(stdout,"%s: %s\n",__func__,S)
-
 typedef enum
 {
   BOXCHAR_UL,
@@ -202,50 +200,6 @@ static bool open_terminal(void)
   return true;
 #endif
 }
-
-#if 0
-static void test(void)
-{
-  int y;
-  int x;
-
-  clear_screen();
-  
-  for( y = 0 ; y < rows ; ++y )
-  {
-    gotoyx(y,0);
-    for( x = 0 ; x < columns ; ++x )
-    {
-      const char *bc;
-      
-      if(y == 0)
-      {
-        if(x == 0)
-          bc = get_boxchar(BOXCHAR_UL);
-        else if(x+1 == columns)
-          bc = get_boxchar(BOXCHAR_UR);
-        else
-          bc = get_boxchar(BOXCHAR_HLINE);
-      }
-      else if(y+1 == rows)
-      {
-        if(x == 0)
-          bc = get_boxchar(BOXCHAR_LL);
-        else if(x+1 == columns)
-          bc = get_boxchar(BOXCHAR_LR);
-        else
-          bc = get_boxchar(BOXCHAR_HLINE);       
-      }
-      else if(x == 0 || x+1 == columns)
-        bc = get_boxchar(BOXCHAR_VLINE);
-      else
-        bc = " ";
-    
-      printf("%s",bc);
-    }
-  }
-}
-#endif
 
 extern int main(void)
 {
