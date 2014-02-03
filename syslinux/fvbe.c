@@ -109,6 +109,23 @@ static inline void clear_screen(void)
   printf(CSI "H");
 }
 
+static inline void render_top(void)
+{
+  int i;
+
+  printf(CSI "G");
+
+  printf("%s",get_boxchar(BOXCHAR_UL));
+
+  // Start at 2 because of reserved spaces on both screen edges.
+  for( i = 2 ; i < columns ; ++i )
+    printf("%s",get_boxchar(BOXCHAR_HLINE));
+
+  printf("%s",get_boxchar(BOXCHAR_UR));
+
+  printf(CSI "E");
+}
+
 static inline void render_line(const char *line)
 {
   int i;
@@ -122,6 +139,23 @@ static inline void render_line(const char *line)
     printf("%c",(*line == '\n' || *line == 0) ? ' ' : *line++);
 
   printf("%s",get_boxchar(BOXCHAR_VLINE));
+
+  printf(CSI "E");
+}
+
+static inline void render_bottom(void)
+{
+  int i;
+
+  printf(CSI "G");
+
+  printf("%s",get_boxchar(BOXCHAR_LL));
+
+  // Start at 2 because of reserved spaces on both screen edges.
+  for( i = 2 ; i < columns ; ++i )
+    printf("%s",get_boxchar(BOXCHAR_HLINE));
+
+  printf("%s",get_boxchar(BOXCHAR_LR));
 
   printf(CSI "E");
 }
@@ -203,14 +237,14 @@ static bool open_terminal(void)
 
     // Request cursor position
     printf(CSI "6n");
- 
+
     // Retrieve input from stdin
     get_input(buf,10);
-  
+
     // Parse input to get terminal dimensions
     if(sscanf(buf,CSI "%d;%dR",&rows,&columns) == 2)
       break;
-    
+
     // Sleep and try again.
     msleep(250);
   }
