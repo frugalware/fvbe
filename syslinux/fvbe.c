@@ -69,17 +69,6 @@ static inline const char *get_boxchar(boxchar type)
 #endif
 }
 
-static inline void get_input(char *buf,size_t chars)
-{
-  size_t i;
-  int c;
-
-  for( i = 0 ; (c = fgetc(stdin)) != EOF && i < chars ; ++i )
-    buf[i] = c;
-
-  buf[i] = 0;
-}
-
 // Borrowed code from com32/menu/drain.c
 static inline void drain_keyboard(void)
 {
@@ -239,7 +228,7 @@ static bool open_terminal(void)
     printf(CSI "6n");
 
     // Retrieve input from stdin
-    get_input(buf,10);
+    fgets(buf,sizeof(buf),stdin);
 
     // Parse input to get terminal dimensions
     if(sscanf(buf,CSI "%d;%dR",&rows,&columns) == 2)
