@@ -105,6 +105,8 @@ static inline void drain_keyboard(void)
 static inline void clear_screen(void)
 {
   printf(CSI "2J");
+
+  printf(CSI "H");
 }
 
 static inline void render_line(const char *line)
