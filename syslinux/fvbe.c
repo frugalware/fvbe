@@ -40,6 +40,35 @@ typedef enum
 static int rows = 0;
 static int columns = 0;
 
+static inline const char *get_boxchar(boxchar type)
+{
+#if defined(SERIAL_OUTPUT)
+  static const unsigned char utf8[][4] =
+  {
+    [BOXCHAR_UL   ] = { 226, 148, 140, 0 },
+    [BOXCHAR_UR   ] = { 226, 148, 144, 0 },
+    [BOXCHAR_LL   ] = { 226, 148, 148, 0 },
+    [BOXCHAR_LR   ] = { 226, 148, 152, 0 },
+    [BOXCHAR_HLINE] = { 226, 148, 128, 0 },
+    [BOXCHAR_VLINE] = { 226, 148, 130, 0 },
+  };
+
+  return (const char *) utf8[type];
+#elif defined(VGA_OUTPUT) || defined(VESA_OUTPUT)
+  static const unsigned char cp437[][2] =
+  {
+    [BOXCHAR_UL   ] = { 218, 0 },
+    [BOXCHAR_UR   ] = { 191, 0 },
+    [BOXCHAR_LL   ] = { 192, 0 },
+    [BOXCHAR_LR   ] = { 217, 0 },
+    [BOXCHAR_HLINE] = { 196, 0 },
+    [BOXCHAR_VLINE] = { 179, 0 },
+  };
+
+  return (const char *) cp437[type];
+#endif
+}
+
 static inline void get_input(char *buf,size_t chars)
 {
   size_t i;
@@ -73,7 +102,6 @@ static inline void drain_keyboard(void)
   sti();
 }
 
-
 static inline void clear_screen(void)
 {
   printf(CSI "2J");
@@ -82,35 +110,6 @@ static inline void clear_screen(void)
 static inline void gotoyx(int y,int x)
 {
   printf(CSI "%d;%dH",y+1,x+1);
-}
-
-static inline const char *get_boxchar(boxchar type)
-{
-#if defined(SERIAL_OUTPUT)
-  static const unsigned char utf8[][4] =
-  {
-    [BOXCHAR_UL   ] = { 226, 148, 140, 0 },
-    [BOXCHAR_UR   ] = { 226, 148, 144, 0 },
-    [BOXCHAR_LL   ] = { 226, 148, 148, 0 },
-    [BOXCHAR_LR   ] = { 226, 148, 152, 0 },
-    [BOXCHAR_HLINE] = { 226, 148, 128, 0 },
-    [BOXCHAR_VLINE] = { 226, 148, 130, 0 },
-  };
-
-  return (const char *) utf8[type];
-#elif defined(VGA_OUTPUT) || defined(VESA_OUTPUT)
-  static const unsigned char cp437[][2] =
-  {
-    [BOXCHAR_UL   ] = { 218, 0 },
-    [BOXCHAR_UR   ] = { 191, 0 },
-    [BOXCHAR_LL   ] = { 192, 0 },
-    [BOXCHAR_LR   ] = { 217, 0 },
-    [BOXCHAR_HLINE] = { 196, 0 },
-    [BOXCHAR_VLINE] = { 179, 0 },
-  };
-
-  return (const char *) cp437[type];
-#endif
 }
 
 static bool open_terminal(void)
