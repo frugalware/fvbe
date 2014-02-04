@@ -161,6 +161,14 @@ static inline void gotoyx(int y,int x)
   printf(CSI "%d;%dH",y+1,x+1);
 }
 
+static inline menu *menu_first_item(menu *m)
+{
+  for( ; m->prev != 0 ; m = m->prev )
+    ;
+
+  return m;
+}
+
 static menu *menu_add_item(menu *m,const char *text)
 {
   if(m == 0)
@@ -180,6 +188,31 @@ static menu *menu_add_item(menu *m,const char *text)
   }
 
   return m;
+}
+
+static void menu_render(menu *m)
+{
+  int i;
+
+  clear_screen();
+
+  render_top();
+
+  // Start at 2 because of reserved spaces on both screen edges.
+  for( i = 2 ; i < rows ; ++i )
+  {
+    if(m == 0)
+    {
+      render_line("");
+    }
+    else
+    {
+      render_line(m->text);
+      m = m->next;
+    }
+  }
+
+  render_bottom();
 }
 
 static bool open_terminal(void)
