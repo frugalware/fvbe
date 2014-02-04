@@ -42,6 +42,7 @@ typedef struct menu
   struct menu *prev;
   struct menu *next;
   char *text;
+  bool selected;
 } menu;
 
 static int rows = 0;
@@ -187,6 +188,7 @@ static menu *menu_add_item(menu *m,const char *text)
     m->prev = 0;
     m->next = 0;
     m->text = strdup(text);
+    m->selected = false;
   }
   else
   {
@@ -194,6 +196,7 @@ static menu *menu_add_item(menu *m,const char *text)
     m->next->prev = m;
     m->next->next = 0;
     m->next->text = strdup(text);
+    m->next->selected = false;
     m = m->next;
   }
 
@@ -217,7 +220,14 @@ static inline void menu_render(menu *m)
     }
     else
     {
+      if(m->selected)
+        printf(CSI "7m");
+
       render_line(m->text);
+
+      if(m->selected)
+        printf(CSI "27m");
+
       m = m->next;
     }
   }
