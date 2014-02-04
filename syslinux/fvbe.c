@@ -105,6 +105,16 @@ static inline void clear_screen(void)
   printf(CSI "H");
 }
 
+static inline void show_cursor(void)
+{
+  printf(CSI "?25h");
+}
+
+static inline void hide_cursor(void)
+{
+  printf(CSI "?25l");
+}
+
 static inline void render_top(void)
 {
   int i;
@@ -190,7 +200,7 @@ static menu *menu_add_item(menu *m,const char *text)
   return m;
 }
 
-static void menu_render(menu *m)
+static inline void menu_render(menu *m)
 {
   int i;
 
