@@ -139,17 +139,22 @@ static inline void render_line(const char *line,bool selected)
 
   printf(CSI "G");
 
+  printf(CSI "K");
+
   printf("%s",get_boxchar(BOXCHAR_VLINE));
 
   if(selected)
     printf(CSI "7m");
 
   // Start at 2 because of reserved spaces on both screen edges.
-  for( i = 2 ; i < columns ; ++i )
-    printf("%c",(*line == '\n' || *line == 0) ? ' ' : *line++);
+  for( i = 2 ; i < columns && *line != 0 && *line != '\n' ; ++i, ++line )
+    printf("%c",*line);
 
   if(selected)
     printf(CSI "27m");
+
+  if(i < columns)
+    printf(CSI "%dC",columns-i);
 
   printf("%s",get_boxchar(BOXCHAR_VLINE));
 
@@ -186,6 +191,14 @@ static inline menu *menu_first_item(menu *m)
   return m;
 }
 
+static inline menu *menu_nth_item(menu *m,size_t n)
+{
+  for( ; m->next != 0 && n > 0 ; m = m->next, --n )
+    ;
+
+  return m;
+}
+
 static menu *menu_add_item(menu *m,const char *text)
 {
   if(m == 0)
@@ -212,6 +225,7 @@ static menu *menu_add_item(menu *m,const char *text)
 static inline void menu_render(menu *m)
 {
   int i;
+  int y = 0;
 
   clear_screen();
 
@@ -226,6 +240,9 @@ static inline void menu_render(menu *m)
     }
     else
     {
+      if(m->selected)
+        y = i;
+
       render_line(m->text,m->selected);
 
       m = m->next;
