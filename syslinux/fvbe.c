@@ -133,7 +133,7 @@ static inline void render_top(void)
   printf(CSI "E");
 }
 
-static inline void render_line(const char *line)
+static inline void render_line(const char *line,bool selected)
 {
   int i;
 
@@ -141,9 +141,15 @@ static inline void render_line(const char *line)
 
   printf("%s",get_boxchar(BOXCHAR_VLINE));
 
+  if(selected)
+    printf(CSI "7m");
+
   // Start at 2 because of reserved spaces on both screen edges.
   for( i = 2 ; i < columns ; ++i )
     printf("%c",(*line == '\n' || *line == 0) ? ' ' : *line++);
+
+  if(selected)
+    printf(CSI "27m");
 
   printf("%s",get_boxchar(BOXCHAR_VLINE));
 
@@ -216,17 +222,11 @@ static inline void menu_render(menu *m)
   {
     if(m == 0)
     {
-      render_line("");
+      render_line("",false);
     }
     else
     {
-      if(m->selected)
-        printf(CSI "7m");
-
-      render_line(m->text);
-
-      if(m->selected)
-        printf(CSI "27m");
+      render_line(m->text,m->selected);
 
       m = m->next;
     }
@@ -308,15 +308,15 @@ static bool open_terminal(void)
     // Request cursor position
     printf(CSI "6n");
 
+    // Sleep briefly before retrieving input
+    msleep(100);
+
     // Retrieve input from stdin
     fgets(buf,sizeof(buf),stdin);
 
     // Parse input to get terminal dimensions
     if(sscanf(buf,CSI "%d;%dR",&rows,&columns) == 2)
       break;
-
-    // Sleep and try again.
-    msleep(250);
   }
 
   return true;
