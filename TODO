@@ -9,6 +9,7 @@ setup DM for whichever GUI mode we are using
 fwsetup:
 
 implement network install (mirror and connection)
+nmconfig: make profile activation part of the main menu
 add config tool for configuring DPI/PPI and other font options for freetype
 look at filtering out nm devices that are unusable (nm-managed = false)
 look at seeing if we can avoid having space equal to the alignment leftover at the end of the disk.
