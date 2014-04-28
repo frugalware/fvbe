@@ -20,11 +20,11 @@ bool UI::checkTTY(int fd)
 		case STDIN_FILENO:
 			fd_name = "stdin";
 			break;
-		
+
 		case STDOUT_FILENO:
 			fd_name = "stdout";
 			break;
-		
+
 		case STDERR_FILENO:
 			fd_name = "stderr";
 			break;
@@ -33,7 +33,7 @@ bool UI::checkTTY(int fd)
 	if(!isatty(fd))
 	{
 		printError(fd_name + " is not a tty.");
-		return false;		
+		return false;
 	}
 
 	return true;
