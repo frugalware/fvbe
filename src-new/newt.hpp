@@ -1,5 +1,6 @@
 #pragma once
 
+#include <newt.h>
 #include "ui.hpp"
 
 class UINewt : UI

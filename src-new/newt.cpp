@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <csignal>
 #include <unistd.h>
 #include "newt.hpp"
 
@@ -16,6 +17,23 @@ int UINewt::main(int argc, char **argv)
 	{
 		return code;
 	}
+
+	if(newtInit() != 0)
+	{
+		printError("Could not initialize the NEWT user interface.");
+		return code;
+	}
+
+	if(!setSignalInterrupt(SIGWINCH, false))
+	{
+		printError("Failed to stop SIGWINCH from interrupting system calls.");
+		newtFinished();
+		return code;
+	}
+
+	newtCls();
+
+	newtFinished();
 
 	return code;
 }
