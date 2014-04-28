@@ -75,7 +75,7 @@ bool UI::setSignalInterrupt(int sig, bool interrupt)
 	return true;
 }
 
-int UI::main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
+int UI::main(int /*argc*/, char **/*argv*/)
 {
 	return EXIT_SUCCESS;
 }

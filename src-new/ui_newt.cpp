@@ -5,7 +5,7 @@
 #include "main.hpp"
 #include "ui_newt.hpp"
 
-int UINewt::main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
+int UINewt::main(int /*argc*/, char **/*argv*/)
 {
 	int code = EXIT_FAILURE;
 
