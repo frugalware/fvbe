@@ -5,6 +5,7 @@
 class UI
 {
 	public:
+		void printError(const std::string &line);
 		virtual int main(int argc, char **argv);
 };
 

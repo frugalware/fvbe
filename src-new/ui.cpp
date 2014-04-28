@@ -1,4 +1,12 @@
+#include <iostream>
 #include "ui.hpp"
+
+// UI Class Start
+void UI::printError(const std::string &line)
+{
+	std::cerr << line << std::endl;
+}
+// UI Class End
 
 // Widget Class Start
 const unsigned char Widget::ALIGN_LEFT        = (1 << 0);
