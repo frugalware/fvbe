@@ -89,4 +89,8 @@ const unsigned char Widget::ALIGN_BOTTOM      = (1 << 3);
 
 const unsigned char Widget::EXPAND_HORIZONTAL = (1 << 0);
 const unsigned char Widget::EXPAND_VERTICAL   = (1 << 1);
+
+Widget::~Widget()
+{
+}
 // Widget Class End
