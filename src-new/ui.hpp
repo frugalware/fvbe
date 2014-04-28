@@ -25,27 +25,18 @@ class Widget
 
 class Label : Widget
 {
-	protected:
-		std::string text;
-
 	public:
 		virtual void setText(const std::string &newText);
 };
 
 class TextBox : Widget
 {
-	protected:
-		std::string text;
-
 	public:
 		virtual void setText(const std::string &newText);
 };
 
 class EntryBox : Widget
 {
-	protected:
-		std::string text;
-
 	public:
 		virtual void setText(const std::string &newText);
 };
