@@ -5,13 +5,9 @@
 #include "main.hpp"
 #include "ui_newt.hpp"
 
-int UINewt::main(int argc, char **argv)
+int UINewt::main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
 {
 	int code = EXIT_FAILURE;
-
-	// We do not use the arguments in this UI.
-	(void) argc;
-	(void) argv;
 
 	// Check that the standard file streams are connected to a TTY.
 	if(!checkTTY(STDIN_FILENO) || !checkTTY(STDOUT_FILENO) || !checkTTY(STDERR_FILENO))

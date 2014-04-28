@@ -75,12 +75,8 @@ bool UI::setSignalInterrupt(int sig, bool interrupt)
 	return true;
 }
 
-int UI::main(int argc, char **argv)
+int UI::main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
 {
-	// The arguments are never used here.
-	(void) argc;
-	(void) argv;
-
 	return EXIT_SUCCESS;
 }
 // UI Class End
