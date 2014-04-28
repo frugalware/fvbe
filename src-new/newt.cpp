@@ -1,35 +1,7 @@
-#include <unistd.h>
 #include <iostream>
 #include <cstdlib>
+#include <unistd.h>
 #include "newt.hpp"
-
-bool UINewt::checkTTY(int fd)
-{
-	std::string fd_name;
-
-	switch(fd)
-	{
-		case STDIN_FILENO:
-			fd_name = "stdin";
-			break;
-		
-		case STDOUT_FILENO:
-			fd_name = "stdout";
-			break;
-		
-		case STDERR_FILENO:
-			fd_name = "stderr";
-			break;
-	}
-
-	if(!isatty(fd))
-	{
-		printError(fd_name + " is not a tty.");
-		return false;		
-	}
-
-	return true;
-}
 
 int UINewt::main(int argc, char **argv)
 {

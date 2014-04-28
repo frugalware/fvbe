@@ -2,12 +2,41 @@
 #include <csignal>
 #include <cstring>
 #include <cstdlib>
+#include <unistd.h>
 #include "ui.hpp"
 
 // UI Class Start
 void UI::printError(const std::string &line)
 {
 	std::cerr << line << std::endl;
+}
+
+bool UI::checkTTY(int fd)
+{
+	std::string fd_name;
+
+	switch(fd)
+	{
+		case STDIN_FILENO:
+			fd_name = "stdin";
+			break;
+		
+		case STDOUT_FILENO:
+			fd_name = "stdout";
+			break;
+		
+		case STDERR_FILENO:
+			fd_name = "stderr";
+			break;
+	}
+
+	if(!isatty(fd))
+	{
+		printError(fd_name + " is not a tty.");
+		return false;		
+	}
+
+	return true;
 }
 
 bool UI::setSignalInterrupt(int sig, bool interrupt)

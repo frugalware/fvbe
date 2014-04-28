@@ -6,6 +6,7 @@ class UI
 {
 	public:
 		void printError(const std::string &line);
+		bool checkTTY(int fd);
 		bool setSignalInterrupt(int sig, bool interrupt);
 		virtual int main(int argc, char **argv);
 };
