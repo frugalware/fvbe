@@ -2,7 +2,8 @@
 #include <cstdlib>
 #include <csignal>
 #include <unistd.h>
-#include "newt.hpp"
+#include "main.hpp"
+#include "ui_newt.hpp"
 
 int UINewt::main(int argc, char **argv)
 {
@@ -37,3 +38,28 @@ int UINewt::main(int argc, char **argv)
 
 	return code;
 }
+
+extern "C" UI *ui_new()
+{
+	UINewt *ui = new UINewt();
+
+	return dynamic_cast <UI *> (ui);
+}
+
+extern "C" void ui_delete(UI *p)
+{
+	UINewt *ui = dynamic_cast <UINewt *> (p);
+
+	delete ui;
+}
+
+#ifndef NDEBUG
+static void test_shared_exports() __attribute__((unused));
+
+static void test_shared_exports()
+{
+	// Force compiler to validate the exported C functions.
+	__attribute__((unused)) ui_new_t a = ui_new;
+	__attribute__((unused)) ui_delete_t b = ui_delete;
+}
+#endif
