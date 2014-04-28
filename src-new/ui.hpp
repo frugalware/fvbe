@@ -22,22 +22,3 @@ class Widget
 		static const unsigned char EXPAND_HORIZONTAL;
 		static const unsigned char EXPAND_VERTICAL;
 };
-
-class Label : Widget
-{
-	public:
-		virtual void setText(const std::string &newText);
-};
-
-class TextBox : Widget
-{
-	public:
-		virtual void setText(const std::string &newText);
-};
-
-class EntryBox : Widget
-{
-	public:
-		virtual void setText(const std::string &newText);
-		virtual const std::string &getText();
-};
