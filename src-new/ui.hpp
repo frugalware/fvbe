@@ -21,6 +21,15 @@ class Widget
 	static const unsigned char EXPAND_VERTICAL;
 };
 
+class Label : Widget
+{
+	protected:
+		std::string text;
+
+	public:
+		virtual void setText(const std::string &newText);
+};
+
 class TextBox : Widget
 {
 	protected:
