@@ -2,16 +2,6 @@
 
 #include <string>
 
-class UI
-{
-	public:
-		virtual ~UI();
-		void printError(const std::string &line);
-		bool checkTTY(int fd);
-		bool setSignalInterrupt(int sig, bool interrupt);
-		virtual int main(int argc, char **argv);
-};
-
 class Widget
 {
 	public:
@@ -24,4 +14,14 @@ class Widget
 		static const unsigned char EXPAND_VERTICAL;
 
 		virtual ~Widget();
+};
+
+class UI
+{
+	public:
+		virtual ~UI();
+		void printError(const std::string &line);
+		bool checkTTY(int fd);
+		bool setSignalInterrupt(int sig, bool interrupt);
+		virtual int main(int argc, char **argv);
 };
