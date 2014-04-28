@@ -5,6 +5,7 @@
 class UI
 {
 	public:
+		virtual ~UI();
 		void printError(const std::string &line);
 		bool checkTTY(int fd);
 		bool setSignalInterrupt(int sig, bool interrupt);
@@ -22,5 +23,3 @@ class Widget
 		static const unsigned char EXPAND_HORIZONTAL;
 		static const unsigned char EXPAND_VERTICAL;
 };
-
-extern UI *ui;

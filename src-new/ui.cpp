@@ -6,6 +6,10 @@
 #include "ui.hpp"
 
 // UI Class Start
+UI::~UI()
+{
+}
+
 void UI::printError(const std::string &line)
 {
 	std::cerr << line << std::endl;
