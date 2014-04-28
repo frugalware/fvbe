@@ -22,3 +22,5 @@ class Widget
 		static const unsigned char EXPAND_HORIZONTAL;
 		static const unsigned char EXPAND_VERTICAL;
 };
+
+extern UI *ui;
