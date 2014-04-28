@@ -39,4 +39,5 @@ class EntryBox : Widget
 {
 	public:
 		virtual void setText(const std::string &newText);
+		virtual const std::string &getText();
 };
