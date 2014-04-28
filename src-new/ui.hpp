@@ -1,16 +1,15 @@
 #pragma once
 
+#include <string>
+
 class UI
 {
-
 	public:
 		virtual int main(int argc, char **argv);
-
 };
 
 class Widget
 {
-
 	public:
 
 	static const unsigned char ALIGN_LEFT;
@@ -20,5 +19,13 @@ class Widget
 
 	static const unsigned char EXPAND_HORIZONTAL;
 	static const unsigned char EXPAND_VERTICAL;
+};
 
+class TextBox : Widget
+{
+	protected:
+		std::string text;
+
+	public:
+		virtual void setText(const std::string &newText);
 };
