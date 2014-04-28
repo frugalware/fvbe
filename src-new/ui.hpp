@@ -40,3 +40,12 @@ class TextBox : Widget
 	public:
 		virtual void setText(const std::string &newText);
 };
+
+class EntryBox : Widget
+{
+	protected:
+		std::string text;
+
+	public:
+		virtual void setText(const std::string &newText);
+};
