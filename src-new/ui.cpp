@@ -1,6 +1,7 @@
 #include <iostream>
 #include <csignal>
 #include <cstring>
+#include <cstdlib>
 #include "ui.hpp"
 
 // UI Class Start
@@ -39,6 +40,15 @@ bool UI::setSignalInterrupt(int sig, bool interrupt)
 	}
 
 	return true;
+}
+
+int UI::main(int argc, char **argv)
+{
+	// The arguments are never used here.
+	(void) argc;
+	(void) argv;
+
+	return EXIT_SUCCESS;
 }
 // UI Class End
 
