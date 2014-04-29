@@ -6,7 +6,11 @@ env = Environment()
 if not 'CXXFLAGS' in environ:
 	env.Append(CXXFLAGS = [ '-O2' ])
 else:
-	env.Append(CXXFLAGS = [ environ['CXXFLAGS'] ])
+	env.Append(CXXFLAGS = environ['CXXFLAGS'])
+
+# Inherit linker flags from environment.
+if 'LDFLAGS' in environ:
+	env.Append(LINKFLAGS = environ['LDFLAGS'])
 
 # Enable most warnings
 env.Append(CXXFLAGS = [ '-Wall', '-Wextra' ])
@@ -17,3 +21,11 @@ if debug:
 	env.Append(CXXFLAGS = [ '-g' ])
 else:
 	env.Append(CXXFLAGS = [ '-DNDEBUG' ])
+
+# Disable the prefix / suffix for shared libraries.
+env['SHLIBPREFIX'] = ''
+env['SHLIBSUFFIX'] = ''
+
+# libfvbe build instructions
+ui_o = env.SharedObject('ui.o', 'ui.cpp')
+libfvbe = env.SharedLibrary('libfvbe.so', [ ui_o ])
