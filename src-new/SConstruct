@@ -1,0 +1,19 @@
+from os import environ
+
+env = Environment()
+
+# Set default optimizations if environment doesn't specify any.
+if not 'CXXFLAGS' in environ:
+	env.Append(CXXFLAGS = [ '-O2' ])
+else:
+	env.Append(CXXFLAGS = [ environ['CXXFLAGS'] ])
+
+# Enable most warnings
+env.Append(CXXFLAGS = [ '-Wall', '-Wextra' ])
+
+# Enable debug symbols or disable debugging code.
+debug = int(ARGUMENTS.get('debug', 1))
+if debug:
+	env.Append(CXXFLAGS = [ '-g' ])
+else:
+	env.Append(CXXFLAGS = [ '-DNDEBUG' ])
