@@ -29,3 +29,11 @@ env['SHLIBSUFFIX'] = ''
 # libfvbe build instructions
 ui_o = env.SharedObject('ui.o', 'ui.cpp')
 libfvbe = env.SharedLibrary('libfvbe.so', [ ui_o ])
+
+# ui_newt build instructions
+ui_newt_o = env.SharedObject('ui_newt.o', 'ui_newt.cpp')
+ui_newt = env.SharedLibrary('ui_newt.so', [ ui_newt_o, libfvbe ], LIBS = '-lnewt')
+
+# main build instructions
+main_o = env.Object('main.o', 'main.cpp')
+main = env.Program('main', [ main_o, libfvbe ], LIBS = '-ldl')
