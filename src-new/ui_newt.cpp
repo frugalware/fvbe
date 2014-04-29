@@ -5,7 +5,7 @@
 #include "main.hpp"
 #include "ui_newt.hpp"
 
-int UINewt::main(int /*argc*/, char **/*argv*/)
+int UINewt::main(int /*argc*/, char ** /*argv*/)
 {
 	int code = EXIT_FAILURE;
 

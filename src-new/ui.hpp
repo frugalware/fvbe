@@ -16,6 +16,30 @@ class Widget
 		virtual ~Widget();
 };
 
+class Label : public Widget
+{
+	public:
+		virtual ~Label();
+};
+
+class TextBox : public Widget
+{
+	public:
+		virtual ~TextBox();
+};
+
+class EntryBox : public Widget
+{
+	public:
+		virtual ~EntryBox();
+};
+
+class CheckBox : public Widget
+{
+	public:
+		virtual ~CheckBox();
+};
+
 class UI
 {
 	public:

@@ -19,6 +19,30 @@ Widget::~Widget()
 }
 // Widget Class End
 
+// Label Class Start
+Label::~Label()
+{
+}
+// Label Class End
+
+// TextBox Class Start
+TextBox::~TextBox()
+{
+}
+// TextBox Class End
+
+// EntryBox Class Start
+EntryBox::~EntryBox()
+{
+}
+// EntryBox Class End
+
+// CheckBox Class Start
+CheckBox::~CheckBox()
+{
+}
+// CheckBox Class End
+
 // UI Class Start
 UI::~UI()
 {
@@ -89,7 +113,7 @@ bool UI::setSignalInterrupt(int sig, bool interrupt)
 	return true;
 }
 
-int UI::main(int /*argc*/, char **/*argv*/)
+int UI::main(int /*argc*/, char ** /*argv*/)
 {
 	return EXIT_SUCCESS;
 }
