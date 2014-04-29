@@ -40,6 +40,18 @@ class CheckBox : public Widget
 		virtual ~CheckBox();
 };
 
+class Button : public Widget
+{
+	public:
+		virtual ~Button();
+};
+
+class ProgressBar : public Widget
+{
+	public:
+		virtual ~ProgressBar();
+};
+
 class UI
 {
 	public:
