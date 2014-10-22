@@ -57,9 +57,6 @@ bin/fwsetup: $(OBJECTS)
 bin/resolvegroups: src/resolvegroups.o
 	cc -lpacman $^ -o $@
 
-bin/qemu-exit: src/qemu-exit.o
-	cc $^ -o $@
-
 setup: bin/fwsetup
 
 install: bin/fwsetup
