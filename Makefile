@@ -64,7 +64,7 @@ install: bin/fwsetup
 	install -m 0755 bin/fwsetup $(DESTDIR)/usr/sbin/fwsetup
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/langconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/kbconfig
-	ln -s -f fwsetup $(DESTDIR)/usr/sbin/nmconfig
+#	ln -s -f fwsetup $(DESTDIR)/usr/sbin/nmconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/rootconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/userconfig
 	ln -s -f fwsetup $(DESTDIR)/usr/sbin/hostconfig
