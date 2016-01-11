@@ -77,53 +77,65 @@ static inline bool findpath(struct format **targets,struct format *target,const 
   return false;
 }
 
-static int get_text_screen_width(const char *s)
+static int get_text_screen_width(const char *text)
 {
-  wchar_t wc = 0;
-  size_t n = 0;
+  const char *s = 0;
   size_t len = 0;
-  mbstate_t mbs = {0};
+  wchar_t *wcs = 0;
+  size_t i = 0;
+  wchar_t wc = 0;
+  int wcw = 0;
   int w = 0;
-  int i = 0;
 
-  if(s == 0)
+  if(text == 0)
   {
     errno = EINVAL;
     error(strerror(errno));
     return -1;
   }
 
-  len = strlen(s);
+  s = text;
+  len = mbsrtowcs(NULL,&s,0,NULL);
 
-  while(true)
+  if(len == 0)
   {
-    n = mbrtowc(&wc,s,len,&mbs);
-
-    if(n == (size_t) -1 || n == (size_t) -2)
-    {
-      error(strerror(errno));
-      return -1;
-    }
-
-    if(n == 0 || wc == L'\n')
-      break;
-
-    switch(wc)
-    {
-      case L'\t':
-        w += 8;
-        break;
-
-      default:
-        if((i = wcwidth(wc)) > 0)
-          w += i;
-        break;
-    }
-
-    s += n;
-
-    len -= n;
+    return 0;
   }
+  else if(len == (size_t) -1)
+  {
+    error(strerror(errno));
+    return -1;
+  }
+
+  wcs = alloc(wchar_t,len);
+  s = text;
+
+  if(mbsrtowcs(wcs,&s,len,NULL) == (size_t) -1)
+  {
+    error(strerror(errno));
+    free(wcs);
+    return -1;
+  }
+
+  for( ; i < len ; ++i )
+  {
+    wc = wcs[i];
+
+    if(wc == L'\n')
+    {
+      break;
+    }
+    else if(wc == L'\t')
+    {
+      w += 8;
+    }
+    else if((wcw = wcwidth(wc)) > 0)
+    {
+      w += wcw;
+    }
+  }
+
+  free(wcs);
 
   return w;
 }
