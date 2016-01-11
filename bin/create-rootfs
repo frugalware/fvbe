@@ -115,7 +115,7 @@ chroot $FVBE_ROOT sh -c "systemctl disable getty@tty1.service"
 cat > $FVBE_ROOT/lib/systemd/system/fwsetup.service << EOF
 [Unit]
 Description=FVBE Setup Launcher
-After=systemd-user-sessions.service plymouth-quit-wait.service
+After=systemd-user-sessions.service
 After=rc-local.service
 Before=getty.target
 IgnoreOnIsolate=yes
