@@ -85,7 +85,6 @@ static bool write_fstab(void)
     "none /tmp tmpfs defaults 0 0\n"
     "none /var/tmp tmpfs defaults 0 0\n"
     "none /dev/pts devpts gid=5,mode=620 0 0\n"
-    "none /proc/bus/usb usbfs devgid=23,devmode=664 0 0\n"
     "none /dev/shm tmpfs defaults 0 0\n"
   );
 
