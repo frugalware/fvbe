@@ -187,7 +187,9 @@ cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
 # Prune unimportant paths.
 if [ "$FVBE_ROOTFS_CLEAN" = "yes" ]; then
   rm -rf $FVBE_ROOT/boot/*
+  rm -rf $FVBE_ROOT/usr/share/doc
   find $FVBE_ROOT -xdev -name '*.[ah]' -delete
+  find $FVBE_ROOT -xdev -name '*.la' -delete
 fi
 
 # Unmount all paths mounted earlier.
