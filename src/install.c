@@ -517,6 +517,8 @@ static bool install_groups_get(struct install **groups)
       ++matches;
     else if(strcmp(s,"gnome") == 0)
       ++matches;
+    else if(strcmp(s,"enlightenment") == 0)
+      ++matches;
     else if(strcmp(s,"lib") == 0)
       ++matches;
     else if(strcmp(s,"multimedia") == 0)
