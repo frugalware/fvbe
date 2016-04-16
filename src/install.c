@@ -517,8 +517,6 @@ static bool install_groups_get(struct install **groups)
       ++matches;
     else if(strcmp(s,"gnome") == 0)
       ++matches;
-    else if(strcmp(s,"kde") == 0)
-      ++matches;
     else if(strcmp(s,"lib") == 0)
       ++matches;
     else if(strcmp(s,"multimedia") == 0)
@@ -528,8 +526,6 @@ static bool install_groups_get(struct install **groups)
     else if(strcmp(s,"x11") == 0)
       ++matches;
     else if(strcmp(s,"xapps") == 0)
-      ++matches;
-    else if(strcmp(s,"xfce4") == 0)
       ++matches;
     else if(strcmp(s,"xlib") == 0)
       ++matches;
