@@ -244,7 +244,7 @@ static void install_conversation_callback(unsigned char event,void *data1,void *
   *response = 0;
 }
 
-static void install_progress_callback(unsigned char event,char *pkg,int percent,int howmany,int remain)
+static void install_progress_callback(unsigned char event, const char *pkg, int percent, int howmany, int remain)
 {
   char text[256] = {0};
   int padding = 0;
