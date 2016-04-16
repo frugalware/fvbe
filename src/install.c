@@ -515,6 +515,12 @@ static bool install_groups_get(struct install **groups)
       ++matches;
     else if(strcmp(s,"devel") == 0)
       ++matches;
+    else if(strcmp(s,"kf5") == 0)
+      ++matches;
+    else if(strcmp(s,"plasma") == 0)
+      ++matches;
+    else if(strcmp(s,"kde5") == 0)
+      ++matches;
     else if(strcmp(s,"gnome") == 0)
       ++matches;
     else if(strcmp(s,"enlightenment") == 0)
