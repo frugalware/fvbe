@@ -521,6 +521,8 @@ static bool install_groups_get(struct install **groups)
       ++matches;
     else if(strcmp(s,"kde5") == 0)
       ++matches;
+    else if(strcmp(s,"kde5-apps") == 0)
+     ++matches;
     else if(strcmp(s,"gnome") == 0)
       ++matches;
     else if(strcmp(s,"enlightenment") == 0)
@@ -576,6 +578,8 @@ static bool install_groups_get(struct install **groups)
     else if(strcmp(s,"plasma") == 0)
       cache = true;
     else if(strcmp(s,"kde5") == 0)
+       cache = true;
+    else if(strcmp(s,"kde5-apps") == 0)
        cache = true;
     else if(strcmp(s,"gnome") == 0)
       cache = true;
