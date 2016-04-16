@@ -571,10 +571,16 @@ static bool install_groups_get(struct install **groups)
       cache = true;
     else if(strcmp(s,"devel") == 0)
       cache = true;
+    else if(strcmp(s,"kf5") == 0)
+      cache = true;
+    else if(strcmp(s,"plasma") == 0)
+      cache = true;
+    else if(strcmp(s,"kde5") == 0)
+       cache = true;
     else if(strcmp(s,"gnome") == 0)
       cache = true;
-    else if(strcmp(s,"kde") == 0)
-      cache = true;
+    else if(strcmp(s,"enlightenment") == 0)
+     cache = true;
     else if(strcmp(s,"lib") == 0)
       cache = true;
     else if(strcmp(s,"multimedia") == 0)
@@ -584,8 +590,6 @@ static bool install_groups_get(struct install **groups)
     else if(strcmp(s,"x11") == 0)
       cache = true;
     else if(strcmp(s,"xapps") == 0)
-      cache = true;
-    else if(strcmp(s,"xfce4") == 0)
       cache = true;
     else if(strcmp(s,"xlib") == 0)
       cache = true;
