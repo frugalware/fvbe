@@ -26,9 +26,8 @@ static bool dmconfig_setup_managers(void)
   {
     "none",
     "gdm",
-    "kdm",
-    "lightdm",
-    "lxdm",
+    "sddm",
+    "entrance",
     "xdm",
     0
   };
