@@ -26,6 +26,7 @@ static bool viconfig_setup_editors(void)
   {
     "vim",
     "nano",
+	"mcedit",
     "vile",
     "ne",
     "dex",
