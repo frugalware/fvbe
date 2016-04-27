@@ -1123,8 +1123,6 @@ static bool ui_dialog_format(struct format **targets,struct format *target)
     "ext2",
     "ext3",
     "ext4",
-    "reiserfs",
-    "jfs",
     "xfs",
     "btrfs",
     "swap",

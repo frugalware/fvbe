@@ -65,8 +65,6 @@ static inline void probe_filesystem(struct format *target)
     "ext2",
     "ext3",
     "ext4",
-    "reiserfs",
-    "jfs",
     "xfs",
     "btrfs",
     "swap",
@@ -241,10 +239,6 @@ static bool format_process_devices(void)
         program = "mkfs.ext3";
       else if(strcmp(target->newfilesystem,"ext4") == 0)
         program = "mkfs.ext4";
-      else if(strcmp(target->newfilesystem,"reiserfs") == 0)
-        program = "mkfs.reiserfs -q";
-      else if(strcmp(target->newfilesystem,"jfs") == 0)
-        program = "mkfs.jfs -q";
       else if(strcmp(target->newfilesystem,"xfs") == 0)
         program = "mkfs.xfs -f";
       else if(strcmp(target->newfilesystem,"btrfs") == 0)
