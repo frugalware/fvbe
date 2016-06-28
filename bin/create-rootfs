@@ -12,7 +12,7 @@ fi
 if [ ! -e /usr/bin/mksquashfs ]; then
 	echo "mksquashfs is missing"
 	exit 1
-}
+fi
 
 if [ ! -e /usr/bin/xorriso ]; then
 	echo "xorriso is missing"
