@@ -9,6 +9,11 @@ if [ "$(id -u)" -ne 0 ]; then
 	exit 1
 fi
 
+if [ ! -e /usr/bin/re2c ]; then
+	echo "re2c is missing"
+	exit 1
+fi
+
 if [ ! -e /usr/bin/mksquashfs ]; then
 	echo "mksquashfs is missing"
 	exit 1
