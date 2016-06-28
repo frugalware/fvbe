@@ -79,13 +79,8 @@ static bool write_fstab(void)
   }
   
   fprintf(file,
-    "none /dev devtmpfs defaults 0 0\n"
-    "none /proc proc defaults 0 0\n"
-    "none /sys sysfs defaults 0 0\n"
-    "none /tmp tmpfs defaults 0 0\n"
-    "none /var/tmp tmpfs defaults 0 0\n"
-    "none /dev/pts devpts gid=5,mode=620 0 0\n"
-    "none /dev/shm tmpfs defaults 0 0\n"
+
+    "tmpfs /var/tmp tmpfs defaults 0 0\n"
   );
 
   for( p = g->fstabdata ; *p != 0 ; ++p )
