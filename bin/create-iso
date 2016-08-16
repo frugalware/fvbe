@@ -49,12 +49,15 @@ rm -rf $FVBE_ROOT fvbe-$FVBE_ISO_RELEASE-$FVBE_ISO_TYPE-$FVBE_ARCH.iso tmp local
 # Create the skeleton directory.
 mkdir -p $FVBE_ROOT/{boot/grub/fonts,LiveOS}
 
+# Copy created rootfs.img into LiveOS dir
+cp squashfs.img $FVBE_ROOT/LiveOS
+
 # Setup kernel and initrd.
 cp vmlinuz $FVBE_ROOT/boot/vmlinuz
 cp initrd $FVBE_ROOT/boot/initrd
 
-# Setup squashfs image.
-cp squashfs.img $FVBE_ROOT/LiveOS/squashfs.img
+# Copy background.png into grub dir
+cp background.png $FVBE_ROOT/boot/grub
 
 # Setup the pacman-g2 package cache.
 if [ -n "$FVBE_ISO_PACKAGES" ]; then
@@ -94,6 +97,7 @@ set color_normal=white/black
 set color_highlight=black/white
 set menu_color_normal=white/black
 set menu_color_highlight=black/white
+
 menuentry 'Frugalware Versatile Bootable Environment' {
   linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video
   initrd /boot/initrd
