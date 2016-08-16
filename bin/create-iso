@@ -70,9 +70,10 @@ if [ -n "$FVBE_ISO_PACKAGES" ]; then
     fpm=$(echo $line | cut -f 1 -d ':')
     sum=$(echo $line | cut -f 2 -d ':')
     if [ ! -f "/var/cache/pacman-g2/pkg/$fpm" ]; then
-      wget $MIRROR/$fpm -O /var/cache/pacman-g2/pkg/$fpm
+      wget $MIRROR/$fpm -O $FVBE_ROOT/packages/$fpm
+    else
+      cp /var/cache/pacman-g2/pkg/$fpm $FVBE_ROOT/packages/$fpm
     fi
-    cp /var/cache/pacman-g2/pkg/$fpm $FVBE_ROOT/packages/$fpm
     echo "$sum  $FVBE_ROOT/packages/$fpm" >> sums
   done << EOF
 $(bin/resolvegroups $FVBE_ISO_PACKAGES)
