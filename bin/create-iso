@@ -82,9 +82,17 @@ EOF
   echo $FVBE_ISO_PACKAGES > $FVBE_ROOT/packages/groups
 fi
 
+
 # Collect some grub files that are not automatically handled.
 cp unicode.pf2 $FVBE_ROOT/boot/grub/fonts/unicode.pf2
 cat > $FVBE_ROOT/boot/grub/menu.cfg << EOF
+insmod png
+background_image -m stretch /boot/grub/background.png
+
+set color_normal=white/black
+set color_highlight=black/white
+set menu_color_normal=white/black
+set menu_color_highlight=black/white
 menuentry 'Frugalware Versatile Bootable Environment' {
   linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video
   initrd /boot/initrd
