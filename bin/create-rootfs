@@ -142,13 +142,6 @@ echo "root:$(openssl passwd -1 fvbe):17014:0:::::" >> $FVBE_ROOT/etc/shadow
 echo "guest:$(openssl passwd -1 fvbe):17014:0:99999:7:::" >> $FVBE_ROOT/etc/shadow
 echo "guest:x:1006:100:Guest user:/home/guest:/bin/bash" >> $FVBE_ROOT/etc/passwd
 
-# Create needed users
-systemd-sysusers --root $FVBE_ROOT
-
-# Create System ID
-systemd-machine-id-setup --root $FVBE_ROOT --commit
-
-
 # System hostname setup.
 cat > $FVBE_ROOT/etc/hostname << EOF
 $FVBE_ROOTFS_HOSTNAME
