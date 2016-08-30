@@ -162,6 +162,9 @@ Password: fvbe fvbe
 EOF
 done
 
+# Enable gpm at boot
+ln -s $FVBE_ROOT/lib/systemd/system/gpm.service  $FVBE_ROOT/lib/systemd/system/multi-user.target.wants/gpm.service
+
 # Cache files or data from the ROOTFS that we'll use in the ISO.
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
