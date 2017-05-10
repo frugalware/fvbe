@@ -33,7 +33,7 @@ REPO=${FDB/.fdb/}
 rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img pacman-g2.conf locales layouts unicode.pf2 $FDB LiveOS
 
 # Create root directory skeleton.
-mkdir -p $FVBE_ROOT/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
+mkdir -p $FVBE_ROOT/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig,var/run,run}
 
 # Setup pacman-g2.conf.
 cat > pacman-g2.conf << EOF
@@ -50,7 +50,7 @@ fakeroot -u pacman-g2 --root $FVBE_ROOT --noconfirm --noscriptlet --config pacma
 
 # Install fwsetup.
 install -m 0755 bin/fwsetup $FVBE_ROOT/usr/sbin/fwsetup
-           
+
 # Set the default systemd boot target.
 if [ -x "$FVBE_ROOT/usr/bin/X" ]; then
   ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/default.target
@@ -126,12 +126,13 @@ ln -s $FVBE_ROOT/lib/systemd/system/fwsetup.service $FVBE_ROOT/lib/systemd/syste
 
 # System fstab setup.
 cat > $FVBE_ROOT/etc/fstab << EOF
-none /proc proc defaults 0 0
-none /sys sysfs defaults 0 0
-none /tmp tmpfs defaults 0 0
-none /var/tmp tmpfs defaults 0 0
-none /dev/shm tmpfs defaults 0 0
-none /dev/pts devpts gid=5,mode=620 0 0
+proc /proc proc defaults 0 0
+sysfs /sys sysfs defaults 0 0
+tmpfs /tmp tmpfs defaults 0 0
+tmpfs /var/tmp tmpfs defaults 0 0
+tmpfs /dev/shm tmpfs defaults 0 0
+tmpfs /dev/pts devpts gid=5,mode=620 0 0
+
 EOF
 
 # Setup root user.
@@ -202,6 +203,6 @@ rm -rf $FVBE_ROOT/*
 mkdir $FVBE_ROOT/LiveOS
 mv rootfs.img  $FVBE_ROOT/LiveOS/
 
-mksquashfs $FVBE_ROOT squashfs.img -noappend -no-progress -all-root -comp $FVBE_ROOTFS_COMPRESS -Xbcj x86 -always-use-fragments
+mksquashfs $FVBE_ROOT squashfs.img -noappend -no-progress -all-root -comp $FVBE_ROOTFS_COMPRESS -Xbcj x86 -always-use-fragments -b 1048576 -comp xz -Xdict-size 100%
 
 
