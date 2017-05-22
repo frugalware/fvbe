@@ -1,4 +1,8 @@
 == fvbe
+This is FVBE (Frugalware Versatile Bootable Environment).
+It is intended to be an all-in-one bootable environment
+for users to perform installation, maintenance, system
+rescue, and other tasks as the need is discovered.
 
 === Boot Menu
 From this menu, you can modify the video resolution, language, region localization,
