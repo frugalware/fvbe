@@ -31,11 +31,6 @@ while test -n "$1"; do
       shift
       ;;
 
-    --ui)
-      UI="$2"
-      shift
-      ;;
-
     *)
       error "Unrecognized argument: $1"
       ;;
@@ -61,10 +56,6 @@ if test -z "$TYPE"; then
   error "TYPE is not defined."
 fi
 
-if test -z "$UI"; then
-  error "UI is not defined."
-fi
-
 if test "$TYPE" = "basic"; then
   PACKAGES="base"
 elif test "$TYPE" = "full"; then
@@ -80,5 +71,4 @@ sed -i "s|^FVBE_ARCH=.*\$|FVBE_ARCH=\"$ARCH\"|"                             fvbe
 sed -i "s|^FVBE_ISO_RELEASE=.*\$|FVBE_ISO_RELEASE=\"$RELEASE\"|"            fvbe.conf
 sed -i "s|^FVBE_ISO_TYPE=.*\$|FVBE_ISO_TYPE=\"$TYPE\"|"                     fvbe.conf
 sed -i "s|^FVBE_ROOTFS_REPOSITORY=.*\$|FVBE_ROOTFS_REPOSITORY=\"$BRANCH\"|" fvbe.conf
-sed -i "s|^FVBE_SETUP_UI=.*\$|FVBE_SETUP_UI=\"$UI\"|"                       fvbe.conf
 sed -i "s|^FVBE_ISO_PACKAGES=.*\$|FVBE_ISO_PACKAGES=\"$PACKAGES\"|"         fvbe.conf

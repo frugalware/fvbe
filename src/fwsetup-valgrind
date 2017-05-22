@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec valgrind --log-file=/var/log/fwsetup-valgrind.log --suppressions=/usr/lib/valgrind/fwsetup.supp --leak-check=full fwsetup
