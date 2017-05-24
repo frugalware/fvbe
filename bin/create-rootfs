@@ -4,6 +4,11 @@ set -e
 
 . ./fvbe.conf
 
+if [ "$(id -u)" -ne 0 ]; then
+       echo "You must be root to do this."
+       exit 1
+fi
+
 if [ ! -e /usr/bin/re2c ]; then
 	echo "re2c is missing"
 	exit 1
@@ -30,10 +35,18 @@ fi
 REPO=${FDB/.fdb/}
 
 # Cleanup from a previous run.
+cp /proc/mounts mounts
+while read line; do
+       path=$(echo $line | cut -f 2 -d ' ')
+       if [ "$path" = "$FVBE_ROOT" ]; then
+               continue
+       fi
+       if [ "$path" != "${path#$FVBE_ROOT}" ]; then
+               umount $path
+       fi
+done < mounts
+[ -d "$FVBE_ROOT" ] && umount $FVBE_ROOT
 rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img pacman-g2.conf locales layouts unicode.pf2 $FDB LiveOS
-
-# Create root directory skeleton.
-mkdir -p $FVBE_ROOT/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
 
 # Setup pacman-g2.conf.
 cat > pacman-g2.conf << EOF
@@ -43,86 +56,41 @@ LogFile = /var/log/pacman-g2.log
 Server = $MIRROR
 EOF
 
+
+# Create the virtual disk and mount it.
+dd if=/dev/zero of=rootfs.img bs=$(( 128 * 1024 )) count=$(( ($FVBE_ROOTFS_SIZE * 1024 * 1024 * 1024) / (128 * 1024) ))
+/sbin/mkfs.ext4 -q -F rootfs.img
+mkdir -p $FVBE_ROOT
+mount -o loop rootfs.img $FVBE_ROOT
+
+# Create root directory skeleton.
+mkdir -p $FVBE_ROOT/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
+
+mount -t devtmpfs none $FVBE_ROOT/dev
+mount -t sysfs none $FVBE_ROOT/sys
+mount -t proc none $FVBE_ROOT/proc
+mount -t tmpfs none $FVBE_ROOT/tmp
+mount -t tmpfs none $FVBE_ROOT/var/tmp
+mount -o bind /var/cache/pacman-g2 $FVBE_ROOT/var/cache/pacman-g2
+
+# Bootstrap pacman-g2
+pacman-g2 --root $FVBE_ROOT --noconfirm --noscriptlet --config pacman-g2.conf -Sy pacman-g2 netkit-base
+cp pacman-g2.conf $FVBE_ROOT/etc
+cp /etc/resolv.conf $FVBE_ROOT/etc
+
+
 # Setup root directory with pacman-g2.
-fakeroot -u pacman-g2 --root $FVBE_ROOT --noconfirm --noscriptlet --config pacman-g2.conf -Sy $FVBE_ROOTFS_PACKAGES
+/usr/sbin/chroot $FVBE_ROOT pacman-g2 --noconfirm -Sy $FVBE_ROOTFS_PACKAGES
 
 # LiveCD customizations beyond here.
 
-# Install fwsetup.
-install -m 0755 bin/fwsetup $FVBE_ROOT/usr/sbin/fwsetup
-           
 # Set the default systemd boot target.
-if [ -x "$FVBE_ROOT/usr/bin/X" ]; then
-  ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/default.target
-else
-  ln -sf /lib/systemd/system/multi-user.target $FVBE_ROOT/etc/systemd/system/default.target
-fi
+ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/default.target
+
 
 # Install vi symlinks for installer.
 ln -sf $FVBE_ROOT/usr/bin/vim $FVBE_ROOT/usr/bin/vi
 ln -sf $FVBE_ROOT/usr/bin/vim $FVBE_ROOT/bin/vi
-
-# Script for setting up the end-user customizations during boot-up.
-cat > $FVBE_ROOT/usr/libexec/fvbe-setup << EOF
-#!/bin/sh
-
-set -e
-
-echo "FONT=$FVBE_FONT" > /etc/vconsole.conf
-
-for i in \$(cat /proc/cmdline); do
-  if [[ "\$i" =~ "locale.LANG=" ]]; then
-    localectl set-locale LANG="\${i/locale.LANG=/}"
-  elif [[ "\$i" =~ "vconsole.keymap=" ]]; then
-    localectl set-keymap "\${i/vconsole.keymap=/}"
-  fi
-done
-EOF
-chmod +x $FVBE_ROOT/usr/libexec/fvbe-setup
-
-# Service for launching fvbe-setup.
-cat > $FVBE_ROOT/lib/systemd/system/fvbe.service << EOF
-[Unit]
-Description=FVBE Setup
-After=sysinit.target
-Before=default.target
-
-[Service]
-ExecStart=/usr/libexec/fvbe-setup
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-ln -s $FVBE_ROOT/lib/systemd/system/fvbe.service $FVBE_ROOT/lib/systemd/system/multi-user.target.wants/fvbe.service
-
-cat > $FVBE_ROOT/lib/systemd/system/fwsetup.service << EOF
-[Unit]
-Description=FVBE Setup Launcher
-After=systemd-user-sessions.service
-After=rc-local.service
-Before=getty.target
-IgnoreOnIsolate=yes
-ConditionPathExists=/dev/tty0
-
-[Service]
-ExecStart=-/usr/sbin/fwsetup
-Type=idle
-Restart=on-failure
-RestartSec=0
-StandardInput=tty
-StandardOutput=tty
-StandardError=tty
-TTYPath=/dev/tty1
-TTYReset=yes
-TTYVHangup=yes
-TTYVTDisallocate=yes
-IgnoreSIGPIPE=no
-
-[Install]
-WantedBy=multi-user.target
-EOF
-ln -s $FVBE_ROOT/lib/systemd/system/fwsetup.service $FVBE_ROOT/lib/systemd/system/multi-user.target.wants/fwsetup.service
 
 # System fstab setup.
 cat > $FVBE_ROOT/etc/fstab << EOF
@@ -162,41 +130,61 @@ Password: fvbe fvbe
 EOF
 done
 
-# Enable gpm at boot
-ln -s $FVBE_ROOT/lib/systemd/system/gpm.service  $FVBE_ROOT/lib/systemd/system/multi-user.target.wants/gpm.service
+# Copy calamares configuration
+mkdir -p $FVBE_ROOT/etc/calamares
+cp -r calamares-config/* $FVBE_ROOT/etc/calamares/
+
+# Copy calamares frugalware branding
+mkdir -p $FVBE_ROOT/usr/share/calamares/branding/frugalware/
+cp -r calamares-frugalware-branding/* $FVBE_ROOT/usr/share/calamares/branding/frugalware/
+
+# set Version
+sed -i "s/_version_/$FVBE_ISO_RELEASE/" $FVBE_ROOT/usr/share/calamares/branding/frugalware/branding.desc
+sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" $FVBE_ROOT/usr/share/calamares/branding/frugalware/branding.desc
+
+# change desktop for users
+cp -r guest $FVBE_ROOT/home/
+
+# copy calamares desktop
+install -Dm644 "calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg"
+
+# set permissions for guest user
+/usr/sbin/chroot $FVBE_ROOT /usr/bin/chown -R guest.users /home/guest
+
+# sddm autologin
+sed -i "s|^Session=.*\$|Session=plasma.desktop|" $FVBE_ROOT/etc/sddm.conf
+sed -i "s|^User=.*\$|User=guest|" $FVBE_ROOT/etc/sddm.conf
+
 
 # Cache files or data from the ROOTFS that we'll use in the ISO.
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
-cp $FVBE_ROOT/var/lib/pacman-g2/$FDB .
 
 localedef -f $FVBE_ROOT/usr/lib/locale/locale-archive --list-archive | grep '\\.utf8$' | sort --unique > locales
 
 tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
 cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
 
-# Prune unimportant paths.
-if [ "$FVBE_ROOTFS_CLEAN" = "yes" ]; then
-  rm -rf $FVBE_ROOT/usr/share/doc
-  rm -rf $FVBE_ROOT/boot/{initrd*,vmlinuz*}
-  rm -rf $FVBE_ROOT/usr/include
-  rm -rf $FVBE_ROOT/usr/share/gtk-doc
-  
-  find $FVBE_ROOT -xdev -name '*.[ah]' -delete
-  find $FVBE_ROOT -xdev -name '*.la' -delete
-fi
-
 # Move grub background out of rootfs
 mv $FVBE_ROOT/boot/grub/background.png .
 
-# Remove downloaded packages
-rm -rf $FVBE_ROOT/var/cache/pacman-g2/pkg/
-
-# Now prepare the rootfs.
-e2fsimage -f rootfs.img -d $FVBE_ROOT -t ext4 -S -s $(( $FVBE_ROOTFS_SIZE * 1024 * 1024  ))
+# Unmount all paths mounted earlier.
+cp /proc/mounts mounts
+while read line; do
+       path=$(echo $line | cut -f 2 -d ' ')
+       if [ "$path" = "$FVBE_ROOT" ]; then
+               continue
+       fi
+       if [ "$path" != "${path#$FVBE_ROOT}" ]; then
+               umount $path
+       fi
+done < mounts
+umount $FVBE_ROOT
 
 # Now shrink the rootfs.img to minimum size.
+/sbin/e2fsck -f -a rootfs.img
 /sbin/resize2fs -M rootfs.img
+/sbin/e2fsck -f -a rootfs.img
 
 rm -rf $FVBE_ROOT/*
 mkdir $FVBE_ROOT/LiveOS
