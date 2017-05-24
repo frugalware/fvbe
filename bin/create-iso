@@ -12,7 +12,7 @@ do_video()
   echo "    set video='vga=${i#*-} nomodeset'"
   echo "    export video"
   echo "    configfile /boot/grub/menu.cfg"
-  echo "  }"  
+  echo "  }"
   done
   echo "}"
 }
@@ -59,34 +59,6 @@ cp initrd $FVBE_ROOT/boot/initrd
 # Copy background.png into grub dir
 cp background.png $FVBE_ROOT/boot/grub
 
-# Setup the pacman-g2 package cache.
-if [ -n "$FVBE_ISO_PACKAGES" ]; then
-  if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
-    FDB=frugalware-current.fdb
-    MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-$FVBE_ARCH"
-  elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
-    FDB=frugalware.fdb
-    MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-$FVBE_ISO_RELEASE/frugalware-$FVBE_ARCH"
-  fi
-  mkdir -p $FVBE_ROOT/packages
-  while read line; do
-    fpm=$(echo $line | cut -f 1 -d ':')
-    sum=$(echo $line | cut -f 2 -d ':')
-    if [ ! -f "/var/cache/pacman-g2/pkg/$fpm" ]; then
-      wget $MIRROR/$fpm -O $FVBE_ROOT/packages/$fpm
-    else
-      cp /var/cache/pacman-g2/pkg/$fpm $FVBE_ROOT/packages/$fpm
-    fi
-    echo "$sum  $FVBE_ROOT/packages/$fpm" >> sums
-  done << EOF
-$(bin/resolvegroups $FVBE_ISO_PACKAGES)
-EOF
-  sha1sum -c sums
-  cp $FDB $FVBE_ROOT/packages/$FDB
-  echo $FVBE_ISO_PACKAGES > $FVBE_ROOT/packages/groups
-fi
-
-
 # Collect some grub files that are not automatically handled.
 cp unicode.pf2 $FVBE_ROOT/boot/grub/fonts/unicode.pf2
 cat > $FVBE_ROOT/boot/grub/menu.cfg << EOF
@@ -124,7 +96,7 @@ export layout
 
 if [ \$mode = video ]; then
   loadfont unicode
-  insmod all_video  
+  insmod all_video
   terminal_input console
   terminal_output gfxterm
 elif [ \$mode = serial ]; then
