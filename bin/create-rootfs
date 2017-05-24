@@ -202,6 +202,4 @@ rm -rf $FVBE_ROOT/*
 mkdir $FVBE_ROOT/LiveOS
 mv rootfs.img  $FVBE_ROOT/LiveOS/
 
-mksquashfs $FVBE_ROOT squashfs.img -noappend -no-progress -all-root -comp $FVBE_ROOTFS_COMPRESS -Xbcj x86 -always-use-fragments
-
-
+mksquashfs $FVBE_ROOT squashfs.img -noappend -no-progress -comp lz4
