@@ -167,6 +167,8 @@ install -Dm644 "calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/sc
 # sddm autologin
 sed -i "s|^Session=.*\$|Session=plasma.desktop|" $FVBE_ROOT/etc/sddm.conf
 sed -i "s|^User=.*\$|User=guest|" $FVBE_ROOT/etc/sddm.conf
+# allow guest user to start calamares without Password
+cp 49-nopasswd_calamares.rules $FVBE_ROOT/etc/polkit-1/rules.d/
 
 
 # Cache files or data from the ROOTFS that we'll use in the ISO.
