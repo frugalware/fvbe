@@ -196,7 +196,7 @@ cp 49-nopasswd_calamares.rules $FVBE_ROOT/etc/polkit-1/rules.d/
 cp $FVBE_ROOT/boot/vmlinuz vmlinuz
 cp $FVBE_ROOT/boot/initrd initrd
 
-localedef -f $FVBE_ROOT/usr/lib/locale/locale-archive --list-archive | grep '\\.utf8$' | sort --unique > locales
+localedef -f $FVBE_ROOT/usr/lib/locale/locale-archive --list-archive | grep '\.utf8$' | sort --unique > locales
 
 tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
 cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
