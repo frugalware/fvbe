@@ -4,6 +4,25 @@ set -e
 
 . ./fvbe.conf
 
+cleanup_mounts() {
+  echo "Umounting chroot"
+  cp /proc/mounts mounts
+  while read line; do
+         path=$(echo $line | cut -f 2 -d ' ')
+         if [ "$path" = "$FVBE_ROOT" ]; then
+                 continue
+         fi
+         if [ "$path" != "${path#$FVBE_ROOT}" ]; then
+                 umount $path
+         fi
+  done < mounts
+  if grep -q $FVBE_ROOT mounts
+  then
+    [ -d "$FVBE_ROOT" ] && umount $FVBE_ROOT
+  fi
+
+}
+
 if [ "$(id -u)" -ne 0 ]; then
        echo "You must be root to do this."
        exit 1
@@ -35,17 +54,9 @@ fi
 REPO=${FDB/.fdb/}
 
 # Cleanup from a previous run.
-cp /proc/mounts mounts
-while read line; do
-       path=$(echo $line | cut -f 2 -d ' ')
-       if [ "$path" = "$FVBE_ROOT" ]; then
-               continue
-       fi
-       if [ "$path" != "${path#$FVBE_ROOT}" ]; then
-               umount $path
-       fi
-done < mounts
-[ -d "$FVBE_ROOT" ] && umount $FVBE_ROOT
+echo "Cleanup"
+cleanup_mounts
+
 rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img pacman-g2.conf locales layouts unicode.pf2 $FDB LiveOS
 
 # Setup pacman-g2.conf.
@@ -72,6 +83,8 @@ mount -t proc none $FVBE_ROOT/proc
 mount -t tmpfs none $FVBE_ROOT/tmp
 mount -t tmpfs none $FVBE_ROOT/var/tmp
 mount -o bind /var/cache/pacman-g2 $FVBE_ROOT/var/cache/pacman-g2
+
+trap cleanup_mounts ERR
 
 # Bootstrap pacman-g2
 pacman-g2 --root $FVBE_ROOT --noconfirm --noscriptlet --config pacman-g2.conf -Sy pacman-g2 netkit-base
@@ -169,17 +182,7 @@ cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
 mv $FVBE_ROOT/boot/grub/background.png .
 
 # Unmount all paths mounted earlier.
-cp /proc/mounts mounts
-while read line; do
-       path=$(echo $line | cut -f 2 -d ' ')
-       if [ "$path" = "$FVBE_ROOT" ]; then
-               continue
-       fi
-       if [ "$path" != "${path#$FVBE_ROOT}" ]; then
-               umount $path
-       fi
-done < mounts
-umount $FVBE_ROOT
+cleanup_mounts
 
 # Now shrink the rootfs.img to minimum size.
 /sbin/e2fsck -f -a rootfs.img
