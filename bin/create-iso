@@ -4,18 +4,6 @@ set -e
 
 . ./fvbe.conf
 
-do_video()
-{
-  echo "submenu 'Video Resolutions' {"
-  for i in 1280x1024-795 1024x768-792 800x600-789 640x480-786; do
-  echo "  menuentry '${i%-*}' {"
-  echo "    set video='vga=${i#*-} nomodeset'"
-  echo "    export video"
-  echo "    configfile /boot/grub/menu.cfg"
-  echo "  }"
-  done
-  echo "}"
-}
 
 do_locales()
 {
@@ -71,16 +59,14 @@ set menu_color_normal=white/black
 set menu_color_highlight=black/white
 
 menuentry 'Frugalware Versatile Bootable Environment' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT 
   initrd /boot/initrd
 }
 menuentry 'Frugalware Versatile Bootable Environment (RAM)' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT \$video rd.live.ram=1
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT rd.live.ram=1
   initrd /boot/initrd
 }
-if [ \$mode = video ]; then
-$(do_video)
-fi
+
 $(do_locales)
 $(do_layouts)
 EOF
