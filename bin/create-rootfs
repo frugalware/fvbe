@@ -201,8 +201,8 @@ localedef -f $FVBE_ROOT/usr/lib/locale/locale-archive --list-archive | grep '\\.
 tail -n +3 $FVBE_ROOT/usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
 cp $FVBE_ROOT/usr/share/grub/unicode.pf2 unicode.pf2
 
-# Move grub background out of rootfs
-mv $FVBE_ROOT/boot/grub/background.png .
+# Copy grub background out of rootfs
+cp $FVBE_ROOT/boot/grub/background.png .
 
 # Unmount all paths mounted earlier.
 cleanup_mounts
