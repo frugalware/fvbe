@@ -159,7 +159,9 @@ sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" $FVBE_ROOT/
 cp -r guest $FVBE_ROOT/home/
 
 # copy calamares desktop
+install -Dm644 "calamares-frugalware.desktop" "$FVBE_ROOT/usr/share/applications/calamares-frugalware.desktop"
 install -Dm644 "calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg"
+ln -s "/usr/share/applications/calamares-frugalware.desktop" "$FVBE_ROOT/home/guest/Desktop/calamares-frugalware.desktop"
 
 # set permissions for guest user
 /usr/sbin/chroot $FVBE_ROOT /usr/bin/chown -R guest.users /home/guest
