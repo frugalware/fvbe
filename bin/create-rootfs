@@ -167,8 +167,18 @@ ln -s "/usr/share/applications/calamares-frugalware.desktop" "$FVBE_ROOT/home/gu
 /usr/sbin/chroot $FVBE_ROOT /usr/bin/chown -R guest.users /home/guest
 
 # sddm autologin
-sed -i "s|^Session=.*\$|Session=plasma.desktop|" $FVBE_ROOT/etc/sddm.conf
-sed -i "s|^User=.*\$|User=guest|" $FVBE_ROOT/etc/sddm.conf
+if [ -f "$FVBE_ROOT/etc/sddm.conf" ]
+then
+  sed -i "s|^Session=.*\$|Session=plasma.desktop|" $FVBE_ROOT/etc/sddm.conf
+  sed -i "s|^User=.*\$|User=guest|" $FVBE_ROOT/etc/sddm.conf
+fi
+
+# gdm autologin
+if [ -f "$FVBE_ROOT/etc/gdm/custom.conf" ]
+then
+  cp gdm-custom.conf $FVBE_ROOT/etc/gdm/custom.conf
+fi
+
 # allow guest user to start calamares without Password
 cp 49-nopasswd_calamares.rules $FVBE_ROOT/etc/polkit-1/rules.d/
 
