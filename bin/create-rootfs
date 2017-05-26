@@ -212,7 +212,7 @@ cleanup_mounts
 /sbin/resize2fs -M rootfs.img
 /sbin/e2fsck -f -a rootfs.img
 
-rm -rf $FVBE_ROOT/*
+rm -rf ${FVBE_ROOT:?}/*
 mkdir $FVBE_ROOT/LiveOS
 mv rootfs.img  $FVBE_ROOT/LiveOS/
 
