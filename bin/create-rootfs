@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
+
+declare -A FVBE_ROOTFS_PACKAGES
 
 . ./fvbe.conf
 
@@ -51,7 +53,11 @@ elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
   FDB=frugalware.fdb
   MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-$FVBE_ISO_RELEASE/frugalware-$FVBE_ARCH"
 fi
-REPO=${FDB/.fdb/}
+REPO="${FDB/.fdb/}"
+FVBE_ROOTFS_PACKAGES+=${FVBE_ROOTFS_PACKAGES["basic"]}
+
+[ $FVBE_ISO_TYPE != "basic" ] && FVBE_ROOTFS_PACKAGES+="${FVBE_ROOTFS_PACKAGES[$FVBE_ISO_TYPE]}"
+
 
 # Cleanup from a previous run.
 echo "Cleanup"
@@ -145,7 +151,10 @@ done
 
 # Copy calamares configuration
 mkdir -p $FVBE_ROOT/etc/calamares
-cp -r calamares-config/* $FVBE_ROOT/etc/calamares/
+cp -r calamares-config-global/* $FVBE_ROOT/etc/calamares/
+
+# Copy calamares configuration for flavor
+[ $FVBE_ISO_TYPE != "basic" ] && cp -r calamares-config-${FVBE_ISO_TYPE}/* $FVBE_ROOT/etc/calamares/
 
 # Copy calamares frugalware branding
 mkdir -p $FVBE_ROOT/usr/share/calamares/branding/frugalware/
