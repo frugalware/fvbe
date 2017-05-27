@@ -139,15 +139,6 @@ cat > $FVBE_ROOT/etc/machine-info << EOF
 PRETTY_HOSTNAME="$FVBE_ROOTFS_PRETTY_HOSTNAME"
 EOF
 
-# System issue setup.
-for i in $FVBE_ROOT/etc/issue{,.net}; do
-  sed -i 's|Frugalware|Frugalware Versatile Bootable Environment|' $i
-  cat >> $i << EOF
-Username: root guest
-Password: fvbe fvbe
-
-EOF
-done
 
 # Copy calamares configuration
 mkdir -p $FVBE_ROOT/etc/calamares
