@@ -10,7 +10,7 @@ do_locales()
   echo "submenu 'Locales' {"
   for i in $(cat locales); do
   echo "  menuentry '$i' {"
-  echo "    set locale=${i}"
+  echo "    set locale=${i:-${FVBE_LOCALE}}"
   echo "    export locale"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"
@@ -23,7 +23,7 @@ do_layouts()
   echo "submenu 'Keyboard Layouts' {"
   for i in $(cat layouts); do
   echo "  menuentry '$i' {"
-  echo "    set layout=${i}"
+  echo "    set layout=${i:-${FVBE_LAYOUT}}"
   echo "    export layout"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"
