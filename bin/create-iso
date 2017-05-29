@@ -10,7 +10,7 @@ do_locales()
   echo "submenu 'Locales' {"
   for i in $(cat locales); do
   echo "  menuentry '$i' {"
-  echo "    set locale=${i:-${FVBE_LOCALE}}"
+  echo "    set locale=${i}"
   echo "    export locale"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"
@@ -23,7 +23,7 @@ do_layouts()
   echo "submenu 'Keyboard Layouts' {"
   for i in $(cat layouts); do
   echo "  menuentry '$i' {"
-  echo "    set layout=${i:-${FVBE_LAYOUT}}"
+  echo "    set layout=${i}"
   echo "    export layout"
   echo "    configfile /boot/grub/menu.cfg"
   echo "  }"
@@ -59,11 +59,11 @@ set menu_color_normal=white/black
 set menu_color_highlight=black/white
 
 menuentry 'Frugalware Versatile Bootable Environment' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT 
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet audit=0 locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT
   initrd /boot/initrd
 }
 menuentry 'Frugalware Versatile Bootable Environment (RAM)' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT rd.live.ram=1
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet audit=0 locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT rd.live.ram=1
   initrd /boot/initrd
 }
 
@@ -73,26 +73,15 @@ EOF
 
 # Setup grub2 config.
 cat > $FVBE_ROOT/boot/grub/grub.cfg << EOF
-set mode=$FVBE_ISO_IO_MODE
-export mode
 set locale=$FVBE_LOCALE
 export locale
 set layout=$FVBE_LAYOUT
 export layout
 
-if [ \$mode = video ]; then
-  loadfont unicode
-  insmod all_video
-  terminal_input console
-  terminal_output gfxterm
-elif [ \$mode = serial ]; then
-  $FVBE_ISO_IO_SERIAL_GRUB
-  terminal_input serial
-  terminal_output serial
-  terminfo -u vt100-color
-  set video=$FVBE_ISO_IO_SERIAL_LINUX
-  export video
-fi
+loadfont unicode
+insmod all_video
+terminal_input console
+terminal_output gfxterm
 
 configfile /boot/grub/menu.cfg
 EOF
