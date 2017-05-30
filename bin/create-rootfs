@@ -45,6 +45,12 @@ if [ ! -e /usr/bin/xorriso ]; then
 	exit 1
 fi
 
+if [ ! -e /usr/bin/mformat ]; then
+        echo "mtools is missing"
+        exit 1
+fi
+
+
 
 if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
   FDB=frugalware-current.fdb
