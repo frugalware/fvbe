@@ -19,6 +19,17 @@ wallpaperplugin=org.kde.image
 DialogHeight=540
 DialogWidth=720
 
+[Containments][18][Applets][19]
+immutability=1
+plugin=org.kde.plasma.icon
+
+[Containments][18][Applets][19][Configuration]
+localPath=/home/guest/.local/share/plasma_icons/calamares-frugalware.desktop
+url=file:///usr/share/applications/calamares-frugalware.desktop
+
+[Containments][18][General]
+ItemsGeometries=Applet-19:41,52,112,96,0;
+
 [Containments][2]
 activityId=
 formfactor=2

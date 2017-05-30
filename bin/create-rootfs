@@ -162,7 +162,9 @@ cp -r guest $FVBE_ROOT/home/
 install -Dm644 "calamares-frugalware.desktop" "$FVBE_ROOT/usr/share/applications/calamares-frugalware.desktop"
 install -Dm644 "calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg"
 mkdir -p $FVBE_ROOT/home/guest/Desktop
-ln -s "/usr/share/applications/calamares-frugalware.desktop" "$FVBE_ROOT/home/guest/Desktop/calamares-frugalware.desktop"
+ln -sf "/usr/share/applications/calamares-frugalware.desktop" "$FVBE_ROOT/home/guest/Desktop/calamares-frugalware.desktop"
+## duplicated
+rm -v $FVBE_ROOT/usr/share/applications/calamares.desktop
 
 # set permissions for guest user
 /usr/sbin/chroot $FVBE_ROOT /usr/bin/chown -R guest.users /home/guest
