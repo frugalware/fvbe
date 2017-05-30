@@ -106,6 +106,8 @@ cp /etc/resolv.conf $FVBE_ROOT/etc
 # Set the default systemd boot target.
 ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/default.target
 
+## enable calamres lang settings service
+ln -s $FVBE_ROOT/lib/systemd/system/calamares-locale.service $FVBE_ROOT/lib/systemd/system/multi-user.target.wants/calamares-locale.service
 
 # Install vi symlinks for installer.
 ln -sf $FVBE_ROOT/usr/bin/vim $FVBE_ROOT/usr/bin/vi
@@ -162,8 +164,6 @@ cp -r guest $FVBE_ROOT/home/
 install -Dm644 "calamares-frugalware.desktop" "$FVBE_ROOT/usr/share/applications/calamares-frugalware.desktop"
 install -Dm644 "calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg"
 
-## duplicated
-rm -v $FVBE_ROOT/usr/share/applications/calamares.desktop
 
 # set permissions for guest user
 /usr/sbin/chroot $FVBE_ROOT /usr/bin/chown -R guest.users /home/guest
