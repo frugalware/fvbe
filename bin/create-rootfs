@@ -115,10 +115,6 @@ ln -sf /lib/systemd/system/graphical.target $FVBE_ROOT/etc/systemd/system/defaul
 ## enable calamres lang settings service
 ln -s $FVBE_ROOT/lib/systemd/system/calamares-locale.service $FVBE_ROOT/lib/systemd/system/multi-user.target.wants/calamares-locale.service
 
-# Install vi symlinks for installer.
-ln -sf $FVBE_ROOT/usr/bin/vim $FVBE_ROOT/usr/bin/vi
-ln -sf $FVBE_ROOT/usr/bin/vim $FVBE_ROOT/bin/vi
-
 # System fstab setup.
 cat > $FVBE_ROOT/etc/fstab << EOF
 none /proc proc defaults 0 0
