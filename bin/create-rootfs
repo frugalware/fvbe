@@ -146,14 +146,14 @@ EOF
 
 # Copy calamares configuration
 mkdir -p $FVBE_ROOT/etc/calamares
-cp -r calamares-config-global/* $FVBE_ROOT/etc/calamares/
+cp -r calamares/calamares-config-global/* $FVBE_ROOT/etc/calamares/
 
 # Copy calamares configuration for flavor
-[ $FVBE_ISO_TYPE != "basic" ] && cp -r calamares-config-${FVBE_ISO_TYPE}/* $FVBE_ROOT/etc/calamares/
+[ $FVBE_ISO_TYPE != "basic" ] && cp -r calamares/calamares-config-${FVBE_ISO_TYPE}/* $FVBE_ROOT/etc/calamares/
 
 # Copy calamares frugalware branding
 mkdir -p $FVBE_ROOT/usr/share/calamares/branding/frugalware/
-cp -r calamares-frugalware-branding/* $FVBE_ROOT/usr/share/calamares/branding/frugalware/
+cp -r calamares/calamares-frugalware-branding/* $FVBE_ROOT/usr/share/calamares/branding/frugalware/
 
 # set Version
 sed -i "s/_version_/$FVBE_ISO_RELEASE/" $FVBE_ROOT/usr/share/calamares/branding/frugalware/branding.desc
@@ -163,8 +163,8 @@ sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" $FVBE_ROOT/
 cp -r guest $FVBE_ROOT/home/
 
 # copy calamares desktop
-install -Dm644 "calamares-frugalware.desktop" "$FVBE_ROOT/usr/share/applications/calamares-frugalware.desktop"
-install -Dm644 "calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg"
+install -Dm644 "calamares/calamares-frugalware.desktop" "$FVBE_ROOT/usr/share/applications/calamares-frugalware.desktop"
+install -Dm644 "calamares/calamares-frugalware.svg" "$FVBE_ROOT/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg"
 
 
 # set permissions for guest user
@@ -180,11 +180,11 @@ fi
 # gdm autologin
 if [ -f "$FVBE_ROOT/etc/gdm/custom.conf" ]
 then
-  cp gdm-custom.conf $FVBE_ROOT/etc/gdm/custom.conf
+  cp calamares/dm/gdm-custom.conf $FVBE_ROOT/etc/gdm/custom.conf
 fi
 
 # allow guest user to start calamares without Password
-cp 49-nopasswd_calamares.rules $FVBE_ROOT/etc/polkit-1/rules.d/
+cp calamares/polkit/49-nopasswd_calamares.rules $FVBE_ROOT/etc/polkit-1/rules.d/
 
 
 # Cache files or data from the ROOTFS that we'll use in the ISO.
