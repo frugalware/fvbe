@@ -14,4 +14,4 @@ You may see some warnings from DMI , ignore these ..
 
 Install now fw and once you are done remove -cdrom from qemu cmd ( or set to none ).
 
-You should now have fw installed an running in quemu in efi mode
+You should now have fw installed an running in qemu in efi mode
