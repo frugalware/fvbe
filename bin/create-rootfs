@@ -51,15 +51,10 @@ if [ ! -e /usr/bin/mformat ]; then
 fi
 
 
+FDB=frugalware-current.fdb
+MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-$FVBE_ARCH"
+REPO=$(basename $FDB .fdb)
 
-if [ "$FVBE_ROOTFS_REPOSITORY" = "current" ]; then
-  FDB=frugalware-current.fdb
-  MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-$FVBE_ARCH"
-elif [ "$FVBE_ROOTFS_REPOSITORY" = "stable" ]; then
-  FDB=frugalware.fdb
-  MIRROR="http://ftp.frugalware.org/pub/frugalware/frugalware-$FVBE_ISO_RELEASE/frugalware-$FVBE_ARCH"
-fi
-REPO="${FDB/.fdb/}"
 FVBE_ROOTFS_PACKAGES+=${FVBE_ROOTFS_PACKAGES["basic"]}
 
 [ $FVBE_ISO_TYPE != "basic" ] && FVBE_ROOTFS_PACKAGES+="${FVBE_ROOTFS_PACKAGES[$FVBE_ISO_TYPE]}"
