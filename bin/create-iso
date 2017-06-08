@@ -59,11 +59,11 @@ set menu_color_normal=white/black
 set menu_color_highlight=black/white
 
 menuentry 'Frugalware Versatile Bootable Environment' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet audit=0 locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet audit=0 locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT rd.md=0 rd.lvm=0
   initrd /boot/initrd
 }
 menuentry 'Frugalware Versatile Bootable Environment (RAM)' {
-  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet audit=0 locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT rd.live.ram=1
+  linux /boot/vmlinuz root=live:CDLABEL=FVBE quiet audit=0 locale.LANG=\$locale vconsole.keymap=\$layout vconsole.font=$FVBE_FONT rd.live.ram=1 rd.md=0 rd.lvm=0
   initrd /boot/initrd
 }
 
