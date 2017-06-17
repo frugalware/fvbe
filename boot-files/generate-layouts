@@ -1,0 +1,53 @@
+#!/bin/sh
+
+do_locales()
+{
+  local i
+
+  echo "submenu 'Language Selection' {"
+  for i in $(cat locales); do
+  echo "  menuentry '$i' {"
+  echo "    echo "Switching to: ${i}""
+  echo "    set bootlang=${i}"
+  echo "    export bootlang"
+  echo "    configfile /boot/grub/grub.cfg"
+  echo "  }"
+  done
+  echo "}"
+}
+
+do_layouts()
+{
+  local i
+
+  echo "submenu 'Keyboard Layouts' {"
+  for i in $(cat layouts); do
+  echo "  menuentry '$i' {"
+  echo "    echo "Switching to: $i""
+  echo "    set bootkeymap=${i}"
+  echo "    export bootkeymap"
+  echo "    configfile /boot/grub/grub.cfg"
+  echo "  }"
+  done
+  echo "}"
+}
+
+tmpdir=$(mktemp -d)
+
+rm -rf locale layouts
+
+## generate new ones
+
+localedef -f /usr/lib/locale/locale-archive --list-archive | grep '\.utf8$' | sort --unique > locales
+tail -n +3 /usr/share/systemd/kbd-model-map | cut -f 1 | sort --unique > layouts
+
+cat > $tmpdir/tmp.file << EOF
+
+$(do_locales)
+$(do_layouts)
+EOF
+
+cp $tmpdir/tmp.file grub_locale.cfg
+rm -rf $tmpdir
+
+rm -rf locale layouts

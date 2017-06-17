@@ -1,0 +1,419 @@
+#!/bin/bash
+
+set -e
+
+## we check for porgs needed to build the ISO or needed in the ISO
+FVBE_PROGS=(xorriso mksquashfs mktemp mformat grub-mkrescue chroot truncate mkfs.ext4 cp ln mkdir sed)
+
+fvbe_check_root() {
+
+	if [[ "$(id -u)" -ne 0 ]]; then
+		fvbe_error_msg "You must be root to do this."
+	fi
+}
+
+fvbe_plain_msg() {
+
+	local a="$1"
+
+	if [ "$FVBE_COLOR" = "Y" -o "$FVBE_COLOR" = "y" ]; then
+		/bin/echo -e "   \033[1;32m->\033[1;0m \033[1;1m${a}\033[1;0m" >&2
+	else
+		/bin/echo "   ->  ${a}" >&2
+	fi
+}
+
+fvbe_info_msg() {
+
+	local a="$1"
+
+	if [ "$FVBE_COLOR" = "Y" -o "$FVBE_COLOR" = "y" ]; then
+		/bin/echo -e " \033[1;34m:: INFO ::\033[1;0m \033[1;1m${a}\033[1;0m" >&2
+	else
+		/bin/echo  " :: INFO :: ${a}" >&2
+	fi
+}
+
+fvbe_warn_msg() {
+
+	local a="$1"
+
+	if [ "$FVBE_COLOR" = "Y" -o "$FVBE_COLOR" = "y" ]; then
+		/bin/echo -e " \033[1;33m:: WARNING ::\033[1;0m \033[1;1m${a}\033[1;0m" >&2
+	else
+		/bin/echo  " :: WARNING :: ${a}" >&2
+	fi
+}
+
+fvbe_error_msg() {
+
+	local a="$1"
+
+	if [ "$FVBE_COLOR" = "Y" -o "$FVBE_COLOR" = "y" ]; then
+		/bin/echo -e " \033[1;31m:: ERROR ::\033[1;0m \033[1;1m${a}\033[1;0m" >&2
+	else
+		/bin/echo  " :: ERROR :: ${a}" >&2
+	fi
+	fvbe_die
+}
+
+fvbe_die() {
+
+	fvbe_umount
+	exit 1
+}
+
+
+_fvbe_check_prog() {
+
+	local a="$1" b
+
+	b=$(type -p ${a})
+
+	if [[ ! -x ${b} ]]; then
+		fvbe_error_msg "Could not find ${a}. Bailing out.."
+	else
+		fvbe_plain_msg "Found ${b}.. good"
+	fi
+
+}
+
+fvbe_check_prog() {
+
+	if [[ -n ${FVBE_PROGS} ]]; then
+		local prog
+		fvbe_info_msg "Checking for needed progs.."
+		for prog in ${FVBE_PROGS[@]}; do
+			_fvbe_check_prog ${prog}
+		done
+	else
+
+		fvbe_info_msg "Don't have any programs to check.."
+	fi
+}
+
+fvbe_mount() {
+
+	fvbe_info_msg "Mounting the kernel pseudo file-systems.."
+
+	mount -t devtmpfs none $FVBE_ROOT/dev
+	mount -t sysfs none $FVBE_ROOT/sys
+	mount -t proc none $FVBE_ROOT/proc
+	mount -t tmpfs none $FVBE_ROOT/tmp
+	mount -t tmpfs none $FVBE_ROOT/var/tmp
+
+	if [[ -d /var/cache/pacman-g2 ]]; then
+		fvbe_info_msg "Found pacman-g2 cache, mounting.."
+		mount -o bind /var/cache/pacman-g2 $FVBE_ROOT/var/cache/pacman-g2
+	fi
+}
+
+
+fvbe_umount() {
+
+	fvbe_plain_msg "Umounting chroot"
+
+	if [[ -d ${FVBE_ROOT} ]]; then
+		umount -lRA ${FVBE_ROOT}
+	fi
+}
+
+fvbe_chroot() {
+
+	if [[ -d ${FVBE_ROOT} ]]; then
+		/usr/sbin/chroot ${FVBE_ROOT} "$@"
+	else
+		fvbe_error_msg "Huh.. FVBE_ROOT does not exist , typo?"
+	fi
+}
+
+fvbe_create_rootfs_img() {
+
+	fvbe_info_msg "Creating rootfs image.."
+
+	[[ -z ${FVBE_ROOTFS_SIZE} ]] && fvbe_error_msg "${FUNCNAME[0]}() line: ${LINENO} -> FVBE_ROOTFS_SIZE is not set cannot continue.."
+
+	truncate -s "${FVBE_ROOTFS_SIZE}"G rootfs.img >/dev/null 2>&1
+	mkfs.ext4 -q -F -m1 rootfs.img
+	mkdir -p ${FVBE_ROOT}
+	fvbe_plain_msg "Mounting the rootfs.img on ${FVBE_ROOT}"
+	mount -o loop rootfs.img ${FVBE_ROOT}
+}
+
+fvbe_copy_boot_files() {
+
+
+	## theme ?
+	local c="$1"
+
+	if [[ -z ${c} ]]; then
+		c="$FVBE_ROOT/boot/grub"
+	fi
+
+	## grub /boot stuff
+	[[ ! -d ${c} ]] && mkdir -p ${c}
+
+	## hmm figure that
+	mkdir -p ${c}/fonts
+	cp -f /usr/share/grub/unicode.pf2 ${c}/fonts
+	cp -f boot-files/grub.cfg ${c}
+	cp -f boot-files/background.png ${c}
+}
+
+
+fvbe_create_users() {
+
+	fvbe_info_msg "Setting up root and guest users.."
+	# Setup root user.
+	sed -i '/root/d' ${FVBE_ROOT}/etc/shadow
+	echo "root:$(openssl passwd -1 fvbe):17014:0:::::" >> ${FVBE_ROOT}/etc/shadow
+
+	# Setup guest user.
+	echo "guest:$(openssl passwd -1 fvbe):17014:0:99999:7:::" >> ${FVBE_ROOT}/etc/shadow
+	echo "guest:x:1006:100:Guest user:/home/guest:/bin/bash" >> ${FVBE_ROOT}/etc/passwd
+
+	fvbe_plain_msg "Fixing 'guest' users home.."
+	cp -r guest ${FVBE_ROOT}/home/
+	fvbe_chroot /usr/bin/chown -R guest.users /home/guest
+}
+
+fvbe_create_system_files() {
+
+	fvbe_info_msg "Setting up fstab , hostname and machine-info files.."
+# System fstab setup.
+cat > $FVBE_ROOT/etc/fstab << EOF
+none /proc proc defaults 0 0
+none /sys sysfs defaults 0 0
+none /tmp tmpfs defaults 0 0
+none /var/tmp tmpfs defaults 0 0
+none /dev/shm tmpfs defaults 0 0
+none /dev/pts devpts gid=5,mode=620 0 0
+EOF
+
+
+# System hostname setup.
+cat > $FVBE_ROOT/etc/hostname << EOF
+$FVBE_ROOTFS_HOSTNAME
+EOF
+
+# System pretty hostname setup.
+cat > $FVBE_ROOT/etc/machine-info << EOF
+PRETTY_HOSTNAME="$FVBE_ROOTFS_PRETTY_HOSTNAME"
+EOF
+
+}
+
+fvbe_systemd_files() {
+
+	fvbe_warn_msg "${FUNCNAME[0]}(): Remember to fix that once we remove systemd!"
+	ln -sf ${FVBE_ROOT}/lib/systemd/system/graphical.target ${FVBE_ROOT}/etc/systemd/system/default.target
+	ln -sf ${FVBE_ROOT}/lib/systemd/system/calamares-locale.service ${FVBE_ROOT}/lib/systemd/system/multi-user.target.wants/calamares-locale.service
+}
+
+
+fvbe_calamares_files() {
+
+
+	fvbe_info_msg "Setting up calamares files.."
+	local cala="$FVBE_ROOT/etc/calamares" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/"
+
+	[[ ! -d ${cala} ]] && mkdir -p ${cala}
+	[[ ! -d ${cala_files} ]] && mkdir -p ${cala_files}
+
+	fvbe_warn_msg "${FUNCNAME[0]}(): Fix config files for basic type.."
+	cp -r calamares/calamares-config-global/* ${cala}
+	cp -r calamares/calamares-frugalware-branding/* ${cala_files}
+
+	sed -i "s/_version_/$FVBE_ISO_RELEASE/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
+	sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
+
+	install -Dm644 calamares/calamares-frugalware.desktop ${FVBE_ROOT}/usr/share/applications/calamares-frugalware.desktop
+	install -Dm644 calamares/calamares-frugalware.svg ${FVBE_ROOT}/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg
+
+	cp -r calamares/polkit/49-nopasswd_calamares.rules ${FVBE_ROOT}/etc/polkit-1/rules.d/
+
+	if [[ -f "${FVBE_ROOT}/etc/sddm.conf" ]]; then
+  		sed -i "s|^Session=.*\$|Session=plasma.desktop|" ${FVBE_ROOT}/etc/sddm.conf
+  		sed -i "s|^User=.*\$|User=guest|" ${FVBE_ROOT}/etc/sddm.conf
+	fi
+
+	if [[ -f "${FVBE_ROOT}/etc/gdm/custom.conf" ]]; then
+  		cp calamares/dm/gdm-custom.conf ${FVBE_ROOT}/etc/gdm/custom.conf
+	fi
+
+}
+
+
+fvbe_cache_files() {
+
+	cp ${FVBE_ROOT}/boot/vmlinuz vmlinuz
+	cp ${FVBE_ROOT}/boot/initrd initrd
+	cp ${FVBE_ROOT}/usr/share/grub/unicode.pf2 unicode.pf2
+	cp ${FVBE_ROOT}/boot/grub/background.png background.png
+}
+
+fvbe_copy_chached_files() {
+
+	cp vmlinuz ${FVBE_ROOT}/boot/vmlinuz
+        cp initrd ${FVBE_ROOT}/boot/initrd
+        cp unicode.pf2 ${FVBE_ROOT}/boot/grub/fonts/unicode.pf2
+        cp background.png ${FVBE_ROOT}/boot/grub/background.png
+}
+
+if [[ -e ./fvbe.conf ]]; then
+        source ./fvbe.conf
+else
+        fvbe_warn_msg "fvbe.conf seems to be missing.."
+        fvbe_error_msg "please create one and retry.."
+fi
+
+## check for xorriso conf and wrapper here since it would error out
+## at the end of the script and that sucks :)
+if [[ ! -e ./grub-mkrescue-xorriso.conf ]]; then
+	fvbe_error_msg "Missing grub-mkrescue-xorriso.conf, abording..."
+fi
+
+if [[ ! -f bin/grub-mkrescue-sed ]]; then
+	fvbe_error_msg "Missing bin/grub-mkrescue-sed, abording..."
+fi
+
+## we need be root
+fvbe_check_root
+
+## check progs we need to build the iso
+fvbe_check_prog
+
+
+## repo setup
+
+fvbe_info_msg "Setting up repository(s).."
+fvbe_plain_msg " Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
+fvbe_plain_msg " IsoType set to : ${FVBE_ISO_TYPE}"
+[[ -z ${FVBE_ROOTFS_REPOSITORY} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ROOTFS_REPOSITORY is not set cannot continue.."
+
+if [[ ${FVBE_ROOTFS_REPOSITORY} == "current" ]]; then
+
+	PAC_CONF="pacman-g2.conf"
+
+cat > pacman-g2.conf << EOF
+[options]
+LogFile = /var/log/pacman-g2.log
+[frugalware-current]
+Server = http://ftp.frugalware.org/pub/frugalware/frugalware-current/frugalware-x86_64
+EOF
+
+
+elif [[ ${FVBE_ROOTFS_REPOSITORY} == "wip" ]]; then
+	if [[ ! -e pacman-g2-wip.conf ]]; then
+		fvbe_warning_msg "WIP repo requested but missing pacman-g2-wip.conf"
+		fvbe_error_msg "Please create one an retry.."
+	else
+		fvbe_info_msg "Setting up repo(s) from custom pacman-g2-wip.conf"
+		PAC_CONF="pacman-g2-wip.conf"
+	fi
+else
+	fvbe_warning_msg "Unknow repository request!.."
+	fvbe_warning_msg "Possble values are 'current' or 'wip'.."
+	fvbe_error_msg "...abording!"
+fi
+
+
+[[ -z ${FVBE_ISO_TYPE} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ISO_TYPE is not set cannot continue.."
+
+FVBE_ROOTFS_PACKAGES=""
+
+case ${FVBE_ISO_TYPE} in
+basic)
+	FVBE_ROOTFS_PACKAGES="${FVBE_ROOTFS_PACKAGES_BASIC[@]}"
+	;;
+plasma)
+	FVBE_ROOTFS_PACKAGES="${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_PLASMA[@]}"
+	;;
+gnome)
+	FVBE_ROOTFS_PACKAGES="${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_GNOME[@]}"
+	;;
+*)
+	fvbe_error_msg "Unknow FVBE_ISO_TYPE , typo?"
+esac
+
+
+## cleanup
+fvbe_info_msg "Cleaning up.."
+
+## clean files if any and umount everything
+rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
+fvbe_umount
+
+## rootfs.img
+fvbe_create_rootfs_img
+
+## skeleton
+mkdir -p ${FVBE_ROOT}/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
+
+## mount
+fvbe_mount
+
+trap fvbe_umount ERR INT TERM 0
+
+## bootstrap pacman
+pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy pacman-g2 netkit-base
+
+## copy right conf over
+if [[ ${PAC_CONF} == "pacman-g2.conf" ]]; then
+	cp pacman-g2.conf $FVBE_ROOT/etc
+else
+	## well kind fixme..
+	cp pacman-g2-wip.conf $FVBE_ROOT/etc/pacman-g2.conf
+fi
+
+## get resolv.conf over
+cp /etc/resolv.conf ${FVBE_ROOT}/etc
+
+## now install the rest
+fvbe_chroot pacman-g2 --noconfirm -Sy ${FVBE_ROOTFS_PACKAGES}
+
+## root && guest
+fvbe_create_users
+
+## system files
+fvbe_create_system_files
+
+## systemd symlinks
+fvbe_systemd_files
+
+## cala files including DM setup
+fvbe_calamares_files
+
+## copy /boot files over
+fvbe_cache_files
+
+## umount
+fvbe_umount
+
+## cleanup and move rootfs.img over
+rm -rf ${FVBE_ROOT:?}/*
+mkdir -p ${FVBE_ROOT}/LiveOS
+mv rootfs.img  ${FVBE_ROOT}/LiveOS/
+
+## FIXME: why lz4 ? we use xz for other stuff ?!
+fvbe_info_msg "Creating squashfs.img.."
+mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -always-use-fragments -comp lz4 -Xhc -e boot >/dev/null 2>&1
+
+rm -rf ${FVBE_ROOT} *.iso tmp sums var
+
+fvbe_info_msg "Preparing files for grub-mkrescue and xorriso wrapper.."
+mkdir -p ${FVBE_ROOT}/{boot/grub/fonts,LiveOS}
+
+cp squashfs.img ${FVBE_ROOT}/LiveOS/squashfs.img
+chmod 444 ${FVBE_ROOT}/LiveOS/squashfs.img
+
+## copy initrd etc over
+fvbe_copy_boot_files
+fvbe_copy_chached_files
+
+## these are checked else where
+source ./grub-mkrescue-xorriso.conf
+
+grub-mkrescue -o frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
+
+rm -rf ${FVBE_ROOT} tmp *.img *.png *.png var
