@@ -6,8 +6,8 @@ wheel:Vertical;NoModifier=org.kde.switchdesktop
 [ActionPlugins][1]
 RightButton;NoModifier=org.kde.contextmenu
 
-[Containments][17]
-activityId=a745e7c5-bc17-4319-88ff-80606529319d
+[Containments][18]
+activityId=28fdd088-b034-4248-a1f9-d1f1257c4b24
 formfactor=0
 immutability=1
 lastScreen=0
@@ -15,20 +15,9 @@ location=0
 plugin=org.kde.plasma.folder
 wallpaperplugin=org.kde.image
 
-[Containments][17][ConfigDialog]
-DialogHeight=540
-DialogWidth=720
-
-[Containments][18][Applets][19]
-immutability=1
-plugin=org.kde.plasma.icon
-
-[Containments][18][Applets][19][Configuration]
-localPath=/home/guest/.local/share/plasma_icons/calamares-frugalware.desktop
-url=file:///usr/share/applications/calamares-frugalware.desktop
-
 [Containments][18][General]
-ItemsGeometries=Applet-19:41,52,112,96,0;
+positions=1,6,desktop:/calamares-frugalware.desktop,0,3,desktop:/trash.desktop,0,2,desktop:/Home.desktop,0,1
+sortMode=-1
 
 [Containments][2]
 activityId=
