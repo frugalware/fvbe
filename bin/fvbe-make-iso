@@ -260,6 +260,14 @@ fvbe_copy_chached_files() {
         cp background.png ${FVBE_ROOT}/boot/grub/background.png
 }
 
+fvbe_banner() {
+
+	echo ""
+	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64 ISO.."
+	fvbe_info_msg "Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
+	echo ""
+}
+
 if [[ -e ./fvbe.conf ]]; then
         source ./fvbe.conf
 else
@@ -280,16 +288,16 @@ fi
 ## we need be root
 fvbe_check_root
 
+fvbe_banner
+
 ## check progs we need to build the iso
 fvbe_check_prog
-
 
 ## repo setup
 
 fvbe_info_msg "Setting up repository(s).."
-fvbe_plain_msg " Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
-fvbe_plain_msg " IsoType set to : ${FVBE_ISO_TYPE}"
 [[ -z ${FVBE_ROOTFS_REPOSITORY} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ROOTFS_REPOSITORY is not set cannot continue.."
+[[ -z ${FVBE_ISO_TYPE} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ISO_TYPE is not set cannot continue.."
 
 if [[ ${FVBE_ROOTFS_REPOSITORY} == "current" ]]; then
 
@@ -317,9 +325,6 @@ else
 	fvbe_error_msg "...abording!"
 fi
 
-
-[[ -z ${FVBE_ISO_TYPE} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ISO_TYPE is not set cannot continue.."
-
 FVBE_ROOTFS_PACKAGES=""
 
 case ${FVBE_ISO_TYPE} in
@@ -338,8 +343,6 @@ esac
 
 
 ## cleanup
-fvbe_info_msg "Cleaning up.."
-
 ## clean files if any and umount everything
 rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
 fvbe_umount
