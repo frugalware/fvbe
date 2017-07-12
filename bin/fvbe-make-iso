@@ -337,6 +337,9 @@ plasma)
 gnome)
 	FVBE_ROOTFS_PACKAGES="${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_GNOME[@]}"
 	;;
+enlightenment)
+	FVBE_ROOTFS_PACKAGES="${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_E[@]}"
+	;;
 *)
 	fvbe_error_msg "Unknow FVBE_ISO_TYPE , typo?"
 esac
