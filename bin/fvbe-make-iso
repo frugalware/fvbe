@@ -215,8 +215,15 @@ fvbe_calamares_files() {
 
 
 	fvbe_info_msg "Setting up calamares files.."
-	local cala="$FVBE_ROOT/etc/calamares" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/"
+	local cala="$FVBE_ROOT/etc/calamares" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/" session
 
+	if [[ ${FVBE_ISO_TYPE} == "plasma" ]]; then
+		session=plasma.desktop
+	elif [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
+		session=enlightenment.desktop
+	fi
+
+	fvbe_plain_msg "Setting SDDM Session=$session"
 	[[ ! -d ${cala} ]] && mkdir -p ${cala}
 	[[ ! -d ${cala_files} ]] && mkdir -p ${cala_files}
 
@@ -233,7 +240,7 @@ fvbe_calamares_files() {
 	cp -r calamares/polkit/49-nopasswd_calamares.rules ${FVBE_ROOT}/etc/polkit-1/rules.d/
 
 	if [[ -f "${FVBE_ROOT}/etc/sddm.conf" ]]; then
-  		sed -i "s|^Session=.*\$|Session=plasma.desktop|" ${FVBE_ROOT}/etc/sddm.conf
+  		sed -i "s|^Session=.*\$|Session=$session|" ${FVBE_ROOT}/etc/sddm.conf
   		sed -i "s|^User=.*\$|User=guest|" ${FVBE_ROOT}/etc/sddm.conf
 	fi
 
