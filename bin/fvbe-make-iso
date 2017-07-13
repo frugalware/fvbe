@@ -400,6 +400,12 @@ fvbe_calamares_files
 ## copy /boot files over
 fvbe_cache_files
 
+if [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
+	## they use connman for networking so disable NM and enable connman
+	fvbe_chroot /bin/systemctl disable NetworkManager
+	fvbe_chroot /bin/systemctl enable connman
+fi
+
 ## umount
 fvbe_umount
 
