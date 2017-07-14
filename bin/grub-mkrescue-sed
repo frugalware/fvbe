@@ -103,14 +103,14 @@ then
   xorriso="$MKRESCUE_SED_XORRISO"
 else
   # Prefer neighboring xorriso binary over system-wide installed one.
-  self_dir="$(dirname $(dirname "$0") )"
+  self_dir="$(dirname "$(dirname "$0")" )"
   if test -x "$self_dir"/xorriso/xorriso
   then
     xorriso="$self_dir"/xorriso/xorriso
   else
     xorriso="xorriso"
   fi
-fi 
+fi
 
 # MKRESCUE_SED_XORRISO_ARGS will be used as first arguments of the xorriso run.
 # (Trailing xorriso arguments may be simply added to the grub-mkrescue
@@ -119,7 +119,7 @@ fi
 
 
 #
-#                               Do the work 
+#                               Do the work
 #
 
 # grub-mkrescue inquires features by running these arguments
@@ -127,7 +127,7 @@ if test "$*" = "-as mkisofs -help"
 then
   "$xorriso" "$@"
   exit $?
-fi  
+fi
 
 echo "frontend/grub-mkrescue-sed.sh mode:  $mode" >&2
 echo >&2
@@ -170,7 +170,7 @@ do
     fi
   elif test "$dir" = "."
   then
-    if echo "$i" | grep '^/tmp/grub.' >/dev/null 2>&1 
+    if echo "$i" | grep '^/tmp/grub.' >/dev/null 2>&1
     then
       test -d "$i" && dir="$i"
     fi
@@ -303,4 +303,3 @@ then
 fi
 
 exit $ret
-
