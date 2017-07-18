@@ -253,16 +253,22 @@ fvbe_calamares_files() {
 
 fvbe_cache_files() {
 
-	cp ${FVBE_ROOT}/boot/vmlinuz vmlinuz
-	cp ${FVBE_ROOT}/boot/initrd initrd
+	cp ${FVBE_ROOT}/boot/vmlinuz* .
+	cp ${FVBE_ROOT}/boot/initrd* .
 	cp ${FVBE_ROOT}/usr/share/grub/unicode.pf2 unicode.pf2
 	cp ${FVBE_ROOT}/boot/grub/background.png background.png
 }
 
 fvbe_copy_chached_files() {
 
-	cp vmlinuz ${FVBE_ROOT}/boot/vmlinuz
-        cp initrd ${FVBE_ROOT}/boot/initrd
+	for file in vmlinuz*
+	do
+		cp $file ${FVBE_ROOT}/boot/vmlinuz
+	done
+	for file in initrd*
+	do
+		cp $file ${FVBE_ROOT}/boot/initrd
+	done
         cp unicode.pf2 ${FVBE_ROOT}/boot/grub/fonts/unicode.pf2
         cp background.png ${FVBE_ROOT}/boot/grub/background.png
 }
