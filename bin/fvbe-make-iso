@@ -360,7 +360,7 @@ esac
 
 ## cleanup
 ## clean files if any and umount everything
-rm -rf $FVBE_ROOT vmlinuz initrd mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
+rm -rf $FVBE_ROOT vmlinuz-* initrd-* mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
 fvbe_umount
 
 ## rootfs.img
