@@ -1,0 +1,13 @@
+[Layout]
+DisplayNames=,,
+LayoutList=us,de(nodeadkeys),fr,hu
+LayoutLoopCount=-1
+Model=pc104
+ResetOldOptions=false
+ShowFlag=false
+ShowLabel=true
+ShowLayoutIndicator=true
+ShowSingle=false
+SwitchMode=Global
+Use=true
+
