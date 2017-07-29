@@ -121,7 +121,7 @@ fvbe_umount() {
 fvbe_chroot() {
 
 	if [[ -d ${FVBE_ROOT} ]]; then
-		/usr/sbin/chroot ${FVBE_ROOT} "$@"
+		/usr/sbin/chroot ${FVBE_ROOT} /bin/bash -c "$@"
 	else
 		fvbe_error_msg "Huh.. FVBE_ROOT does not exist , typo?"
 	fi
@@ -173,8 +173,19 @@ fvbe_create_users() {
 	echo "guest:x:1006:100:Guest user:/home/guest:/bin/bash" >> ${FVBE_ROOT}/etc/passwd
 
 	fvbe_plain_msg "Fixing 'guest' users home.."
-	cp -r guest ${FVBE_ROOT}/home/
-	fvbe_chroot /usr/bin/chown -R guest.users /home/guest
+	cp -ra guest ${FVBE_ROOT}/home/
+	mkdir -p ${FVBE_ROOT}/home/guest/.config/autostart
+	if [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
+		mkdir -p ${FVBE_ROOT}/home/guest/.e/e/applications/startup
+		## HOW weird..
+		echo "~/.config/autostart/calamares-frugalware.desktop" > ${FVBE_ROOT}/home/guest/.e/e/applications/startup/.order
+		fvbe_chroot "mv -v /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
+	fi
+
+	if [[ ${FVBE_ISO_TYPE} == "gnome" ]]; then
+		fvbe_chroot "mv -v /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
+	fi
+	fvbe_chroot "/usr/bin/chown -R guest.users /home/guest"
 }
 
 fvbe_create_system_files() {
@@ -221,25 +232,22 @@ fvbe_calamares_files() {
 		session=plasma.desktop
 	elif [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
 		session=enlightenment.desktop
+		## bleh such weird
+		sed -i "s|^Icon=.*|Icon=/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg|" ${FVBE_ROOT}/usr/share/applications/calamares-frugalware.desktop
 	fi
 
-	fvbe_plain_msg "Setting SDDM Session=$session"
 	[[ ! -d ${cala} ]] && mkdir -p ${cala}
 	[[ ! -d ${cala_files} ]] && mkdir -p ${cala_files}
 
-	fvbe_warn_msg "${FUNCNAME[0]}(): Fix config files for basic type.."
+	## Fixme - rsync stuff
 	cp -r calamares/calamares-config-global/* ${cala}
 	cp -r calamares/calamares-frugalware-branding/* ${cala_files}
 
 	sed -i "s/_version_/$FVBE_ISO_RELEASE/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 	sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 
-	install -Dm644 calamares/calamares-frugalware.desktop ${FVBE_ROOT}/usr/share/applications/calamares-frugalware.desktop
-	install -Dm644 calamares/calamares-frugalware.svg ${FVBE_ROOT}/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg
-
-	cp -r calamares/polkit/49-nopasswd_calamares.rules ${FVBE_ROOT}/etc/polkit-1/rules.d/
-
 	if [[ -f "${FVBE_ROOT}/etc/sddm.conf" ]]; then
+		fvbe_plain_msg "Setting SDDM Session=$session"
   		sed -i "s|^Session=.*\$|Session=$session|" ${FVBE_ROOT}/etc/sddm.conf
   		sed -i "s|^User=.*\$|User=guest|" ${FVBE_ROOT}/etc/sddm.conf
 	fi
@@ -253,22 +261,30 @@ fvbe_calamares_files() {
 
 fvbe_cache_files() {
 
-	cp ${FVBE_ROOT}/boot/vmlinuz* .
-	cp ${FVBE_ROOT}/boot/initrd* .
+	cp ${FVBE_ROOT}/boot/vmlinuz-* .
+	cp ${FVBE_ROOT}/boot/initrd-* .
 	cp ${FVBE_ROOT}/usr/share/grub/unicode.pf2 unicode.pf2
 	cp ${FVBE_ROOT}/boot/grub/background.png background.png
 }
 
 fvbe_copy_chached_files() {
 
-	for file in vmlinuz*
-	do
-		cp $file ${FVBE_ROOT}/boot/vmlinuz
-	done
-	for file in initrd*
-	do
-		cp $file ${FVBE_ROOT}/boot/initrd
-	done
+	local ifile vfile
+
+	ifile=$(basename initrd-*)
+	vfile=$(basename vmlinuz-*)
+
+	if [[ ! -e ${ifile} ]]; then
+		fvbe_error_msg "Missing initrd , abording.."
+	fi
+
+	if [[ ! -e ${vfile} ]]; then
+		fvbe_error_msg "Missing vmlinuz , abording.."
+	fi
+
+	fvbe_info_msg "Setting ifile=$ifile , vfile=$vfile.."
+	cp $vfile ${FVBE_ROOT}/boot/vmlinuz
+	cp $ifile ${FVBE_ROOT}/boot/initrd
         cp unicode.pf2 ${FVBE_ROOT}/boot/grub/fonts/unicode.pf2
         cp background.png ${FVBE_ROOT}/boot/grub/background.png
 }
@@ -389,7 +405,7 @@ fi
 cp /etc/resolv.conf ${FVBE_ROOT}/etc
 
 ## now install the rest
-fvbe_chroot pacman-g2 --noconfirm -Sy ${FVBE_ROOTFS_PACKAGES[*]}
+fvbe_chroot "pacman-g2 --noconfirm -Sy ${FVBE_ROOTFS_PACKAGES[*]}"
 
 ## root && guest
 fvbe_create_users
@@ -407,9 +423,10 @@ fvbe_calamares_files
 fvbe_cache_files
 
 if [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
+	## Special ..
 	## they use connman for networking so disable NM and enable connman
-	fvbe_chroot /bin/systemctl disable NetworkManager
-	fvbe_chroot /bin/systemctl enable connman
+	fvbe_chroot "/bin/systemctl disable NetworkManager"
+	fvbe_chroot "/bin/systemctl enable connman"
 fi
 
 ## umount
@@ -420,9 +437,8 @@ rm -rf ${FVBE_ROOT:?}/*
 mkdir -p ${FVBE_ROOT}/LiveOS
 mv rootfs.img  ${FVBE_ROOT}/LiveOS/
 
-## FIXME: why lz4 ? we use xz for other stuff ?!
 fvbe_info_msg "Creating squashfs.img.."
-mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -always-use-fragments -comp lz4 -Xhc -e boot >/dev/null 2>&1
+mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -comp xz -Xbcj x86 -Xdict-size 100%  >/dev/null 2>&1
 
 rm -rf ${FVBE_ROOT} *.iso tmp sums var
 
