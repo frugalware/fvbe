@@ -230,6 +230,7 @@ fvbe_calamares_files() {
 
 	if [[ ${FVBE_ISO_TYPE} == "plasma" ]]; then
 		session=plasma.desktop
+		sed -i "s|sudo|pkexec|" ${FVBE_ROOT}/usr/share/applications/calamares-frugalware.desktop
 	elif [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
 		session=enlightenment.desktop
 		## bleh such weird
