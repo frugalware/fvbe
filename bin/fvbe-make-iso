@@ -429,6 +429,9 @@ if [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
 	fvbe_chroot "/bin/systemctl enable connman"
 fi
 
+## disable lvm stuff we don't really support that
+fvbe_chroot "/bin/systemctl disable lvm"
+
 ## umount
 fvbe_umount
 
