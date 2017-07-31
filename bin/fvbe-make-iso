@@ -185,6 +185,10 @@ fvbe_create_users() {
 	if [[ ${FVBE_ISO_TYPE} == "gnome" ]]; then
 		fvbe_chroot "mv -v /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
 	fi
+
+	if [[ ${FVBE_ISO_TYPE} == "plasma" ]]; then
+		 fvbe_chroot "cp -r /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
+	fi
 	fvbe_chroot "/usr/bin/chown -R guest.users /home/guest"
 }
 
