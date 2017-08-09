@@ -287,7 +287,7 @@ fvbe_copy_chached_files() {
 		fvbe_error_msg "Missing vmlinuz , abording.."
 	fi
 
-	fvbe_info_msg "Setting ifile=$ifile , vfile=$vfile.."
+	fvbe_info_msg "Setting initrd=$ifile , vmlinuz=$vfile.."
 	cp $vfile ${FVBE_ROOT}/boot/vmlinuz
 	cp $ifile ${FVBE_ROOT}/boot/initrd
         cp unicode.pf2 ${FVBE_ROOT}/boot/grub/fonts/unicode.pf2
