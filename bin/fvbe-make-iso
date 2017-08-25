@@ -269,6 +269,25 @@ fvbe_calamares_files() {
 
 }
 
+fvbe_wipe_files_from_liveiso() {
+
+	fvbe_info_msg "Killing not needed files from LiveISO.."
+	## static libs and co
+	fvbe_chroot "find /usr/lib -name '*.a' | xargs rm -rfv"
+	fvbe_chroot "find /usr/lib -name '*.la' | xargs rm -rfv"
+	fvbe_chroot "find /lib -name '*.a' | xargs rm -rfv"
+	fvbe_chroot "find /lib -name '*.la' | xargs rm -rfv"
+
+	## wipe include
+	fvbe_chroot "rm -rf /usr/include"
+	## wipe docs
+	fvbe_chroot "rm -rf /usr/share/doc"
+	## wipe files in /boot
+	fvbe_chroot "rm -rf /boot/*"
+	## wipe qt5 stuff
+	fvbe_chroot "/usr/share/qt5/mkspecs"
+
+}
 
 fvbe_cache_files() {
 
@@ -297,13 +316,15 @@ fvbe_copy_chached_files() {
 	cp $vfile ${FVBE_ROOT}/boot/vmlinuz
 	cp $ifile ${FVBE_ROOT}/boot/initrd
         cp unicode.pf2 ${FVBE_ROOT}/boot/grub/fonts/unicode.pf2
-        cp background.png ${FVBE_ROOT}/boot/grub/background.png
+	cp background.png ${FVBE_ROOT}/boot/grub/background.png
+
 }
 
 fvbe_banner() {
 
 	echo ""
-	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64 ISO.."
+	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64 LiveISO.."
+	fvbe_info_msg "Install from LiveMdia set to : ${FVBE_INSTALL_TYPE}"
 	fvbe_info_msg "Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
 	echo ""
 }
@@ -387,7 +408,7 @@ esac
 
 ## cleanup
 ## clean files if any and umount everything
-rm -rf $FVBE_ROOT vmlinuz vmlinuz-* initrd-* mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
+rm -rf $FVBE_ROOT vmlinuz vmlinuz-* initrd-* mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS grub
 fvbe_umount
 
 ## rootfs.img
@@ -471,4 +492,4 @@ source ./grub-mkrescue-xorriso.conf
 
 grub-mkrescue -o frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
 
-rm -rf ${FVBE_ROOT} tmp *.img *.png *.png var
+rm -rf ${FVBE_ROOT} tmp *.img *.png *.png var grub
