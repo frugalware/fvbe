@@ -92,6 +92,15 @@ fvbe_check_prog() {
 	fi
 }
 
+
+fvbe_mount_pacman_cache() {
+
+	if [[ -d /var/cache/pacman-g2 ]]; then
+		fvbe_info_msg "Found pacman-g2 cache, mounting.."
+		mount -o bind /var/cache/pacman-g2 $FVBE_ROOT/var/cache/pacman-g2
+	fi
+}
+
 fvbe_mount() {
 
 	fvbe_info_msg "Mounting the kernel pseudo file-systems.."
@@ -102,10 +111,7 @@ fvbe_mount() {
 	mount -t tmpfs none $FVBE_ROOT/tmp
 	mount -t tmpfs none $FVBE_ROOT/var/tmp
 
-	if [[ -d /var/cache/pacman-g2 ]]; then
-		fvbe_info_msg "Found pacman-g2 cache, mounting.."
-		mount -o bind /var/cache/pacman-g2 $FVBE_ROOT/var/cache/pacman-g2
-	fi
+	fvbe_mount_pacman_cache
 }
 
 
