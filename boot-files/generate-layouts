@@ -7,8 +7,7 @@ do_locales()
   echo "submenu 'Language Selection' {"
   for i in $(cat locales); do
   echo "  menuentry '$i' {"
-  echo "    echo "Switching to: ${i}""
-  echo "    set bootlang=${i}"
+  echo "    set bootlang='${i}'"
   echo "    export bootlang"
   echo "    configfile /boot/grub/grub.cfg"
   echo "  }"
@@ -23,8 +22,7 @@ do_layouts()
   echo "submenu 'Keyboard Layouts' {"
   for i in $(cat layouts); do
   echo "  menuentry '$i' {"
-  echo "    echo "Switching to: $i""
-  echo "    set bootkeymap=${i}"
+  echo "    set bootkeymap='${i}'"
   echo "    export bootkeymap"
   echo "    configfile /boot/grub/grub.cfg"
   echo "  }"

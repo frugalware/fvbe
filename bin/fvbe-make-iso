@@ -101,6 +101,11 @@ fvbe_mount_pacman_cache() {
 	fi
 }
 
+fvbe_umount_pacman_cache() {
+
+	mountpoint -q $FVBE_ROOT/var/cache/pacman-g2 && umount $FVBE_ROOT/var/cache/pacman-g2
+}
+
 fvbe_mount() {
 
 	fvbe_info_msg "Mounting the kernel pseudo file-systems.."
@@ -144,6 +149,21 @@ fvbe_create_rootfs_img() {
 	mkdir -p ${FVBE_ROOT}
 	fvbe_plain_msg "Mounting the rootfs.img on ${FVBE_ROOT}"
 	mount -o loop rootfs.img ${FVBE_ROOT}
+	mkdir -p ${FVBE_ROOT}/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
+}
+
+fvbe_create_basefs_img() {
+
+	fvbe_info_msg "Creating fixed basefs image.."
+
+	[[ -z ${FVBE_ROOTFS_BASE_SIZE} ]] && fvbe_error_msg "${FUNCNAME[0]}() line: ${LINENO} -> FVBE_ROOTFS_BASE_SIZE is not set cannot continue.."
+
+	truncate -s "${FVBE_ROOTFS_BASE_SIZE}"G basefs.img >/dev/null 2>&1
+	mkfs.ext4 -q -F -m1 basefs.img
+	mkdir -p ${FVBE_ROOT}
+	fvbe_plain_msg "Mounting the basefs.img on ${FVBE_ROOT}"
+	mount -o loop basefs.img ${FVBE_ROOT}
+	mkdir -p ${FVBE_ROOT}/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
 }
 
 fvbe_copy_boot_files() {
@@ -181,20 +201,7 @@ fvbe_create_users() {
 	fvbe_plain_msg "Fixing 'guest' users home.."
 	cp -ra guest ${FVBE_ROOT}/home/
 	mkdir -p ${FVBE_ROOT}/home/guest/.config/autostart
-	if [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
-		mkdir -p ${FVBE_ROOT}/home/guest/.e/e/applications/startup
-		## HOW weird..
-		echo "~/.config/autostart/calamares-frugalware.desktop" > ${FVBE_ROOT}/home/guest/.e/e/applications/startup/.order
-		fvbe_chroot "mv -v /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
-	fi
-
-	if [[ ${FVBE_ISO_TYPE} == "gnome" ]]; then
-		fvbe_chroot "mv -v /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
-	fi
-
-	if [[ ${FVBE_ISO_TYPE} == "plasma" ]]; then
-		 fvbe_chroot "cp -r /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
-	fi
+	fvbe_chroot "cp -r /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
 	fvbe_chroot "/usr/bin/chown -R guest.users /home/guest"
 }
 
@@ -238,22 +245,16 @@ fvbe_calamares_files() {
 	fvbe_info_msg "Setting up calamares files.."
 	local cala="$FVBE_ROOT/etc/calamares" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/" session
 
-	if [[ ${FVBE_ISO_TYPE} == "plasma" ]]; then
-		session=plasma.desktop
-		sed -i "s|sudo|pkexec|" ${FVBE_ROOT}/usr/share/applications/calamares-frugalware.desktop
-	elif [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
-		session=enlightenment.desktop
-		## bleh such weird
-		sed -i "s|^Icon=.*|Icon=/usr/share/icons/hicolor/scalable/apps/calamares-frugalware.svg|" ${FVBE_ROOT}/usr/share/applications/calamares-frugalware.desktop
-	fi
+	session=plasma.desktop
 
 	[[ ! -d ${cala} ]] && mkdir -p ${cala}
 	[[ ! -d ${cala_files} ]] && mkdir -p ${cala_files}
 
-	## Fixme - rsync stuff
 	cp -r calamares/calamares-config-global/* ${cala}
+	cp -r calamares/calamares-config-${FVBE_INSTALL_TYPE}/* ${cala}
 	cp -r calamares/calamares-frugalware-branding/* ${cala_files}
 
+	## FIXME
 	sed -i "s/_version_/$FVBE_ISO_RELEASE/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 	sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 
@@ -261,11 +262,11 @@ fvbe_calamares_files() {
 		fvbe_plain_msg "Setting SDDM Session=$session"
   		sed -i "s|^Session=.*\$|Session=$session|" ${FVBE_ROOT}/etc/sddm.conf
   		sed -i "s|^User=.*\$|User=guest|" ${FVBE_ROOT}/etc/sddm.conf
+	else
+		fvbe_info_msg "Something is broken here can't find SDDM and is the only supported DM.."
+		fvbe_error_msg "Abording.."
 	fi
 
-	if [[ -f "${FVBE_ROOT}/etc/gdm/custom.conf" ]]; then
-  		cp calamares/dm/gdm-custom.conf ${FVBE_ROOT}/etc/gdm/custom.conf
-	fi
 
 }
 
@@ -273,19 +274,17 @@ fvbe_wipe_files_from_liveiso() {
 
 	fvbe_info_msg "Killing not needed files from LiveISO.."
 	## static libs and co
-	fvbe_chroot "find /usr/lib -name '*.a' | xargs rm -rfv"
-	fvbe_chroot "find /usr/lib -name '*.la' | xargs rm -rfv"
-	fvbe_chroot "find /lib -name '*.a' | xargs rm -rfv"
-	fvbe_chroot "find /lib -name '*.la' | xargs rm -rfv"
+	fvbe_chroot "find usr/lib -name '*.a' | xargs rm -rfv"
+	fvbe_chroot "find usr/lib -name '*.la' | xargs rm -rfv"
+	fvbe_chroot "find lib -name '*.a' | xargs rm -rfv"
+	fvbe_chroot "find lib -name '*.la' | xargs rm -rfv"
 
 	## wipe include
-	fvbe_chroot "rm -rf /usr/include"
+	fvbe_chroot "rm -rf usr/include"
 	## wipe docs
-	fvbe_chroot "rm -rf /usr/share/doc"
-	## wipe files in /boot
-	fvbe_chroot "rm -rf /boot/*"
+	fvbe_chroot "rm -rf usr/share/doc"
 	## wipe qt5 stuff
-	fvbe_chroot "/usr/share/qt5/mkspecs"
+	fvbe_chroot "rm -rf usr/share/qt5/mkspecs"
 
 }
 
@@ -323,8 +322,7 @@ fvbe_copy_chached_files() {
 fvbe_banner() {
 
 	echo ""
-	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64 LiveISO.."
-	fvbe_info_msg "Install from LiveMdia set to : ${FVBE_INSTALL_TYPE}"
+	fvbe_info_msg "Building Frugalware-${FVBE_ISO_RELEASE}-Live-${FVBE_INSTALL_TYPE}-installation-x86_64.iso LiveISO.."
 	fvbe_info_msg "Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
 	echo ""
 }
@@ -359,6 +357,8 @@ fvbe_check_prog
 fvbe_info_msg "Setting up repository(s).."
 [[ -z ${FVBE_ROOTFS_REPOSITORY} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ROOTFS_REPOSITORY is not set cannot continue.."
 [[ -z ${FVBE_ISO_TYPE} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_ISO_TYPE is not set cannot continue.."
+[[ -z ${FVBE_INSTALL_TYPE} ]] && fvbe_error_msg "Line: ${LINENO} -> FVBE_INSTALL_TYPE is not set cannot continue.."
+
 
 if [[ ${FVBE_ROOTFS_REPOSITORY} == "current" ]]; then
 
@@ -387,42 +387,65 @@ else
 fi
 
 declare -a  FVBE_ROOTFS_PACKAGES
+declare -a  FVBE_ROOTFS_INSTALL_PACKAGES
 
 case ${FVBE_ISO_TYPE} in
-base)
-	FVBE_ROOTFS_PACKAGES=( "${FVBE_ROOTFS_PACKAGES_BASE[@]}" )
-	;;
 plasma)
-	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_PLASMA[@]}")
-	;;
-gnome)
-	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_GNOME[@]}")
-	;;
-enlightenment)
-	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_E[@]}")
+	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_PLASMA[@]}")
 	;;
 *)
 	fvbe_error_msg "Unknow FVBE_ISO_TYPE , typo?"
 esac
 
+case ${FVBE_INSTALL_TYPE} in
+base)
+        FVBE_ROOTFS_INSTALL_PACKAGES=( "${FVBE_ROOTFS_PACKAGES_BASE[@]}" )
+        ;;
+plasma)
+        FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_PLASMA[@]}")
+        ;;
+gnome)
+        FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]}  ${FVBE_ROOTFS_PACKAGES_GNOME[@]}")
+        ;;
+enlightenment)
+        FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_E[@]}")
+        ;;
+*)
+        fvbe_error_msg "Unknow FVBE_INSTALL_TYPE , typo?"
+esac
 
 ## cleanup
 ## clean files if any and umount everything
-rm -rf $FVBE_ROOT vmlinuz vmlinuz-* initrd-* mounts rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS grub
+rm -rf $FVBE_ROOT vmlinuz vmlinuz-* initrd-* mounts basefs.img rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
 fvbe_umount
 
-## rootfs.img
-fvbe_create_rootfs_img
-
-## skeleton
-mkdir -p ${FVBE_ROOT}/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
+## step1 mini basefs ( always needed no matter what we install )
+fvbe_create_basefs_img
 
 ## mount
 fvbe_mount
 
 trap fvbe_umount ERR INT TERM 0
 
-## bootstrap pacman
+## minimal base so we can run chroot with the unpackfs job
+pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy pacman-g2 netkit-base bash
+
+## won't work with cache mounted so we need umount here
+fvbe_umount_pacman_cache
+
+## these go to chache now ( maybe we can copy over some way from system ? )
+#PAC_CONF="pacman-g2-local.conf" ## for my local setup , do not use  --- crazy ---
+pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Syw ${FVBE_ROOTFS_INSTALL_PACKAGES[*]}
+#PAC_CONF="pacman-g2.conf"  ## for my local setup , do not use  --- crazy ---
+## wipe wipe since we install over anyway
+fvbe_wipe_files_from_liveiso
+## done with that base+base fpms there
+fvbe_umount
+
+
+## step2 create LIVE stuff
+fvbe_create_rootfs_img
+fvbe_mount
 pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy pacman-g2 netkit-base
 
 ## copy right conf over
@@ -435,7 +458,6 @@ fi
 
 ## get resolv.conf over
 cp /etc/resolv.conf ${FVBE_ROOT}/etc
-
 ## now install the rest
 fvbe_chroot "pacman-g2 --noconfirm -Sy ${FVBE_ROOTFS_PACKAGES[*]}"
 
@@ -454,17 +476,20 @@ fvbe_calamares_files
 ## copy /boot files over
 fvbe_cache_files
 
-if [[ ${FVBE_ISO_TYPE} == "enlightenment" ]]; then
-	## Special ..
-	## they use connman for networking so disable NM and enable connman
-	fvbe_chroot "/bin/systemctl disable NetworkManager"
-	fvbe_chroot "/bin/systemctl enable connman"
-fi
-
 ## disable lvm stuff we don't really support that
 fvbe_chroot "/bin/systemctl disable lvm"
 
+## wipe files from live
+fvbe_wipe_files_from_liveiso
 ## umount
+
+## copy basefs.img over , is use from unpackfs jon so we have:
+## - uppackfs -> mini_chrrot + the fpms from cache
+## - our-install-packages-module -> chroot $mini_chroot pacman -Sy --noconfirm 'packages'
+## so we install from packages not in any way from LIVEISO
+mkdir -p ${FVBE_ROOT}/usr/share/images
+mv basefs.img ${FVBE_ROOT}/usr/share/images/
+
 fvbe_umount
 
 ## cleanup and move rootfs.img over
@@ -490,6 +515,6 @@ fvbe_copy_chached_files
 ## these are checked else where
 source ./grub-mkrescue-xorriso.conf
 
-grub-mkrescue -o frugalware-${FVBE_ISO_RELEASE}-${FVBE_ISO_TYPE}-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
+grub-mkrescue -o Frugalware-${FVBE_ISO_RELEASE}-Live-${FVBE_INSTALL_TYPE}-installation-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
 
 rm -rf ${FVBE_ROOT} tmp *.img *.png *.png var grub

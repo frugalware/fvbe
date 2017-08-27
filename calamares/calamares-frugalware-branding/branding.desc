@@ -16,7 +16,7 @@ strings:
 
 images:
     productLogo:         "frugalware-logo.png"
-    productIcon:         "frugalware-icon.png"
+    productIcon:         "calamares-frugalware.svg"
     productWelcome:      "languages.png"
 
 slideshow:               "show.qml"
