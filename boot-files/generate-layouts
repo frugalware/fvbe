@@ -48,4 +48,4 @@ EOF
 cp $tmpdir/tmp.file grub_locale.cfg
 rm -rf $tmpdir
 
-rm -rf locale layouts
+rm -rf locales layouts
