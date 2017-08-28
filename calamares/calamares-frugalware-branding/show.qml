@@ -24,7 +24,7 @@ Presentation
     id: presentation
 
     Timer {
-        interval: 20000
+        interval: 30000
         running: true
         repeat: true
         onTriggered: presentation.goToNextSlide()
@@ -46,7 +46,7 @@ Presentation
                   "FrugalWare Linux is driven by a hardworking and dedicated community.<br/>"+
                   "During the installation, this slideshow will provide a quick introduction."
             wrapMode: Text.WordWrap
-            width: 600
+            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -55,7 +55,7 @@ Presentation
 
         Image {
             id: background2
-            source: "Fluxbox_Tommfa.jpg"
+            source: "official_background.jpg"
             width: 600; height: 332
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
@@ -67,7 +67,7 @@ Presentation
                   "to exactly how you want it. From theming, to the very<br/>"+
                   "kernel itself, it can be changed."
             wrapMode: Text.WordWrap
-            width: 600
+            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -76,7 +76,7 @@ Presentation
 
         Image {
             id: background3
-            source: "i3_botchikii.jpg"
+            source: "official_background.jpg"
             width: 600; height: 332
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
@@ -88,7 +88,7 @@ Presentation
                   "Additionally, there's a multitude of community editions to <br/>"+
                   "choose from, built by the community, for the community."
             wrapMode: Text.WordWrap
-            width: 600
+            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -97,7 +97,7 @@ Presentation
 
         Image {
             id: background4
-            source: "i3_PacMiam.jpg"
+            source: "official_background.jpg"
             width: 600; height: 332
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
@@ -108,7 +108,7 @@ Presentation
             text: "FrugalWare Linux uses a derived version of the orignal <br/>"+
                   "pacman from Arch Linux called pacman-g2."
             wrapMode: Text.WordWrap
-            width: 600
+            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -117,7 +117,7 @@ Presentation
 
         Image {
             id: background5
-            source: "KDE_Melko.jpg"
+            source: "official_background.jpg"
             width: 600; height: 332
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
@@ -129,7 +129,7 @@ Presentation
                   "it as much as we do making it! If you have any questions<br/>"+
                   "or feedback, please feel free to visit the forum, IRC, or wiki."
             wrapMode: Text.WordWrap
-            width: 600
+            width: root.width
             horizontalAlignment: Text.Center
         }
     }

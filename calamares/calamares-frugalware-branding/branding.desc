@@ -8,15 +8,15 @@ strings:
     shortVersion:        _version_
     versionedName:       _versionedname_
     shortVersionedName:  FrugalWare _version_
-    bootloaderEntryName: FrugalWare
+    bootloaderEntryName: frugalware
     productUrl:          https://www.frugalware.org
     supportUrl:          https://bugs.frugalware.org
     knownIssuesUrl:      https://bugs.frugalware.org
     releaseNotesUrl:     https://bugs.frugalware.org
 
 images:
-    productLogo:         "frugalware-logo.png"
-    productIcon:         "calamares-frugalware.svg"
+    productLogo:         "fw.png"
+    productIcon:         "fw.png"
     productWelcome:      "languages.png"
 
 slideshow:               "show.qml"
@@ -25,3 +25,4 @@ style:
    sidebarBackground:    "#292F34"
    sidebarText:          "#FFFFFF"
    sidebarTextSelect:    "#292F34"
+   sidebarTextHighlight: "#FFFFF0"
