@@ -428,7 +428,8 @@ fvbe_mount
 trap fvbe_umount ERR INT TERM 0
 
 ## minimal base so we can run chroot with the unpackfs job
-pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy pacman-g2 netkit-base bash
+## NOTE: grub package is needed to stop stupid job for touching some of our defaults
+pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy pacman-g2 netkit-base bash grub2
 
 ## won't work with cache mounted so we need umount here
 fvbe_umount_pacman_cache
