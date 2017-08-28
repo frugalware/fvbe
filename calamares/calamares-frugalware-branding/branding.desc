@@ -8,7 +8,7 @@ strings:
     shortVersion:        _version_
     versionedName:       _versionedname_
     shortVersionedName:  FrugalWare _version_
-    bootloaderEntryName: frugalware
+    bootloaderEntryName: _versionedname_
     productUrl:          https://www.frugalware.org
     supportUrl:          https://bugs.frugalware.org
     knownIssuesUrl:      https://bugs.frugalware.org
