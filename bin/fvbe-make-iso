@@ -245,7 +245,16 @@ fvbe_calamares_files() {
 	fvbe_info_msg "Setting up calamares files.."
 	local cala="$FVBE_ROOT/etc/calamares" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/" session
 
-	session=plasma.desktop
+	case ${FVBE_ISO_TYPE} in
+	plasma)
+		session=plasma.desktop
+		;;
+	i3)
+		session=i3.desktop
+		;;
+	*)
+		fvbe_error_msg "Not supported ISO_TYPE , abording.."
+	esac
 
 	[[ ! -d ${cala} ]] && mkdir -p ${cala}
 	[[ ! -d ${cala_files} ]] && mkdir -p ${cala_files}
@@ -262,7 +271,7 @@ fvbe_calamares_files() {
 		fvbe_plain_msg "Setting SDDM Session=$session"
   		sed -i "s|^Session=.*\$|Session=$session|" ${FVBE_ROOT}/etc/sddm.conf
   		sed -i "s|^User=.*\$|User=guest|" ${FVBE_ROOT}/etc/sddm.conf
-	else
+	else ## fixme xinitrc ?
 		fvbe_info_msg "Something is broken here can't find SDDM and is the only supported DM.."
 		fvbe_error_msg "Abording.."
 	fi
@@ -393,6 +402,9 @@ case ${FVBE_ISO_TYPE} in
 plasma)
 	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_PLASMA[@]}")
 	;;
+i3)
+	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_I3[@]}")
+	;;
 *)
 	fvbe_error_msg "Unknow FVBE_ISO_TYPE , typo?"
 esac
@@ -410,6 +422,9 @@ gnome)
 enlightenment)
         FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_E[@]}")
         ;;
+i3)
+	FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_I3[@]}")
+	;;
 *)
         fvbe_error_msg "Unknow FVBE_INSTALL_TYPE , typo?"
 esac
