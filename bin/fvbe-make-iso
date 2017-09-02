@@ -166,6 +166,14 @@ fvbe_create_basefs_img() {
 	mkdir -p ${FVBE_ROOT}/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
 }
 
+fvbe_img_fixes() {
+
+	p="$1"
+
+	e2fsck -f "$p"
+	resize2fs -M "$p"
+}
+
 fvbe_copy_boot_files() {
 
 
@@ -456,8 +464,9 @@ pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy
 ## wipe wipe since we install over anyway
 fvbe_wipe_files_from_liveiso
 ## done with that base+base fpms there
+fvbe_chroot "ldconfig -r ."
 fvbe_umount
-
+fvbe_img_fixes basefs.img
 
 ## step2 create LIVE stuff
 fvbe_create_rootfs_img
@@ -506,7 +515,9 @@ fvbe_wipe_files_from_liveiso
 mkdir -p ${FVBE_ROOT}/usr/share/images
 mv basefs.img ${FVBE_ROOT}/usr/share/images/
 
+fvbe_chroot "ldconfig -r ."
 fvbe_umount
+fvbe_img_fixes rootfs.img
 
 ## cleanup and move rootfs.img over
 rm -rf ${FVBE_ROOT:?}/*
