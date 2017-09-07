@@ -166,14 +166,6 @@ fvbe_create_basefs_img() {
 	mkdir -p ${FVBE_ROOT}/{dev,proc,sys,tmp,var/tmp,var/cache/pacman-g2,var/log,etc/sysconfig}
 }
 
-fvbe_img_fixes() {
-
-	p="$1"
-
-	e2fsck -f "$p"
-	resize2fs -M "$p"
-}
-
 fvbe_copy_boot_files() {
 
 
