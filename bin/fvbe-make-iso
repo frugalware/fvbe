@@ -466,7 +466,6 @@ fvbe_wipe_files_from_liveiso
 ## done with that base+base fpms there
 fvbe_chroot "ldconfig -r ."
 fvbe_umount
-fvbe_img_fixes basefs.img
 
 ## step2 create LIVE stuff
 fvbe_create_rootfs_img
@@ -517,7 +516,6 @@ mv basefs.img ${FVBE_ROOT}/usr/share/images/
 
 fvbe_chroot "ldconfig -r ."
 fvbe_umount
-fvbe_img_fixes rootfs.img
 
 ## cleanup and move rootfs.img over
 rm -rf ${FVBE_ROOT:?}/*
@@ -525,7 +523,7 @@ mkdir -p ${FVBE_ROOT}/LiveOS
 mv rootfs.img  ${FVBE_ROOT}/LiveOS/
 
 fvbe_info_msg "Creating squashfs.img.."
-mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -comp xz -Xbcj x86 -Xdict-size 100%  >/dev/null 2>&1
+mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -no-fragments -noF -comp xz -Xbcj x86 -Xdict-size 100%  >/dev/null 2>&1
 
 rm -rf ${FVBE_ROOT} *.iso tmp sums var
 
