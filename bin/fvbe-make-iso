@@ -267,7 +267,7 @@ fvbe_calamares_files() {
 	sed -i "s/_version_/$FVBE_ISO_RELEASE/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 	sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 
-	if [[ -f "${FVBE_ROOT}/etc/sddm.conf" ]]; then
+	if [[ -f "${FVBE_ROOT}/usr/lib/sddm/sddm.conf.d/20-frugalware-sddm.conf" ]]; then
 		fvbe_plain_msg "Setting SDDM Session=$session"
   		sed -i "s|^Session=.*\$|Session=$session|" ${FVBE_ROOT}/etc/sddm.conf
   		sed -i "s|^User=.*\$|User=guest|" ${FVBE_ROOT}/etc/sddm.conf
