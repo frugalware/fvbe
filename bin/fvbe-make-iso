@@ -249,9 +249,6 @@ fvbe_calamares_files() {
 	plasma)
 		session=plasma.desktop
 		;;
-	i3)
-		session=i3.desktop
-		;;
 	*)
 		fvbe_error_msg "Not supported ISO_TYPE , abording.."
 	esac
@@ -404,9 +401,6 @@ declare -a  FVBE_ROOTFS_INSTALL_PACKAGES
 case ${FVBE_ISO_TYPE} in
 plasma)
 	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_PLASMA[@]}")
-	;;
-i3)
-	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_I3[@]}")
 	;;
 *)
 	fvbe_error_msg "Unknow FVBE_ISO_TYPE , typo?"
