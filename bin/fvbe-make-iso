@@ -259,6 +259,10 @@ fvbe_calamares_files() {
 	cp -r calamares/calamares-config-global/* ${cala}
 	cp -r calamares/calamares-frugalware-branding/* ${cala_files}
 
+        ## packages.yaml
+        mkdir -p ${FVBE_ROOT}/var/www/htdocs
+        cp -r calamares/netinstall/packages.yaml ${FVBE_ROOT}/var/www/htdocs/
+
 	## FIXME
 	sed -i "s/_version_/$FVBE_ISO_RELEASE/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
 	sed -i "s/_versionedname_/$(cat $FVBE_ROOT/etc/frugalware-release)/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
