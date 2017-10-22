@@ -189,20 +189,20 @@ fvbe_copy_boot_files() {
 
 fvbe_create_users() {
 
-	fvbe_info_msg "Setting up root and guest users.."
+	fvbe_info_msg "Setting up root and live users.."
 	# Setup root user.
 	sed -i '/root/d' ${FVBE_ROOT}/etc/shadow
 	echo "root:$(openssl passwd -1 fvbe):17014:0:::::" >> ${FVBE_ROOT}/etc/shadow
 
-	# Setup guest user.
-	echo "guest:$(openssl passwd -1 fvbe):17014:0:99999:7:::" >> ${FVBE_ROOT}/etc/shadow
-	echo "guest:x:1006:100:Guest user:/home/guest:/bin/bash" >> ${FVBE_ROOT}/etc/passwd
+	# Setup live user.
+	echo "live:$(openssl passwd -1 fvbe):17014:0:99999:7:::" >> ${FVBE_ROOT}/etc/shadow
+	echo "live:x:1006:100:Live user:/home/live:/bin/bash" >> ${FVBE_ROOT}/etc/passwd
 
-	fvbe_plain_msg "Fixing 'guest' users home.."
-	cp -ra guest ${FVBE_ROOT}/home/
-	mkdir -p ${FVBE_ROOT}/home/guest/.config/autostart
-	fvbe_chroot "cp -r /home/guest/Desktop/calamares-frugalware.desktop /home/guest/.config/autostart/calamares-frugalware.desktop"
-	fvbe_chroot "/usr/bin/chown -R guest.users /home/guest"
+	fvbe_plain_msg "Fixing 'LIVE' users home.."
+	cp -ra live ${FVBE_ROOT}/home/
+	mkdir -p ${FVBE_ROOT}/home/live/.config/autostart
+	fvbe_chroot "cp -r /home/live/Desktop/calamares-frugalware.desktop /home/live/.config/autostart/calamares-frugalware.desktop"
+	fvbe_chroot "/usr/bin/chown -R live.users /home/live"
 }
 
 fvbe_create_system_files() {
@@ -270,7 +270,7 @@ fvbe_calamares_files() {
 	if [[ -f "$SDDM_conf" ]]; then
 		fvbe_plain_msg "Setting SDDM Session=$session"
 		sed -i "s|^Session=.*\$|Session=$session|" $SDDM_conf
-		sed -i "s|^User=.*\$|User=guest|" $SDDM_conf
+		sed -i "s|^User=.*\$|User=live|" $SDDM_conf
 	else ## fixme xinitrc ?
 		fvbe_info_msg "Something is broken here can't find SDDM and is the only supported DM.."
 		fvbe_error_msg "Abording.."
