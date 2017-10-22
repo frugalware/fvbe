@@ -522,6 +522,9 @@ fvbe_cache_files
 ## disable lvm stuff we don't really support that
 fvbe_chroot "/bin/systemctl disable lvm"
 
+## enable lighttpd
+fvbe_chroot "/bin/systemctl enable lighttpd"
+
 ## wipe files from live
 fvbe_wipe_files_from_liveiso
 ## umount
