@@ -14,7 +14,7 @@ fvbe_check_root() {
 
 fvbe_plain_msg() {
 
-	local a="$1"
+  local a="$1"
 
 	if [ "$FVBE_COLOR" == "Y" ] || [ "$FVBE_COLOR" == "y" ]; then
 		/bin/echo -e "   \033[1;32m->\033[1;0m \033[1;1m${a}\033[1;0m" >&2
@@ -420,6 +420,7 @@ fi
 # FVBE_ROOTFS_PACKAGES_MULTIMEDIA
 # FVBE_ROOTFS_PACKAGES_INTERNET
 # FVBE_ROOTFS_PACKAGES_I18N
+# FVBE_ROOTFS_PACKAGES_X11
 
 declare -a  FVBE_ROOTFS_PACKAGES
 declare -a  FVBE_ROOTFS_INSTALL_PACKAGES
