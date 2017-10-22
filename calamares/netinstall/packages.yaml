@@ -1,0 +1,178 @@
+- name: "Base Packages"
+  description: "Base Packages"
+  hidden: true
+  selected: true
+  critical: true
+  packages:
+      - base
+      - openssh
+      - gnupg2
+      - pkgconfig
+      - dracut
+- name: "Plasma Desktop"
+  description: "Minimal Plasma5 Desktop"
+  hidden: false
+  selected: true
+  critical: false
+  packages:
+      - kf5
+      - plasma
+      - sddm
+      - kate
+      - konsole
+      - ark
+      - dolphin
+      - kwalletmanager
+      - bluez
+      - cups
+      - print-manager
+      - qupzilla
+      - spectacle
+- name: "KDE Software"
+  description: "Extra Software for KDE"
+  hidden: false
+  selected: true
+  critical: false
+  subgroups:
+  - name: "Communication"
+    description: "KDE Communication Software"
+    hidden: false
+    selected: true
+    critical: false
+    packages:
+        - kdeconnect
+        - ktp-accounts-kcm
+        - ktp-desktop-applets
+        - ktp-filetransfer-handler
+        - ktp-call-ui
+        - ktp-text-ui
+        - ktp-send-file
+        - ktp-auth-handler
+        - ktp-approver
+        - ktp-kded-module
+        - ktp-contact-runner
+        - ktp-contact-list
+        - signon-kwallet-extension
+  - name: "Multimedia"
+    description: "KDE Multimedia Software"
+    hidden: false
+    selected: false
+    critical: false
+    packages:
+        - k3b
+        - dragon
+        - kaffeine
+        - babe
+        - vlc
+  - name: "Applications"
+    description: "KDE Applications"
+    hidden: false
+    selected: false
+    critical: false
+    packages:
+        - gwenview
+        - partitionmanager
+        - okteta
+        - okular
+        - filelight
+        - kdesdk-thumbnailers
+        - kdegraphics-thumbnailers
+        - ffmpegthumbs
+        - kio-gdrive
+        - kio-extras
+- name: "Gnome Desktop"
+  descripton: "Minimal Gnome3 Desktop"
+  hidden: false
+  selected: false
+  critical: false
+  packages:
+      - gdm
+      - gnome
+      - cups
+      - bluez
+- name: "Internet Software"
+  description: "Browers , Mail and Chat Software"
+  hidden: false
+  selected: flase
+  critical: false
+  packages:
+      - firefox
+      - chromium-browser
+      - qupzilla
+      - otter-browser
+      - thunderbird
+      - hexchat
+      - irssi
+      - weechat
+      - konversation
+      - kvirc
+      - quassel
+- name: "Office"
+  description: "Office Software"
+  hidden: false
+  selected: false
+  critical: false
+  packages:
+      - libreoffice
+      - libreoffice-gnome
+- name: "Xorg"
+  description: "Xorg open source GPU drivers"
+  hidden: false
+  selected: false
+  critical: false
+  packages:
+      - xf86-video-intel
+      - xf86-video-amdgpu
+      - xf86-video-ati
+      - xf86-video-nouveau
+- name: "Fonts"
+  description: "Extra Fonts"
+  hidden: false
+  selected: true
+  critical: false
+  packages:
+      - anonymous-pro-ttf
+      - artwiz-fonts
+      - crosextrafonts-caladea
+      - crosextrafonts-carlito
+      - freefont-ttf
+      - inconsolata-otf
+      - monaco_linux
+      - ohsnap
+      - otf-texgyre
+      - sourcecodepro-fonts
+      - terminus-font
+      - terminusmod
+      - termsyn
+      - ttf-agave
+      - ttf-linux-libertine
+      - ttf-mintspirit
+      - ttf-roboto
+      - ttf-zick-fonts
+      - unifont
+- name: "Localisation"
+  description: "Localisation Support"
+  hidden: false
+  selected: false
+  critical: false
+  packages:
+      - firefox-de
+      - firefox-fr
+      - firefox-hu
+      - firefox-es-es
+      - firefox-es-cl
+      - firefox-ro
+      - firefox-nl
+      - thunderbird-de
+      - thunderbird-fr
+      - thunderbird-hu
+      - thunderbird-es-es
+      - thunderbird-ro
+      - thunderbird-nl
+      - libreoffice-l10n-de
+      - libreoffice-l10n-fr
+      - libreoffice-l10n-hu
+      - libreoffice-l10n-es
+      - libreoffice-l10n-ro
+      - libreoffice-l10n-nl
+
