@@ -330,10 +330,17 @@ fvbe_copy_chached_files() {
 fvbe_banner() {
 
 	echo ""
-	fvbe_info_msg "Building Frugalware-${FVBE_ISO_RELEASE}-Live-${FVBE_INSTALL_TYPE}-installation-x86_64.iso LiveISO.."
+	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-${FVBE_INSTALL_TYPE}-x86_64.iso LiveISO.."
 	fvbe_info_msg "Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
 	echo ""
 }
+
+if [[ -e ./fvbe-packages.conf ]]; then
+	source ./fvbe-packages.conf
+else
+	fvbe_warn_msg "fvbe-packages.conf seems to be missing.."
+	fvbe_error_msg "Something is very wrong.. abording.."
+fi
 
 if [[ -e ./fvbe.conf ]]; then
         source ./fvbe.conf
@@ -394,8 +401,44 @@ else
 	fvbe_error_msg "...abording!"
 fi
 
+
+## PACKAGES ##
+
+# FVBE_ROOTFS_PACKAGES_BASE
+# FVBE_ROOTFS_PACKAGES_LIVE_BASIC
+# FVBE_ROOTFS_PACKAGES_LIVE_PLASMA
+# FVBE_ROOTFS_PACKAGES_PLASMA
+# FVBE_ROOTFS_PACKAGES_PLASMA_APPS
+# FVBE_ROOTFS_PACKAGES_PLASMA_OPT_APPS
+# FVBE_ROOTFS_PACKAGES_GNOME
+# FVBE_ROOTFS_PACKAGES_GNOME_APPS
+# FVBE_ROOTFS_PACKAGES_E
+# FVBE_ROOTFS_PACKAGES_E_APPS
+# FVBE_ROOTFS_PACKAGES_LUMINA
+# FVBE_ROOTFS_PACKAGES_LUMINA_APPS
+# FVBE_ROOTFS_PACKAGES_i3
+# FVBE_ROOTFS_PACKAGES_i3_APPS
+# FVBE_ROOTFS_PACKAGES_OFFICE
+# FVBE_ROOTFS_PACKAGES_NETWORK
+# FVBE_ROOTFS_PACKAGES_MULTIMEDIA
+# FVBE_ROOTFS_PACKAGES_INTERNET
+# FVBE_ROOTFS_PACKAGES_I18N
+
 declare -a  FVBE_ROOTFS_PACKAGES
 declare -a  FVBE_ROOTFS_INSTALL_PACKAGES
+declare -a  _FVBE_PACKAGES
+
+_FVBE_PACKAGES=(
+		"${FVBE_ROOTFS_PACKAGES_BASE[@]}" "${FVBE_ROOTFS_PACKAGES_PLASMA[@]}"
+		"${FVBE_ROOTFS_PACKAGES_PLASMA_APPS[@]}" "${FVBE_ROOTFS_PACKAGES_PLASMA_OPT_APPS[@]}"
+		"${FVBE_ROOTFS_PACKAGES_GNOME[@]}" "${FVBE_ROOTFS_PACKAGES_GNOME_APPS[@]}"
+		"${FVBE_ROOTFS_PACKAGES_E[@]}" "${FVBE_ROOTFS_PACKAGES_E_APPS[@]}"
+		"${FVBE_ROOTFS_PACKAGES_LUMINA[@]}" "${FVBE_ROOTFS_PACKAGES_LUMINA_APPS[@]}"
+		"${FVBE_ROOTFS_PACKAGES_I3[@]}" "${FVBE_ROOTFS_PACKAGES_I3_APPS[@]}"
+		"${FVBE_ROOTFS_PACKAGES_OFFICE[@]}" "${FVBE_ROOTFS_PACKAGES_NETWORK[@]}"
+		"${FVBE_ROOTFS_PACKAGES_MULTIMEDIA[@]}" "${FVBE_ROOTFS_PACKAGES_INTERNET[@]}"
+		"${FVBE_ROOTFS_PACKAGES_I18N[@]}"
+	       )
 
 case ${FVBE_ISO_TYPE} in
 plasma)
@@ -407,7 +450,7 @@ esac
 
 case ${FVBE_INSTALL_TYPE} in
 full)
-        FVBE_ROOTFS_INSTALL_PACKAGES=( "${FVBE_ROOTFS_PACKAGES_BASE[@]}" )
+        FVBE_ROOTFS_INSTALL_PACKAGES=( "${_FVBE_PACKAGES[@]}" )
         ;;
 *)
         fvbe_error_msg "Unknow FVBE_INSTALL_TYPE , typo?"
@@ -516,6 +559,6 @@ fvbe_copy_chached_files
 ## these are checked else where
 source ./grub-mkrescue-xorriso.conf
 
-grub-mkrescue -o Frugalware-${FVBE_ISO_RELEASE}-Live-${FVBE_INSTALL_TYPE}-installation-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
+grub-mkrescue -o frugalware-${FVBE_ISO_RELEASE}-${FVBE_INSTALL_TYPE}-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
 
 rm -rf ${FVBE_ROOT} tmp *.img *.png *.png var grub
