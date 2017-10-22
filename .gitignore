@@ -11,6 +11,5 @@ locales
 pacman-g2.conf
 rootfs
 squashfs.img
-src/scanner.h
 unicode.pf2
 vmlinuz
