@@ -4,8 +4,6 @@ build
 .project
 .cproject
 fvbe.conf
-bin/fwsetup
-bin/resolvegroups
 *.fdb
 initrd
 layouts
