@@ -2,17 +2,17 @@
 componentName:  frugalware
 
 strings:
-    productName:         FrugalWare Linux
-    shortProductName:    FrugalWare
+    productName:         Frugalware Linux
+    shortProductName:    Frugalware
     version:             _version_
     shortVersion:        _version_
     versionedName:       _versionedname_
-    shortVersionedName:  FrugalWare _version_
+    shortVersionedName:  Frugalware _version_
     bootloaderEntryName: _versionedname_
     productUrl:          https://www.frugalware.org
     supportUrl:          https://bugs.frugalware.org
-    knownIssuesUrl:      https://bugs.frugalware.org
-    releaseNotesUrl:     https://bugs.frugalware.org
+    knownIssuesUrl:      http://127.0.0.1
+    releaseNotesUrl:     http://127.0.0.1
 
 images:
     productLogo:         "fw.png"
