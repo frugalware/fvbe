@@ -336,7 +336,7 @@ fvbe_copy_chached_files() {
 fvbe_banner() {
 
 	echo ""
-	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-${FVBE_INSTALL_TYPE}-x86_64.iso LiveISO.."
+	fvbe_info_msg "Building frugalware-${FVBE_ISO_RELEASE}-x86_64.iso LiveISO.."
 	fvbe_info_msg "Repository is set to : ${FVBE_ROOTFS_REPOSITORY}"
 	echo ""
 }
@@ -563,6 +563,6 @@ fvbe_copy_chached_files
 ## these are checked else where
 source ./grub-mkrescue-xorriso.conf
 
-grub-mkrescue -o frugalware-${FVBE_ISO_RELEASE}-${FVBE_INSTALL_TYPE}-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
+grub-mkrescue -o frugalware-${FVBE_ISO_RELEASE}-x86_64.iso ${FVBE_ROOT} -volid FVBE --xorriso=./bin/grub-mkrescue-sed
 
 rm -rf ${FVBE_ROOT} tmp *.img *.png *.png var grub
