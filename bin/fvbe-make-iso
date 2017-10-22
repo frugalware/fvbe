@@ -257,7 +257,6 @@ fvbe_calamares_files() {
 	[[ ! -d ${cala_files} ]] && mkdir -p ${cala_files}
 
 	cp -r calamares/calamares-config-global/* ${cala}
-	cp -r calamares/calamares-config-${FVBE_INSTALL_TYPE}/* ${cala}
 	cp -r calamares/calamares-frugalware-branding/* ${cala_files}
 
 	## FIXME
@@ -400,28 +399,16 @@ declare -a  FVBE_ROOTFS_INSTALL_PACKAGES
 
 case ${FVBE_ISO_TYPE} in
 plasma)
-	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_PLASMA[@]}")
+	FVBE_ROOTFS_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_BASIC[@]} ${FVBE_ROOTFS_PACKAGES_LIVE_PLASMA[@]}")
 	;;
 *)
 	fvbe_error_msg "Unknow FVBE_ISO_TYPE , typo?"
 esac
 
 case ${FVBE_INSTALL_TYPE} in
-base)
+full)
         FVBE_ROOTFS_INSTALL_PACKAGES=( "${FVBE_ROOTFS_PACKAGES_BASE[@]}" )
         ;;
-plasma)
-        FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_PLASMA[@]}")
-        ;;
-gnome)
-        FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]}  ${FVBE_ROOTFS_PACKAGES_GNOME[@]}")
-        ;;
-enlightenment)
-        FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_E[@]}")
-        ;;
-i3)
-	FVBE_ROOTFS_INSTALL_PACKAGES=("${FVBE_ROOTFS_PACKAGES_BASE[@]} ${FVBE_ROOTFS_PACKAGES_I3[@]}")
-	;;
 *)
         fvbe_error_msg "Unknow FVBE_INSTALL_TYPE , typo?"
 esac
