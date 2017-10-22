@@ -1,0 +1,15 @@
+After touching this file validate it before pushing!!!
+
+Also be SURE you change fvbe-packages.conf files too..
+
+A simple way to do that would be:
+
+ pacman -S pyyaml3
+
+ then run this onliner:
+
+  python3 -c 'import yaml,sys;yaml.safe_load(sys.stdin)' <packages.yaml
+ 
+
+ 
+
