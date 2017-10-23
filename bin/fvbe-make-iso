@@ -243,7 +243,7 @@ fvbe_calamares_files() {
 
 
 	fvbe_info_msg "Setting up calamares files.."
-	local cala="$FVBE_ROOT/etc/calamares" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/" session
+	local cala="$FVBE_ROOT/etc/calamares/" cala_files="$FVBE_ROOT/usr/share/calamares/branding/frugalware/" session
 
 	case ${FVBE_ISO_TYPE} in
 	plasma)
@@ -260,8 +260,7 @@ fvbe_calamares_files() {
 	cp -r calamares/calamares-frugalware-branding/* ${cala_files}
 
         ## packages.yaml
-        mkdir -p ${FVBE_ROOT}/var/www/htdocs
-        cp -r calamares/netinstall/packages.yaml ${FVBE_ROOT}/var/www/htdocs/
+        cp -r calamares/netinstall/packages.yaml ${cala}
 
 	## FIXME
 	sed -i "s/_version_/$FVBE_ISO_RELEASE/" ${FVBE_ROOT}/usr/share/calamares/branding/frugalware/branding.desc
