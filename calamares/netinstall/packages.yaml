@@ -81,7 +81,7 @@
         - kio-gdrive
         - kio-extras
 - name: "Gnome Desktop"
-  descripton: "Minimal Gnome3 Desktop"
+  description: "Minimal Gnome3 Desktop"
   hidden: false
   selected: false
   critical: false
@@ -91,9 +91,9 @@
       - cups
       - bluez
 - name: "Internet Software"
-  description: "Browers , Mail and Chat Software"
+  description: "Browsers , Mail and Chat Software"
   hidden: false
-  selected: flase
+  selected: false
   critical: false
   packages:
       - firefox
