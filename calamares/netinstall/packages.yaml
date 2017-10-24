@@ -79,7 +79,7 @@
         - kio-gdrive
         - kio-extras
 - name: "Gnome Desktop"
-  description: "Minimal Gnome3 Desktop"
+  description: "Gnome3 Desktop"
   hidden: false
   selected: false
   critical: false
