@@ -341,6 +341,35 @@ fvbe_banner() {
 	echo ""
 }
 
+fvbe_force_local_pacman() {
+
+                fvbe_info_msg "Hack Alarm!"
+                fvbe_info_msg "Force pacman-g2 to use a local repo"
+                ## What is this ?.. Well an big hack..
+                ## we have the fpms in cache and do NOT want
+                ## packages to get installed over NET no matter what.
+                ## until I have a better solution we force the cache
+                ## as a 'local repo'..
+                ## for that to work we'll have to move the files around from
+                ## an custom post job modules or some post-* things from
+                ## the last installed package
+cat > pacman-g2-LOCAL.conf << EOF
+[options]
+LogFile = /var/log/pacman-g2.log
+[frugalware-current]
+Server = file:///var/cache/pacman-g2/pkg
+EOF
+                ## copy frugalware-current.fdb* to cache
+                fvbe_chroot "cp -v var/lib/pacman-g2/frugalware-current.* var/cache/pacman-g2/pkg/"
+                ## NOW cache is sort local repo.. And since *WE* define the package list ( assuming no typos :P )
+                ## only the local fpm's can be installed, even that is a full FDB..
+
+                ## move pacman-g2.conf around
+                fvbe_chroot "mv -vf etc/pacman-g2.conf etc/pacman-g2.conf.ORIG"
+                ## move now local conf as pacman-g2.conf
+                mv -fv pacman-g2-LOCAL.conf ${FVBE_ROOT}/etc/pacman-g2.conf
+}
+
 if [[ -e ./fvbe-packages.conf ]]; then
 	source ./fvbe-packages.conf
 else
@@ -481,8 +510,13 @@ fvbe_umount_pacman_cache
 
 ## these go to chache now ( maybe we can copy over some way from system ? )
 pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Syw ${FVBE_ROOTFS_INSTALL_PACKAGES[*]}
+
+##  local REPO hack
+fvbe_force_local_pacman
+
 ## wipe wipe since we install over anyway
 fvbe_wipe_files_from_liveiso
+
 ## done with that base+base fpms there
 fvbe_chroot "ldconfig -r ."
 fvbe_umount
