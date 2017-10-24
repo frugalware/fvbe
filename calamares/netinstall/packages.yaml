@@ -35,7 +35,7 @@
   - name: "Communication"
     description: "KDE Communication Software"
     hidden: false
-    selected: true
+    selected: false
     critical: false
     packages:
         - kdeconnect
