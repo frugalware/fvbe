@@ -200,6 +200,7 @@ fvbe_create_users() {
 
 	fvbe_plain_msg "Fixing 'LIVE' users home.."
 	cp -ra live ${FVBE_ROOT}/home/
+        ## Fixme need welcome app
 	mkdir -p ${FVBE_ROOT}/home/live/.config/autostart
 	fvbe_chroot "cp -r /home/live/Desktop/calamares-frugalware.desktop /home/live/.config/autostart/calamares-frugalware.desktop"
 	fvbe_chroot "/usr/bin/chown -R live.users /home/live"
@@ -416,6 +417,7 @@ fi
 # FVBE_ROOTFS_PACKAGES_PLASMA
 # FVBE_ROOTFS_PACKAGES_PLASMA_APPS
 # FVBE_ROOTFS_PACKAGES_GNOME
+# FVBE_ROOTFS_PACKAGES_GNOME_APPS
 # FVBE_ROOTFS_PACKAGES_E
 # FVBE_ROOTFS_PACKAGES_LUMINA
 # FVBE_ROOTFS_PACKAGES_i3
@@ -438,6 +440,7 @@ _FVBE_PACKAGES=(
 		"${FVBE_ROOTFS_PACKAGES_MULTIMEDIA[@]}" "${FVBE_ROOTFS_PACKAGES_INTERNET[@]}"
 		"${FVBE_ROOTFS_PACKAGES_I18N[@]}" "${FVBE_ROOTFS_PACKAGES_VIRTUAL[@]}"
                 "${FVBE_ROOTFS_PACKAGES_EXTRA[@]}" "${FVBE_ROOTFS_PACKAGES_X11[@]}"
+                "${FVBE_ROOTFS_PACKAGES_GNOME_APPS[@]}"
 	       )
 
 case ${FVBE_ISO_TYPE} in
@@ -519,11 +522,8 @@ fvbe_calamares_files
 ## copy /boot files over
 fvbe_cache_files
 
-## disable lvm stuff we don't really support that
+## disable lvm  we don't really support that from installer
 fvbe_chroot "/bin/systemctl disable lvm"
-
-## enable lighttpd
-fvbe_chroot "/bin/systemctl enable lighttpd"
 
 ## wipe files from live
 fvbe_wipe_files_from_liveiso

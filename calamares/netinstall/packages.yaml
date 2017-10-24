@@ -5,6 +5,8 @@
   critical: true
   packages:
       - base
+      - openssh
+      - wget
 - name: "Plasma Desktop"
   description: "Minimal Plasma5 Desktop"
   hidden: false
