@@ -192,10 +192,10 @@ fvbe_create_users() {
 	fvbe_info_msg "Setting up root and live users.."
 	# Setup root user.
 	sed -i '/root/d' ${FVBE_ROOT}/etc/shadow
-	echo "root:$(openssl passwd -1 fvbe):17014:0:::::" >> ${FVBE_ROOT}/etc/shadow
+	echo "root:$(openssl passwd -1 root):17014:0:::::" >> ${FVBE_ROOT}/etc/shadow
 
 	# Setup live user.
-	echo "live:$(openssl passwd -1 fvbe):17014:0:99999:7:::" >> ${FVBE_ROOT}/etc/shadow
+	echo "live:$(openssl passwd -1 live):17014:0:99999:7:::" >> ${FVBE_ROOT}/etc/shadow
 	echo "live:x:1006:100:Live user:/home/live:/bin/bash" >> ${FVBE_ROOT}/etc/passwd
 
 	fvbe_plain_msg "Fixing 'LIVE' users home.."
