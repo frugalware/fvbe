@@ -480,9 +480,7 @@ pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy
 fvbe_umount_pacman_cache
 
 ## these go to chache now ( maybe we can copy over some way from system ? )
-#PAC_CONF="pacman-g2-local.conf" ## for my local setup , do not use  --- crazy ---
 pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Syw ${FVBE_ROOTFS_INSTALL_PACKAGES[*]}
-#PAC_CONF="pacman-g2.conf"  ## for my local setup , do not use  --- crazy ---
 ## wipe wipe since we install over anyway
 fvbe_wipe_files_from_liveiso
 ## done with that base+base fpms there
