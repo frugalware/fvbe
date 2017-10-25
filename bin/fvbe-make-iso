@@ -308,6 +308,8 @@ fvbe_cache_files() {
 	cp ${FVBE_ROOT}/boot/initrd-* .
 	cp ${FVBE_ROOT}/usr/share/grub/unicode.pf2 unicode.pf2
 	cp ${FVBE_ROOT}/boot/grub/background.png background.png
+        ## wipe boot
+        rm -rfv ${FVBE_ROOT}/boot
 }
 
 fvbe_copy_chached_files() {
