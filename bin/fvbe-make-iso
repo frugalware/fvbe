@@ -528,7 +528,10 @@ fvbe_create_rootfs_img
 fvbe_mount
 pacman-g2 --root ${FVBE_ROOT} --noconfirm --noscriptlet --config ${PAC_CONF} -Sy pacman-g2 netkit-base
 
-## copy right conf over
+## backup orignal pacman-g2.conf
+mv -fv ${FVBE_ROOT}/etc/pacman-g2.conf ${FVBE_ROOT}/etc/pacman-g2.conf.LIVE
+
+## copy right conf over so we can get packages when custom
 if [[ ${PAC_CONF} == "pacman-g2.conf" ]]; then
 	cp pacman-g2.conf $FVBE_ROOT/etc
 else
@@ -540,6 +543,10 @@ fi
 cp /etc/resolv.conf ${FVBE_ROOT}/etc
 ## now install the rest
 fvbe_chroot "pacman-g2 --noconfirm -Sy ${FVBE_ROOTFS_PACKAGES[*]}"
+
+## and now orig one back
+rm -rfv ${FVBE_ROOT}/etc/pacman-g2.conf
+mv -fv ${FVBE_ROOT}/etc/pacman-g2.conf.LIVE ${FVBE_ROOT}/etc/pacman-g2.conf
 
 ## root && guest
 fvbe_create_users
