@@ -8,24 +8,40 @@
       - openssh
       - wget
 - name: "Plasma Desktop"
-  description: "Minimal Plasma5 Desktop"
+  description: ""
   hidden: false
   selected: true
   critical: false
-  packages:
-      - kf5
-      - plasma
-      - sddm
-      - kate
-      - konsole
-      - ark
-      - dolphin
-      - kwalletmanager
-      - bluez
-      - cups
-      - print-manager
-      - qupzilla
-      - spectacle
+  subgroups:
+  - name: "Plasma hidden group"
+    description: "Prevent broken installs.."
+    hidden: true
+    selected: true
+    critical: false
+    packages:
+        - kf5
+        - plasma
+        - sddm
+        - konsole
+  - name: "Minimal Plasma5 Desktop"
+    description: ""
+    hidden: false
+    selected: true
+    critical: false
+    packages:
+        - kf5
+        - plasma
+        - sddm
+        - kate
+        - konsole
+        - ark
+        - dolphin
+        - kwalletmanager
+        - bluez
+        - cups
+        - print-manager
+        - qupzilla
+        - spectacle
 - name: "KDE Software"
   description: "Extra Software for KDE"
   hidden: false
