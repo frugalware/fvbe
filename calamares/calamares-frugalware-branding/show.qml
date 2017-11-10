@@ -46,7 +46,6 @@ Presentation
                   "FrugalWare Linux is driven by a hardworking and dedicated community.<br/>"+
                   "During the installation, this slideshow will provide a quick introduction."
             wrapMode: Text.WordWrap
-            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -67,7 +66,6 @@ Presentation
                   "to exactly how you want it. From theming, to the very<br/>"+
                   "kernel itself, it can be changed."
             wrapMode: Text.WordWrap
-            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -88,7 +86,6 @@ Presentation
                   "Additionally, there's a multitude of community editions to <br/>"+
                   "choose from, built by the community, for the community."
             wrapMode: Text.WordWrap
-            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -108,7 +105,6 @@ Presentation
             text: "FrugalWare Linux uses a derived version of the orignal <br/>"+
                   "pacman from Arch Linux called pacman-g2."
             wrapMode: Text.WordWrap
-            width: root.width
             horizontalAlignment: Text.Center
         }
     }
@@ -129,7 +125,6 @@ Presentation
                   "it as much as we do making it! If you have any questions<br/>"+
                   "or feedback, please feel free to visit the forum, IRC, or wiki."
             wrapMode: Text.WordWrap
-            width: root.width
             horizontalAlignment: Text.Center
         }
     }
