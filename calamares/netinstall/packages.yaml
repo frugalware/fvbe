@@ -13,27 +13,14 @@
   selected: true
   critical: false
   subgroups:
-  - name: "Plasma hidden group"
-    description: "Prevent broken installs.."
-    hidden: true
-    selected: true
-    critical: false
-    packages:
-        - kf5
-        - plasma
-        - sddm
-        - konsole
-  - name: "Minimal Plasma5 Desktop"
+  - name: "Minimal Plasma Desktop"
     description: ""
     hidden: false
     selected: true
     critical: false
     packages:
-        - kf5
-        - plasma
-        - sddm
+        - plasma-desktop
         - kate
-        - konsole
         - ark
         - dolphin
         - kwalletmanager
@@ -42,6 +29,16 @@
         - print-manager
         - qupzilla
         - spectacle
+   - name: "Plasma hidden group"
+     description: "Prevent broken installs.."
+     hidden: true
+     selected: true
+     critical: true
+     packages:
+         - kf5
+         - plasma
+         - sddm
+         - konsole
 - name: "KDE Software"
   description: "Extra Software for KDE"
   hidden: false
