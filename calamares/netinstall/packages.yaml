@@ -7,14 +7,14 @@
       - base
       - openssh
       - wget
-- name: "Plasma Desktop"
-  description: ""
+- name: "Plasma"
+  description: "Plasma desktop"
   hidden: false
   selected: true
   critical: false
   subgroups:
-  - name: "Minimal Plasma Desktop"
-    description: ""
+  - name: "Minimal plasma desktop"
+    description: "Minimal plasma desktop and basic applications"
     hidden: false
     selected: true
     critical: false
@@ -40,13 +40,13 @@
          - sddm
          - konsole
 - name: "KDE Software"
-  description: "Extra Software for KDE"
+  description: "Extra software for KDE"
   hidden: false
   selected: true
   critical: false
   subgroups:
   - name: "Communication"
-    description: "KDE Communication Software"
+    description: "KDE communication software"
     hidden: false
     selected: false
     critical: false
@@ -65,7 +65,7 @@
         - ktp-contact-list
         - signon-kwallet-extension
   - name: "Multimedia"
-    description: "KDE Multimedia Software"
+    description: "KDE multimedia software"
     hidden: false
     selected: false
     critical: false
@@ -76,7 +76,7 @@
         - babe
         - vlc
   - name: "Applications"
-    description: "KDE Applications"
+    description: "KDE applications"
     hidden: false
     selected: false
     critical: false
@@ -91,8 +91,8 @@
         - ffmpegthumbs
         - kio-gdrive
         - kio-extras
-- name: "Gnome Desktop"
-  description: "Gnome3 Desktop"
+- name: "Gnome"
+  description: "Gnome desktop"
   hidden: false
   selected: false
   critical: false
@@ -101,8 +101,8 @@
       - gnome
       - cups
       - bluez
-- name: "Internet Software"
-  description: "Browsers , Mail and Chat Software"
+- name: "Internet software"
+  description: "Browsers , e-mail and chat software"
   hidden: false
   selected: false
   critical: false
@@ -119,7 +119,7 @@
       - kvirc
       - quassel
 - name: "Office"
-  description: "Office Software"
+  description: "Office software"
   hidden: false
   selected: false
   critical: false
@@ -137,7 +137,7 @@
       - xf86-video-ati
       - xf86-video-nouveau
 - name: "Fonts"
-  description: "Extra Fonts"
+  description: "Extra fonts"
   hidden: false
   selected: true
   critical: false
@@ -162,7 +162,7 @@
       - ttf-zick-fonts
       - unifont
 - name: "Localisation"
-  description: "Localisation Support"
+  description: "Localisation support"
   hidden: false
   selected: false
   critical: false
