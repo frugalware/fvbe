@@ -7,6 +7,7 @@
       - base
       - openssh
       - wget
+      - htop
 - name: "Plasma"
   description: "Plasma desktop"
   hidden: false
@@ -73,7 +74,6 @@
         - k3b
         - dragon
         - kaffeine
-        - babe
         - vlc
   - name: "Applications"
     description: "KDE applications"
@@ -86,9 +86,9 @@
         - okteta
         - okular
         - filelight
+        - ffmpegthumbs
         - kdesdk-thumbnailers
         - kdegraphics-thumbnailers
-        - ffmpegthumbs
         - kio-gdrive
         - kio-extras
 - name: "Gnome"
@@ -96,13 +96,49 @@
   hidden: false
   selected: false
   critical: false
+  subgroups:
+  - name: "Gnome minimal desktop"
+    description: "Minimal gnome desktop and basic applications"
+    hidden: false
+    selected: false
+    critical: false
+    packages:
+        - gnome-desktop
+        - gnome-autoar
+        - gnome-bluetooth
+        - gnome-control-center
+        - gnome-keyring
+        - gnome-menus
+        - gnome-session
+        - gnome-settings-daemon
+        - gnome-shell
+        - gnome-terminal
+  - name: "Gnome hidden group"
+    description: "Prevent broken installations.."
+    hidden: true
+    selected: true
+    critical: true
+    packages:
+        - gnome-minimal
+        - gdm
+- name: "Gnome applications"
+  description: "Gnome base applications"
+  hidden: false
+  selected: false
+  critical: false
   packages:
-      - gdm
-      - gnome
-      - cups
-      - bluez
+      - eog-plugins
+      - gedit-plugins
+      - gnome-builder
+      - gnome-calendar
+      - gnome-characters
+      - gnome-maps
+      - gnome-multi-writer
+      - gnome-music
+      - gnome-photos
+      - gnome-user-docs
 - name: "Internet software"
-  description: "Browsers , e-mail and chat software"
+  description: "Browsers , E-mail and chat software"
   hidden: false
   selected: false
   critical: false
