@@ -30,16 +30,16 @@
         - print-manager
         - qupzilla
         - spectacle
-   - name: "Plasma hidden group"
-     description: "Prevent broken installs.."
-     hidden: true
-     selected: true
-     critical: true
-     packages:
-         - kf5
-         - plasma
-         - sddm
-         - konsole
+  - name: "Plasma hidden group"
+    description: "Prevent broken installs.."
+    hidden: true
+    selected: true
+    critical: true
+    packages:
+        - kf5
+        - plasma
+        - sddm
+        - konsole
 - name: "KDE Software"
   description: "Extra software for KDE"
   hidden: false
