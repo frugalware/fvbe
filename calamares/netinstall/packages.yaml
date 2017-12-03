@@ -161,7 +161,7 @@
   critical: false
   packages:
       - libreoffice
-      - libreoffice-gnome
+      - libreoffice-gtk3
 - name: "Xorg"
   description: "Xorg open source GPU drivers"
   hidden: false
