@@ -13,4 +13,4 @@ $(ISO): bin/fvbe-make-iso
 iso: $(ISO)
 
 clean:
-	rm -rf root vmlinuz-* initrd-* vmlinuz  rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) *.fdb var *.cfg
+	rm -rf root vmlinuz-* initramfs-* vmlinuz initrd rootfs.img squashfs.img pacman-g2.conf locales layouts unicode.pf2 $(ISO) *.fdb var *.cfg

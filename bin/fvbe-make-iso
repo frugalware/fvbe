@@ -305,7 +305,7 @@ fvbe_wipe_files_from_liveiso() {
 fvbe_cache_files() {
 
 	cp ${FVBE_ROOT}/boot/vmlinuz-* .
-	cp ${FVBE_ROOT}/boot/initrd-* .
+	cp ${FVBE_ROOT}/boot/initramfs-* .
 	cp ${FVBE_ROOT}/usr/share/grub/unicode.pf2 unicode.pf2
 	cp ${FVBE_ROOT}/boot/grub/background.png background.png
         ## wipe boot
@@ -316,11 +316,11 @@ fvbe_copy_chached_files() {
 
 	local ifile vfile
 
-	ifile=$(basename initrd-*)
+	ifile=$(basename initramfs-*)
 	vfile=$(basename vmlinuz-*)
 
 	if [[ ! -e ${ifile} ]]; then
-		fvbe_error_msg "Missing initrd , abording.."
+		fvbe_error_msg "Missing initramfs , abording.."
 	fi
 
 	if [[ ! -e ${vfile} ]]; then
@@ -492,7 +492,7 @@ esac
 
 ## cleanup
 ## clean files if any and umount everything
-rm -rf $FVBE_ROOT vmlinuz vmlinuz-* initrd-* mounts basefs.img rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
+rm -rf $FVBE_ROOT vmlinuz vmlinuz-* initramfs-* mounts basefs.img rootfs.img locales layouts *.png unicode.pf2 *.fdb LiveOS
 fvbe_umount
 
 ## step1 mini basefs ( always needed no matter what we install )
