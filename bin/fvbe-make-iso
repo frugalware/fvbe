@@ -66,14 +66,12 @@ fvbe_die() {
 
 _fvbe_check_prog() {
 
-	local a="$1" b
+	local a="$1"
 
-	b=$(type -p ${a})
-
-	if [[ ! -x ${b} ]]; then
+	if ! [ -x "$(command -v $a)" ]; then
 		fvbe_error_msg "Could not find ${a}. Bailing out.."
 	else
-		fvbe_plain_msg "Found ${b}.. good"
+		fvbe_plain_msg "Found ${a}.. good"
 	fi
 
 }
