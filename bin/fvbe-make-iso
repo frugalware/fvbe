@@ -295,8 +295,8 @@ fvbe_wipe_files_from_liveiso() {
 	fvbe_chroot "rm -rf usr/share/doc"
 	## wipe qt5 stuff
 	fvbe_chroot "rm -rf usr/share/qt5/mkspecs"
-	## /usr/lb32
-	fvbe_chroot "rm -rf usr/lb32"
+	## /usr/lib32
+	fvbe_chroot "rm -rf usr/lib32"
 
 }
 
