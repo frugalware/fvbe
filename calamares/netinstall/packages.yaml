@@ -28,7 +28,7 @@
         - bluez
         - cups
         - print-manager
-        - qupzilla
+        - falkon
         - spectacle
   - name: "Plasma hidden group"
     description: "Prevent broken installs.."
@@ -145,15 +145,10 @@
   packages:
       - firefox
       - chromium-browser
-      - qupzilla
-      - otter-browser
+      - falkon
       - thunderbird
       - hexchat
-      - irssi
-      - weechat
       - konversation
-      - kvirc
-      - quassel
 - name: "Office"
   description: "Office software"
   hidden: false
