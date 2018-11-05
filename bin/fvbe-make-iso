@@ -3,7 +3,7 @@
 set -e
 
 ## we check for porgs needed to build the ISO or needed in the ISO
-FVBE_PROGS=(xorriso mksquashfs mktemp mformat grub-mkrescue chroot truncate mkfs.ext4 cp ln mkdir sed)
+FVBE_PROGS=(xorriso mksquashfs mktemp grub-mkrescue chroot truncate mkfs.ext4 cp ln mkdir sed)
 
 fvbe_check_root() {
 
