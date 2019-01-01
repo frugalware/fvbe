@@ -558,9 +558,6 @@ fvbe_calamares_files
 ## copy /boot files over
 fvbe_cache_files
 
-## disable lvm  we don't really support that from installer
-fvbe_chroot "/bin/systemctl disable lvm"
-
 ## wipe files from live
 fvbe_wipe_files_from_liveiso
 ## umount
@@ -581,7 +578,7 @@ mkdir -p ${FVBE_ROOT}/LiveOS
 mv rootfs.img  ${FVBE_ROOT}/LiveOS/
 
 fvbe_info_msg "Creating squashfs.img.."
-mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -no-fragments -noF -comp zstd -Xcompression-level 22  >/dev/null 2>&1
+mksquashfs ${FVBE_ROOT} squashfs.img -noappend -no-progress -no-fragments -noF -comp xz -Xbcj x86 -Xdict-size 100%  >/dev/null 2>&1
 
 rm -rf ${FVBE_ROOT} *.iso tmp sums var
 
