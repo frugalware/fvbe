@@ -1,6 +1,35 @@
 ---
 componentName:  frugalware
 
+# This selects between different welcome texts. When false, uses
+# the traditional "Welcome to the %1 installer.", and when true,
+# uses "Welcome to the Calamares installer for %1." This allows
+# to distinguish this installer from other installers for the
+# same distribution.
+welcomeStyleCalamares:   false
+
+# Should the welcome image (productWelcome, below) be scaled
+# up beyond its natural size? If false, the image does not grow
+# with the window but remains the same size throughout (this
+# may have surprising effects on HiDPI monitors).
+welcomeExpandingLogo:   true
+
+# Size and expansion policy for Calamares.
+#  - "normal" or unset, expand as needed, use *windowSize*
+#  - "fullscreen", start as large as possible, ignore *windowSize*
+#  - "noexpand", don't expand automatically, use *windowSize*
+windowExpanding:    normal
+
+# Size of Calamares window, expressed as w,h. Both w and h
+# may be either pixels (suffix px) or font-units (suffix em).
+#   e.g.    "800px,600px"
+#           "60em,480px"
+# This setting is ignored if "fullscreen" is selected for
+# *windowExpanding*, above. If not set, use constants defined
+# in CalamaresUtilsGui, 800x520.
+windowSize: 800px,520px
+
+
 strings:
     productName:         Frugalware Linux
     shortProductName:    Frugalware
