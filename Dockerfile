@@ -1,4 +1,4 @@
-FROM frugalware/pacman-g2:latest
+FROM registry.gitlab.com/frugalware/pacman-g2:latest
 
 WORKDIR /tmp/fst
 COPY . /tmp/fst
