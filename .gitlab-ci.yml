@@ -1,9 +1,8 @@
 image: registry.gitlab.com/frugalware/pacman-g2:latest
 
-
-stage: build
-
-script:
-    - cp fvbe-skel.conf fvbe.conf
-    - make
+job:
+    stage: build
+    script:
+     - cp fvbe-skel.conf fvbe.conf
+     - make
 
