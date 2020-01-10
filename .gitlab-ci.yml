@@ -3,5 +3,5 @@ image: registry.gitlab.com/frugalware/pacman-g2:latest
 build:
     script:
      - cp fvbe-skel.conf fvbe.conf
-     - make
+     - make clean
 
